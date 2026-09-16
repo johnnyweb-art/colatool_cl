@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>行程資料更新</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#F4F7F8; --card:#FFFFFF; --card-2:#EDF3F5;
+  --ink:#12262E; --ink-2:#4A6470; --ink-3:#7C949E;
+  --deep:#0B3C49; --teal:#1C7293; --teal-soft:#E4EEF3;
+  --amber:#E8A33D; --amber-soft:#FBF2E0; --amber-ink:#8A5A08;
+  --warn:#B8451E; --warn-soft:#FBEAE3;
+  --ok:#2E7D5B; --ok-soft:#E3F1EA;
+  --line:#D6E1E6; --line-2:#BDCDD5;
+  --head:#0B3C49; --on-accent:#FFFFFF;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0D1618; --card:#162328; --card-2:#1D2C31;
+    --ink:#E2ECEF; --ink-2:#9BB2BA; --ink-3:#71898F;
+    --deep:#8FBACB; --teal:#57A8C8; --teal-soft:#19313B;
+    --amber:#F0B75A; --amber-soft:#2E2617; --amber-ink:#F0B75A;
+    --warn:#EC8158; --warn-soft:#331B14;
+    --ok:#5DBF92; --ok-soft:#142C22;
+    --line:#2A3B41; --line-2:#3A4E55;
+    --head:#0B2830; --on-accent:#06181E;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0D1618; --card:#162328; --card-2:#1D2C31;
+  --ink:#E2ECEF; --ink-2:#9BB2BA; --ink-3:#71898F;
+  --deep:#8FBACB; --teal:#57A8C8; --teal-soft:#19313B;
+  --amber:#F0B75A; --amber-soft:#2E2617; --amber-ink:#F0B75A;
+  --warn:#EC8158; --warn-soft:#331B14;
+  --ok:#5DBF92; --ok-soft:#142C22;
+  --line:#2A3B41; --line-2:#3A4E55;
+  --head:#0B2830; --on-accent:#06181E;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif; font-size:15px; line-height:1.75}
+.top{background:var(--head); color:#fff; padding-inline:16px; padding-block:26px 24px}
+.top-in,.wrap{max-width:720px; margin:0 auto}
+.eyebrow{margin:0 0 6px; font-size:12px; letter-spacing:.16em; color:#8FBACB; font-weight:500}
+h1{margin:0 0 8px; font-size:27px; line-height:1.3; text-wrap:balance}
+.top p{margin:0; color:#B9D2DC; font-size:14px}
+.wrap{padding-inline:16px; padding-block:24px 56px}
+
+.who{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:26px}
+.who div{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px}
+.who .k{font-size:12px; color:var(--ink-3); letter-spacing:.06em}
+.who .v{font-size:16px; font-weight:700; margin-top:2px}
+@media (max-width:560px){ .who{grid-template-columns:1fr} }
+
+.flow{display:grid; grid-template-columns:1fr auto 1fr auto 1fr auto 1fr; align-items:stretch; gap:6px; margin:0 0 30px}
+.node{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:11px 12px; text-align:center}
+.node .n{display:inline-grid; place-items:center; width:22px; height:22px; border-radius:50%;
+  background:var(--teal); color:var(--on-accent); font-size:12px; font-weight:700; margin-bottom:4px}
+.node .l{font-size:13.5px; font-weight:700; line-height:1.4}
+.node .s{font-size:12px; color:var(--ink-2); line-height:1.45; margin-top:3px}
+.node.last{border-color:var(--ok); background:var(--ok-soft)}
+.node.last .n{background:var(--ok)}
+.arrow{display:grid; place-items:center; color:var(--ink-3); font-size:18px}
+@media (max-width:640px){
+  .flow{grid-template-columns:1fr}
+  .arrow{transform:rotate(90deg); height:18px}
+}
+
+section{margin-top:30px}
+h2{font-size:19px; margin:0 0 4px; display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
+h2 .tag{font-size:12px; font-weight:500; color:var(--ink-3)}
+.lede{margin:0 0 14px; color:var(--ink-2); font-size:14px}
+
+ol.steps{list-style:none; counter-reset:s; margin:0; padding:0; display:flex; flex-direction:column; gap:10px}
+ol.steps>li{counter-increment:s; position:relative; background:var(--card); border:1px solid var(--line);
+  border-radius:10px; padding:13px 16px 13px 54px}
+ol.steps>li::before{content:counter(s); position:absolute; left:15px; top:13px; width:26px; height:26px;
+  border-radius:50%; background:var(--teal-soft); color:var(--teal); font-weight:700; font-size:13px;
+  display:grid; place-items:center}
+.steps b{color:var(--ink)}
+.steps .sub{display:block; font-size:13px; color:var(--ink-2); margin-top:3px}
+kbd{font-family:"IBM Plex Mono",monospace; font-size:12px; background:var(--card-2); border:1px solid var(--line-2);
+  border-bottom-width:2px; border-radius:4px; padding:1px 7px; color:var(--ink); white-space:nowrap}
+code{font-family:"IBM Plex Mono",monospace; font-size:13px; background:var(--card-2); border-radius:4px; padding:1px 6px}
+.path{font-size:13.5px; color:var(--ink-2)}
+.path b{color:var(--ink)}
+
+.bmwrap{margin:12px 0 4px; padding:18px; border:2px dashed var(--amber); border-radius:12px; background:var(--amber-soft); text-align:center}
+a.bm{display:inline-flex; align-items:center; gap:8px; text-decoration:none; font-weight:700; font-size:16px;
+  color:#fff; background:#0B3C49; border-radius:9px; padding:11px 20px; cursor:grab; box-shadow:0 3px 10px rgba(11,60,73,.25)}
+a.bm:active{cursor:grabbing}
+.bmhint{margin:10px 0 0; font-size:13px; color:var(--amber-ink); font-weight:500}
+.bmhint.shout{color:var(--warn)}
+
+.done{margin-top:12px; padding:12px 16px; border-radius:10px; background:var(--ok-soft); color:var(--ok); font-size:14px}
+.done b{color:var(--ok)}
+
+.trouble{display:flex; flex-direction:column; gap:0; background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:hidden}
+.tr{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.25fr); gap:14px; padding:13px 16px; border-top:1px solid var(--line)}
+.tr:first-child{border-top:0}
+.tr .q{font-weight:700; font-size:14px}
+.tr .a{font-size:14px; color:var(--ink-2)}
+@media (max-width:560px){ .tr{grid-template-columns:1fr; gap:4px} }
+
+details.fallback{margin-top:12px; background:var(--card); border:1px solid var(--line); border-radius:10px}
+details.fallback summary{cursor:pointer; padding:12px 16px; font-weight:700; font-size:14px}
+.fb-body{padding:0 16px 16px; font-size:14px; color:var(--ink-2)}
+.fb-body ol{padding-left:20px; margin:6px 0 12px}
+.fb-body textarea{width:100%; min-height:130px; font-family:"IBM Plex Mono",monospace; font-size:11px; line-height:1.5;
+  color:var(--ink); background:var(--card-2); border:1px solid var(--line-2); border-radius:8px; padding:9px; white-space:pre; overflow:auto}
+.copybtn{font:inherit; font-size:13px; font-weight:700; cursor:pointer; border:0; border-radius:7px; padding:7px 14px;
+  background:var(--teal); color:var(--on-accent); margin-bottom:8px}
+.why{margin-top:30px; font-size:13px; color:var(--ink-3); line-height:1.8; border-top:1px solid var(--line); padding-top:14px}
+a{color:var(--teal)}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--amber); outline-offset:2px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <p class="eyebrow">給管理者看的　業務同仁不用做</p>
+    <h1>行程資料更新</h1>
+    <p>直售部與團體部的工具，推薦行程都是從一份行程資料裡挑。這份資料每月更新一次，一個人做完，全公司重新整理網頁就是新的。</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="who">
+    <div><div class="k">誰做</div><div class="v">一個人就好</div></div>
+    <div><div class="k">多久一次</div><div class="v">每月一次</div></div>
+    <div><div class="k">要多久</div><div class="v">約 5 分鐘</div></div>
+  </div>
+
+  <div class="flow" aria-label="更新流程">
+    <div class="node"><span class="n">1</span><div class="l">打開可樂官網</div><div class="s">點書籤列上的按鈕</div></div>
+    <div class="arrow" aria-hidden="true">→</div>
+    <div class="node"><span class="n">2</span><div class="l">自動下載</div><div class="s"><code>cola-index.js</code></div></div>
+    <div class="arrow" aria-hidden="true">→</div>
+    <div class="node"><span class="n">3</span><div class="l">上傳到 GitHub</div><div class="s">取代舊的那一個</div></div>
+    <div class="arrow" aria-hidden="true">→</div>
+    <div class="node last"><span class="n">✓</span><div class="l">全公司生效</div><div class="s">重新整理網頁就是新資料</div></div>
+  </div>
+
+  <section>
+    <h2>第一次設定 <span class="tag">只做一次，1 分鐘</span></h2>
+    <p class="lede">把一顆按鈕放到瀏覽器的書籤列上。之後每個月點它就好，不用碰任何程式碼。</p>
+    <ol class="steps">
+      <li>用<b>電腦</b>的 Chrome 或 Edge 打開這一頁。
+        <span class="sub">手機不行。</span></li>
+      <li>按 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd>，讓網址列下方出現<b>書籤列</b>。
+        <span class="sub">Mac 是 <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd>。書籤列已經有出現就跳過這步。</span></li>
+      <li>用滑鼠<b>按住</b>下面這顆按鈕，<b>拖到書籤列上</b>再放開。
+        <div class="bmwrap">
+          <a class="bm" id="bm" href="javascript:%28async%20function%28%29%7B%0Aif%28window.__colaStocktake%29%7B%20alert%28%27%E7%9B%A4%E9%BB%9E%E6%AD%A3%E5%9C%A8%E9%80%B2%E8%A1%8C%E4%B8%AD%EF%BC%8C%E8%AB%8B%E7%AD%89%E5%8F%B3%E4%B8%8A%E8%A7%92%E9%80%B2%E5%BA%A6%E8%B7%91%E5%AE%8C%E3%80%82%27%29%3B%20return%3B%20%7D%0Aif%28%21%2F%28%5E%7C%5C.%29colatour%5C.com%5C.tw%24%2F.test%28location.hostname%29%29%7B%0Aalert%28%27%E8%AB%8B%E5%85%88%E6%89%93%E9%96%8B%E5%8F%AF%E6%A8%82%E6%97%85%E9%81%8A%E5%AE%98%E7%B6%B2%20tour.colatour.com.tw%EF%BC%8C%E5%86%8D%E9%BB%9E%E9%80%99%E5%80%8B%E6%9B%B8%E7%B1%A4%E3%80%82%27%29%3B%0Areturn%3B%0A%7D%0Awindow.__colaStocktake%3Dtrue%3B%0Avar%20KEYS%3D%5B%27%E6%97%A5%E6%9C%AC%27%2C%27%E9%9F%93%E5%9C%8B%27%2C%27%E4%B8%AD%E5%9C%8B%27%2C%27%E6%B8%AF%E6%BE%B3%27%2C%27%E6%B3%B0%E5%9C%8B%27%2C%27%E8%B6%8A%E5%8D%97%27%2C%27%E6%96%B0%E5%8A%A0%E5%9D%A1%27%2C%27%E9%A6%AC%E4%BE%86%E8%A5%BF%E4%BA%9E%27%2C%27%E5%8D%B0%E5%B0%BC%27%2C%27%E8%8F%B2%E5%BE%8B%E8%B3%93%27%2C%0A%27%E5%8D%B0%E5%BA%A6%27%2C%27%E6%9D%9C%E6%8B%9C%27%2C%27%E5%9C%9F%E8%80%B3%E5%85%B6%27%2C%27%E5%9F%83%E5%8F%8A%27%2C%27%E6%AD%90%E6%B4%B2%27%2C%27%E7%B4%90%E8%A5%BF%E8%98%AD%27%2C%27%E6%BE%B3%E6%B4%B2%27%2C%27%E7%BE%8E%E5%9C%8B%27%2C%27%E5%8A%A0%E6%8B%BF%E5%A4%A7%27%2C%27%E9%83%B5%E8%BC%AA%27%2C%27%E5%B8%9B%E7%90%89%27%2C%27%E9%97%9C%E5%B3%B6%27%5D%3B%0Avar%20CITIES%3D%5B%5B%27TPE%27%2C%27%E5%8F%B0%E5%8C%97%E6%A1%83%E5%9C%92%27%5D%2C%5B%27TXG%27%2C%27%E5%8F%B0%E4%B8%AD%27%5D%2C%5B%27KHH%27%2C%27%E9%AB%98%E9%9B%84%27%5D%5D%3B%0Avar%20WAIT%3D11000%2C%20BATCH%3D4%2C%20HEIGHT%3D20000%2C%20MIN_OK%3D1000%3B%0Avar%20ui%3Ddocument.createElement%28%27div%27%29%3B%0Aui.style.cssText%3D%27position%3Afixed%3Bz-index%3A2147483647%3Bright%3A16px%3Btop%3A16px%3Bwidth%3A300px%3B%27%2B%0A%27background%3A%230B3C49%3Bcolor%3A%23fff%3Bfont%3A14px%2F1.6%20%22Microsoft%20JhengHei%22%2Csans-serif%3B%27%2B%0A%27padding%3A14px%2016px%3Bborder-radius%3A10px%3Bbox-shadow%3A0%208px%2028px%20rgba%280%2C0%2C0%2C.35%29%27%3B%0Aui.innerHTML%3D%27%3Cb%20style%3D%22font-size%3A15px%22%3E%E6%AD%A3%E5%9C%A8%E7%9B%A4%E9%BB%9E%E5%8F%AF%E6%A8%82%E8%A1%8C%E7%A8%8B%3C%2Fb%3E%27%2B%0A%27%3Cdiv%20data-t%20style%3D%22margin%3A6px%200%209px%3Bfont-size%3A12.5px%3Bopacity%3A.85%22%3E%E6%BA%96%E5%82%99%E4%B8%AD%E2%80%A6%3C%2Fdiv%3E%27%2B%0A%27%3Cdiv%20style%3D%22height%3A6px%3Bbackground%3Argba%28255%2C255%2C255%2C.22%29%3Bborder-radius%3A3px%3Boverflow%3Ahidden%22%3E%27%2B%0A%27%3Cdiv%20data-b%20style%3D%22height%3A100%25%3Bwidth%3A0%25%3Bbackground%3A%23E8A33D%3Btransition%3Awidth%20.3s%22%3E%3C%2Fdiv%3E%3C%2Fdiv%3E%27%2B%0A%27%3Cdiv%20data-n%20style%3D%22margin-top%3A8px%3Bfont-size%3A12px%3Bopacity%3A.8%22%3E0%20%E7%AD%86%EF%BC%8E%E7%B4%84%203%E2%80%935%20%E5%88%86%E9%90%98%EF%BC%8C%E8%AB%8B%E4%B8%8D%E8%A6%81%E9%97%9C%E9%96%89%E6%88%96%E5%88%87%E6%8F%9B%E9%80%99%E5%80%8B%E5%88%86%E9%A0%81%3C%2Fdiv%3E%27%3B%0Adocument.body.appendChild%28ui%29%3B%0Avar%20T%3Dui.querySelector%28%27%5Bdata-t%5D%27%29%2C%20B%3Dui.querySelector%28%27%5Bdata-b%5D%27%29%2C%20N%3Dui.querySelector%28%27%5Bdata-n%5D%27%29%3B%0Afunction%20grab%28kw%2C%20code%29%7B%0Areturn%20new%20Promise%28function%28res%29%7B%0Avar%20f%3Ddocument.createElement%28%27iframe%27%29%3B%0Af.style.cssText%3D%27position%3Afixed%3Bleft%3A-99999px%3Btop%3A0%3Bwidth%3A1400px%3Bheight%3A%27%2BHEIGHT%2B%27px%27%3B%0Af.src%3D%27%2Fsearch%3FKeyWord%3D%27%2BencodeURIComponent%28kw%29%2B%27%26DepartureCity%3D%27%2Bcode%3B%0Adocument.body.appendChild%28f%29%3B%0AsetTimeout%28function%28%29%7B%0Avar%20rows%3D%5B%5D%3B%0Atry%7B%0Avar%20m%3Dnew%20Map%28%29%3B%0Af.contentDocument.querySelectorAll%28%27a%5Bhref%2A%3D%22itinerary%3FPatternNo%22%5D%27%29.forEach%28function%28a%29%7B%0Avar%20mm%3D%28a.getAttribute%28%27href%27%29%7C%7C%27%27%29.match%28%2FPatternNo%3D%28%5Cd%2B%29%2F%29%3B%20if%28%21mm%29%20return%3B%0Avar%20no%3Dmm%5B1%5D%2C%20t%3D%28a.innerText%7C%7C%27%27%29.replace%28%2F%5Cs%2B%2Fg%2C%27%20%27%29.trim%28%29%3B%0Aif%28%21m.has%28no%29%29%20m.set%28no%2C%5B%5D%29%3B%20if%28t%29%20m.get%28no%29.push%28t%29%3B%0A%7D%29%3B%0Am.forEach%28function%28parts%2Cno%29%7B%0Avar%20name%3Dparts.find%28function%28p%29%7Breturn%20p.length%3E12%20%26%26%20%21%2F%5E%5B%5Cd%5C%2F%5Cs%2C.%5D%2B%24%2F.test%28p%29%3B%7D%29%7C%7C%27%27%3B%0Avar%20pm%3Dname.match%28%2F%5C%24%28%5B%5Cd%2C%5D%2B%29%E8%B5%B7%2F%29%2C%20price%3Dpm%3Fpm%5B1%5D.replace%28%2F%2C%2Fg%2C%27%27%29%3A%27%27%3B%0Aname%3Dname.replace%28%2F%5Cs%2A%5C%24%5B%5Cd%2C%5D%2B%E8%B5%B7%5Cs%2A%24%2F%2C%27%27%29.replace%28%2F%5Ct%2Fg%2C%27%20%27%29.trim%28%29%3B%0Avar%20dates%3D%28parts.find%28function%28p%29%7Breturn%20%2F%5E%5Cd%7B2%7D%5C%2F%5Cd%7B2%7D%2F.test%28p%29%3B%7D%29%7C%7C%27%27%29%0A.replace%28%2F%5Cs%2A%5C.%5C.%5C.%24%2F%2C%27%27%29.replace%28%2F%5Cs%2B%2Fg%2C%27%2C%27%29%3B%0Aif%28name%29%20rows.push%28%5Bno%2Cname%2Cprice%2Cdates%2Ckw%2Ccode%5D.join%28%27%5Ct%27%29%29%3B%0A%7D%29%3B%0A%7Dcatch%28e%29%7B%7D%0Af.remove%28%29%3B%20res%28rows%29%3B%0A%7D%2C%20WAIT%29%3B%0A%7D%29%3B%0A%7D%0Avar%20all%3D%5B%5D%2C%20seen%3D%7B%7D%2C%20total%3DKEYS.length%2ACITIES.length%2C%20done%3D0%3B%0Atry%7B%0Afor%28var%20ci%3D0%3B%20ci%3CCITIES.length%3B%20ci%2B%2B%29%7B%0Afor%28var%20i%3D0%3B%20i%3CKEYS.length%3B%20i%2B%3DBATCH%29%7B%0Avar%20slice%3DKEYS.slice%28i%2Ci%2BBATCH%29%3B%0AT.textContent%3DCITIES%5Bci%5D%5B1%5D%2B%27%E5%87%BA%E7%99%BC%E3%80%80%27%2Bslice.join%28%27%E3%80%81%27%29%3B%0Avar%20got%3Dawait%20Promise.all%28slice.map%28function%28k%29%7B%20return%20grab%28k%2C%20CITIES%5Bci%5D%5B0%5D%29%3B%20%7D%29%29%3B%0Agot.forEach%28function%28rs%29%7B%20rs.forEach%28function%28l%29%7B%0Avar%20p%3Dl.split%28%27%5Ct%27%29%2C%20key%3Dp%5B0%5D%2B%27%7C%27%2Bp%5B5%5D%3B%0Aif%28%21seen%5Bkey%5D%29%7B%20seen%5Bkey%5D%3D1%3B%20all.push%28l%29%3B%20%7D%0A%7D%29%3B%20%7D%29%3B%0Adone%2B%3Dslice.length%3B%0AB.style.width%3DMath.round%28done%2Ftotal%2A100%29%2B%27%25%27%3B%0AN.textContent%3Dall.length%2B%27%20%E7%AD%86%EF%BC%8E%E8%AB%8B%E4%B8%8D%E8%A6%81%E9%97%9C%E9%96%89%E6%88%96%E5%88%87%E6%8F%9B%E9%80%99%E5%80%8B%E5%88%86%E9%A0%81%27%3B%0A%7D%0A%7D%0A%7D%20finally%20%7B%20window.__colaStocktake%3Dfalse%3B%20%7D%0Avar%20d%3Dnew%20Date%28%29%2C%20pad%3Dfunction%28n%29%7Breturn%20%28n%3C10%3F%270%27%3A%27%27%29%2Bn%3B%7D%3B%0Avar%20ymd%3Dd.getFullYear%28%29%2B%27-%27%2Bpad%28d.getMonth%28%29%2B1%29%2B%27-%27%2Bpad%28d.getDate%28%29%29%3B%0Avar%20text%3D%27%23%E5%8F%AF%E6%A8%82%E6%97%85%E9%81%8A%E8%A1%8C%E7%A8%8B%E7%B4%A2%E5%BC%95%5Ct%E6%93%B7%E5%8F%96%E6%97%A5%3D%27%2Bymd%2B%27%5Ct%E7%AD%86%E6%95%B8%3D%27%2Ball.length%2B%27%5Cn%27%2Ball.join%28%27%5Cn%27%29%3B%0Avar%20ok%3Dall.length%3E%3DMIN_OK%3B%0Avar%20fname%3Dok%3F%27cola-index.js%27%3A%27cola-index_%E7%AD%86%E6%95%B8%E7%95%B0%E5%B8%B8_%E8%AB%8B%E5%8B%BF%E4%B8%8A%E5%82%B3.js%27%3B%0Avar%20raw%3DJSON.stringify%28text%29%2C%20body%3D%27%27%2C%20BS%3DString.fromCharCode%2892%29%3B%0Afor%28var%20q%3D0%3Bq%3Craw.length%3Bq%2B%2B%29%7B%0Avar%20cc%3Draw.charCodeAt%28q%29%3B%0Abody%2B%3D%20cc%3C127%20%3F%20raw.charAt%28q%29%20%3A%20BS%2B%27u%27%2B%28%27000%27%2Bcc.toString%2816%29%29.slice%28-4%29%3B%0A%7D%0Avar%20js%3D%27%2F%2A%20colatour%20itinerary%20index%20%7C%20captured%20%27%2Bymd%2B%27%20%7C%20rows%20%27%2Ball.length%2B%27%20%2A%2F%5Cnwindow.COLA_RAW%3D%27%2Bbody%2B%27%3B%5Cn%27%3B%0Avar%20blob%3Dnew%20Blob%28%5Bjs%5D%2C%7Btype%3A%27text%2Fjavascript%3Bcharset%3Dutf-8%27%7D%29%3B%0Avar%20u%3DURL.createObjectURL%28blob%29%2C%20a%3Ddocument.createElement%28%27a%27%29%3B%0Aa.href%3Du%3B%20a.download%3Dfname%3B%20document.body.appendChild%28a%29%3B%20a.click%28%29%3B%20a.remove%28%29%3B%0AsetTimeout%28function%28%29%7B%20URL.revokeObjectURL%28u%29%3B%20%7D%2C%208000%29%3B%0AB.style.width%3D%27100%25%27%3B%0Aif%28ok%29%7B%0Aui.querySelector%28%27b%27%29.textContent%3D%27%E7%9B%A4%E9%BB%9E%E5%AE%8C%E6%88%90%27%3B%0AT.innerHTML%3D%27%E5%85%B1%20%3Cb%20style%3D%22color%3A%23E8A33D%22%3E%27%2Ball.length%2B%27%3C%2Fb%3E%20%E7%AD%86%EF%BC%8C%E5%B7%B2%E4%B8%8B%E8%BC%89%20%3Cb%3Ecola-index.js%3C%2Fb%3E%27%3B%0AN.innerHTML%3D%27%E4%B8%8B%E4%B8%80%E6%AD%A5%EF%BC%9A%E6%8A%8A%E9%80%99%E5%80%8B%E6%AA%94%E6%A1%88%E4%B8%8A%E5%82%B3%E5%88%B0%20GitHub%EF%BC%8C%E5%8F%96%E4%BB%A3%E8%88%8A%E7%9A%84%E9%82%A3%E4%B8%80%E5%80%8B%E3%80%82%3Cbr%3E%3Cspan%20style%3D%22opacity%3A.7%22%3E%E9%BB%9E%E9%80%99%E5%80%8B%E6%96%B9%E5%A1%8A%E5%8F%AF%E4%BB%A5%E9%97%9C%E9%96%89%3C%2Fspan%3E%27%3B%0A%7D%20else%20%7B%0Aui.style.background%3D%27%238A2E12%27%3B%0Aui.querySelector%28%27b%27%29.textContent%3D%27%E7%AD%86%E6%95%B8%E7%95%B0%E5%B8%B8%EF%BC%8C%E5%85%88%E4%B8%8D%E8%A6%81%E4%B8%8A%E5%82%B3%27%3B%0AT.innerHTML%3D%27%E5%8F%AA%E6%8A%93%E5%88%B0%20%27%2Ball.length%2B%27%20%E7%AD%86%EF%BC%8C%E5%B9%B3%E5%B8%B8%E5%A4%A7%E7%B4%84%202000%20%E7%AD%86%E3%80%82%27%3B%0AN.innerHTML%3D%27%E5%8F%AF%E8%83%BD%E6%98%AF%E7%B6%B2%E8%B7%AF%E4%B8%8D%E7%A9%A9%E6%88%96%E5%AE%98%E7%B6%B2%E6%94%B9%E7%89%88%E3%80%82%E6%AA%94%E6%A1%88%E5%B7%B2%E5%AD%98%E6%88%90%E3%80%8C%E8%AB%8B%E5%8B%BF%E4%B8%8A%E5%82%B3%E3%80%8D%EF%BC%8C%E8%AB%8B%E8%81%AF%E7%B5%A1%E9%A1%A7%E5%95%8F%E3%80%82%3Cbr%3E%3Cspan%20style%3D%22opacity%3A.7%22%3E%E9%BB%9E%E9%80%99%E5%80%8B%E6%96%B9%E5%A1%8A%E5%8F%AF%E4%BB%A5%E9%97%9C%E9%96%89%3C%2Fspan%3E%27%3B%0A%7D%0Aui.style.cursor%3D%27pointer%27%3B%20ui.onclick%3Dfunction%28%29%7B%20ui.remove%28%29%3B%20%7D%3B%0A%7D%29%28%29%3B">▦ 盤點可樂行程</a>
+          <p class="bmhint" id="bmhint">要用「拖」的，不是點它</p>
+        </div>
+      </li>
+      <li>書籤列上出現「<b>盤點可樂行程</b>」，設定就完成了。</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>每月更新 <span class="tag">約 5 分鐘</span></h2>
+    <p class="lede">建議固定在每月第一個上班日做。</p>
+    <ol class="steps">
+      <li>打開可樂旅遊官網 <a href="https://tour.colatour.com.tw/" target="_blank" rel="noopener">tour.colatour.com.tw</a></li>
+      <li>點書籤列上的「<b>盤點可樂行程</b>」。
+        <span class="sub">右上角會出現深藍色的進度方塊。跑的時候<b>不要關閉、不要切換分頁</b>，大約 3–5 分鐘。</span></li>
+      <li>跑完方塊會顯示「盤點完成」，瀏覽器自動下載 <code>cola-index.js</code>。
+        <span class="sub">通常在電腦的「下載」資料夾。</span></li>
+      <li>上傳到 GitHub，取代舊檔：
+        <span class="sub path">打開公司這套工具的 GitHub 頁面 → 按 <b>Add file</b> → <b>Upload files</b> → 把 <code>cola-index.js</code> 拖進去 → 按最下面綠色的 <b>Commit changes</b></span></li>
+      <li>等 2 分鐘，打開任一個工具頁，捲到結果區最下面，看「<b>行程資料更新日</b>」變成今天。
+        <div class="done"><b>日期變成今天，就完成了。</b>不用通知大家，同事下次打開網頁就是新的資料。</div>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>出狀況時</h2>
+    <p class="lede">大部分狀況都不會弄壞任何東西。照下面處理就好。</p>
+    <div class="trouble">
+      <div class="tr"><div class="q">下載的檔名變成 <code>cola-index (1).js</code></div>
+        <div class="a">是下載資料夾裡已經有舊檔。<b>先把檔名改回 <code>cola-index.js</code> 再上傳</b>，檔名不對，網頁會繼續讀舊的。</div></div>
+      <div class="tr"><div class="q">檔名是 <code>cola-index_筆數異常_請勿上傳.js</code></div>
+        <div class="a"><b>不要上傳。</b>這次抓到的行程比平常少很多，可能是網路不穩或官網改版。隔天再試一次；還是一樣就聯絡顧問。</div></div>
+      <div class="tr"><div class="q">點書籤跳出「請先打開可樂旅遊官網」</div>
+        <div class="a">你現在不在官網頁面上。先打開 tour.colatour.com.tw，再點書籤。</div></div>
+      <div class="tr"><div class="q">跳出「盤點正在進行中」</div>
+        <div class="a">你點了兩次。等右上角那一次跑完就好。</div></div>
+      <div class="tr"><div class="q">上傳後過了很久，日期還是舊的</div>
+        <div class="a">按 <kbd>Ctrl</kbd> + <kbd>F5</kbd> 強制重新整理。還是舊的，就回 GitHub 確認上傳的檔名是 <code>cola-index.js</code>。</div></div>
+      <div class="tr"><div class="q">按鈕拖不到書籤列上</div>
+        <div class="a">用下面的備用方法，效果一樣。</div></div>
+    </div>
+
+    <details class="fallback">
+      <summary>備用方法：不用書籤，直接貼程式碼</summary>
+      <div class="fb-body">
+        <ol>
+          <li>按下面的按鈕複製程式碼</li>
+          <li>打開 tour.colatour.com.tw，按 <kbd>F12</kbd>，上方選「<b>Console</b>」（主控台）</li>
+          <li>第一次貼上時 Chrome 會擋下來並提示，照它說的<b>先輸入 <code>allow pasting</code> 按 Enter</b></li>
+          <li>再貼上程式碼，按 <kbd>Enter</kbd>。接下來跟每月更新的第 3 步一樣。</li>
+        </ol>
+        <button class="copybtn" id="copyCode" type="button">複製程式碼</button>
+        <textarea id="rawCode" readonly spellcheck="false">(async function(){
+  if(window.__colaStocktake){ alert('盤點正在進行中，請等右上角進度跑完。'); return; }
+  if(!/(^|\.)colatour\.com\.tw$/.test(location.hostname)){
+    alert('請先打開可樂旅遊官網 tour.colatour.com.tw，再點這個書籤。');
+    return;
+  }
+  window.__colaStocktake=true;
+
+  var KEYS=['日本','韓國','中國','港澳','泰國','越南','新加坡','馬來西亞','印尼','菲律賓',
+    '印度','杜拜','土耳其','埃及','歐洲','紐西蘭','澳洲','美國','加拿大','郵輪','帛琉','關島'];
+  var CITIES=[['TPE','台北桃園'],['TXG','台中'],['KHH','高雄']];
+  var WAIT=11000, BATCH=4, HEIGHT=20000, MIN_OK=1000;
+
+  var ui=document.createElement('div');
+  ui.style.cssText='position:fixed;z-index:2147483647;right:16px;top:16px;width:300px;'+
+    'background:#0B3C49;color:#fff;font:14px/1.6 "Microsoft JhengHei",sans-serif;'+
+    'padding:14px 16px;border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.35)';
+  ui.innerHTML='&lt;b style="font-size:15px"&gt;正在盤點可樂行程&lt;/b&gt;'+
+    '&lt;div data-t style="margin:6px 0 9px;font-size:12.5px;opacity:.85"&gt;準備中…&lt;/div&gt;'+
+    '&lt;div style="height:6px;background:rgba(255,255,255,.22);border-radius:3px;overflow:hidden"&gt;'+
+    '&lt;div data-b style="height:100%;width:0%;background:#E8A33D;transition:width .3s"&gt;&lt;/div&gt;&lt;/div&gt;'+
+    '&lt;div data-n style="margin-top:8px;font-size:12px;opacity:.8"&gt;0 筆．約 3–5 分鐘，請不要關閉或切換這個分頁&lt;/div&gt;';
+  document.body.appendChild(ui);
+  var T=ui.querySelector('[data-t]'), B=ui.querySelector('[data-b]'), N=ui.querySelector('[data-n]');
+
+  function grab(kw, code){
+    return new Promise(function(res){
+      var f=document.createElement('iframe');
+      f.style.cssText='position:fixed;left:-99999px;top:0;width:1400px;height:'+HEIGHT+'px';
+      f.src='/search?KeyWord='+encodeURIComponent(kw)+'&amp;DepartureCity='+code;
+      document.body.appendChild(f);
+      setTimeout(function(){
+        var rows=[];
+        try{
+          var m=new Map();
+          f.contentDocument.querySelectorAll('a[href*="itinerary?PatternNo"]').forEach(function(a){
+            var mm=(a.getAttribute('href')||'').match(/PatternNo=(\d+)/); if(!mm) return;
+            var no=mm[1], t=(a.innerText||'').replace(/\s+/g,' ').trim();
+            if(!m.has(no)) m.set(no,[]); if(t) m.get(no).push(t);
+          });
+          m.forEach(function(parts,no){
+            var name=parts.find(function(p){return p.length&gt;12 &amp;&amp; !/^[\d\/\s,.]+$/.test(p);})||'';
+            var pm=name.match(/\$([\d,]+)起/), price=pm?pm[1].replace(/,/g,''):'';
+            name=name.replace(/\s*\$[\d,]+起\s*$/,'').replace(/\t/g,' ').trim();
+            var dates=(parts.find(function(p){return /^\d{2}\/\d{2}/.test(p);})||'')
+                        .replace(/\s*\.\.\.$/,'').replace(/\s+/g,',');
+            if(name) rows.push([no,name,price,dates,kw,code].join('\t'));
+          });
+        }catch(e){}
+        f.remove(); res(rows);
+      }, WAIT);
+    });
+  }
+
+  var all=[], seen={}, total=KEYS.length*CITIES.length, done=0;
+  try{
+    for(var ci=0; ci&lt;CITIES.length; ci++){
+      for(var i=0; i&lt;KEYS.length; i+=BATCH){
+        var slice=KEYS.slice(i,i+BATCH);
+        T.textContent=CITIES[ci][1]+'出發　'+slice.join('、');
+        var got=await Promise.all(slice.map(function(k){ return grab(k, CITIES[ci][0]); }));
+        got.forEach(function(rs){ rs.forEach(function(l){
+          var p=l.split('\t'), key=p[0]+'|'+p[5];
+          if(!seen[key]){ seen[key]=1; all.push(l); }
+        }); });
+        done+=slice.length;
+        B.style.width=Math.round(done/total*100)+'%';
+        N.textContent=all.length+' 筆．請不要關閉或切換這個分頁';
+      }
+    }
+  } finally { window.__colaStocktake=false; }
+
+  var d=new Date(), pad=function(n){return (n&lt;10?'0':'')+n;};
+  var ymd=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+  var text='#可樂旅遊行程索引\t擷取日='+ymd+'\t筆數='+all.length+'\n'+all.join('\n');
+  var ok=all.length&gt;=MIN_OK;
+  var fname=ok?'cola-index.js':'cola-index_筆數異常_請勿上傳.js';
+  var raw=JSON.stringify(text), body='', BS=String.fromCharCode(92);
+  for(var q=0;q&lt;raw.length;q++){
+    var cc=raw.charCodeAt(q);
+    body+= cc&lt;127 ? raw.charAt(q) : BS+'u'+('000'+cc.toString(16)).slice(-4);
+  }
+  var js='/* colatour itinerary index | captured '+ymd+' | rows '+all.length+' */\nwindow.COLA_RAW='+body+';\n';
+  var blob=new Blob([js],{type:'text/javascript;charset=utf-8'});
+  var u=URL.createObjectURL(blob), a=document.createElement('a');
+  a.href=u; a.download=fname; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(u); }, 8000);
+
+  B.style.width='100%';
+  if(ok){
+    ui.querySelector('b').textContent='盤點完成';
+    T.innerHTML='共 &lt;b style="color:#E8A33D"&gt;'+all.length+'&lt;/b&gt; 筆，已下載 &lt;b&gt;cola-index.js&lt;/b&gt;';
+    N.innerHTML='下一步：把這個檔案上傳到 GitHub，取代舊的那一個。&lt;br&gt;&lt;span style="opacity:.7"&gt;點這個方塊可以關閉&lt;/span&gt;';
+  } else {
+    ui.style.background='#8A2E12';
+    ui.querySelector('b').textContent='筆數異常，先不要上傳';
+    T.innerHTML='只抓到 '+all.length+' 筆，平常大約 2000 筆。';
+    N.innerHTML='可能是網路不穩或官網改版。檔案已存成「請勿上傳」，請聯絡顧問。&lt;br&gt;&lt;span style="opacity:.7"&gt;點這個方塊可以關閉&lt;/span&gt;';
+  }
+  ui.style.cursor='pointer'; ui.onclick=function(){ ui.remove(); };
+})();
+</textarea>
+      </div>
+    </details>
+  </section>
+
+  <p class="why">
+    <b>為什麼不能自動更新？</b>可樂官網不允許其他網站直接讀它的資料，所以要在官網頁面上，由瀏覽器自己把行程清單看過一遍再存下來。這支程式做的事，跟你自己一頁一頁點開搜尋結果是一樣的，沒有繞過任何限制，也不會碰到登入或訂單資料。<br>
+    <b>更新了什麼、沒更新什麼：</b>會更新行程清單、起價與官網顯示的出發日。工具頁上的欄位、規則與畫面不會變。
+  </p>
+</div>
+
+<script>
+(function(){
+  var bm=document.getElementById("bm"), hint=document.getElementById("bmhint");
+  bm.addEventListener("click",function(e){
+    e.preventDefault();
+    hint.textContent="不是點它喔。請按住這顆按鈕，拖到上方的書籤列再放開。";
+    hint.classList.add("shout");
+  });
+  document.getElementById("copyCode").addEventListener("click",function(){
+    var b=this, ta=document.getElementById("rawCode"), txt=ta.value;
+    function ok(){ b.textContent="已複製"; setTimeout(function(){ b.textContent="複製程式碼"; },1800); }
+    function fb(){ ta.focus(); ta.select(); try{ document.execCommand("copy"); ok(); }catch(e){ b.textContent="請在下方框框按 Ctrl+A、Ctrl+C"; } }
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(ok,fb); } else fb();
+  });
+})();
+</script>
+</body>
+</html>

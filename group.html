@@ -1,0 +1,1197 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>同業報價需求單</title>
+<script src="cola-index.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+
+:root{
+  --paper:#F4F7F8; --card:#FFFFFF; --card-2:#EDF3F5;
+  --ink:#12262E; --ink-2:#4A6470; --ink-3:#7C949E;
+  --deep:#0B3C49; --teal:#1C7293; --teal-soft:#E4EEF3;
+  --amber:#E8A33D; --amber-soft:#FBF2E0;
+  --warn:#B8451E; --warn-soft:#FBEAE3;
+  --ok:#2E7D5B; --ok-soft:#E3F1EA;
+  --line:#D6E1E6; --line-2:#BDCDD5;
+  --on-accent:#FFFFFF; --masthead-bg:#0B3C49; --accent-strong:#0B3C49; --amber-ink:#8A5A08;
+  --shadow:0 1px 2px rgba(11,60,73,.06),0 4px 14px rgba(11,60,73,.05);
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0D1618; --card:#162328; --card-2:#1D2C31;
+    --ink:#E2ECEF; --ink-2:#9BB2BA; --ink-3:#71898F;
+    --deep:#8FBACB; --teal:#57A8C8; --teal-soft:#19313B;
+    --amber:#F0B75A; --amber-soft:#2E2617;
+    --warn:#EC8158; --warn-soft:#331B14;
+    --ok:#5DBF92; --ok-soft:#142C22;
+    --line:#2A3B41; --line-2:#3A4E55;
+    --on-accent:#06181E; --masthead-bg:#0B2830; --accent-strong:#57A8C8; --amber-ink:#F0B75A;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0D1618; --card:#162328; --card-2:#1D2C31;
+  --ink:#E2ECEF; --ink-2:#9BB2BA; --ink-3:#71898F;
+  --deep:#8FBACB; --teal:#57A8C8; --teal-soft:#19313B;
+  --amber:#F0B75A; --amber-soft:#2E2617;
+  --warn:#EC8158; --warn-soft:#331B14;
+  --ok:#5DBF92; --ok-soft:#142C22;
+  --line:#2A3B41; --line-2:#3A4E55;
+  --on-accent:#06181E; --masthead-bg:#0B2830; --accent-strong:#57A8C8; --amber-ink:#F0B75A;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+  font-size:15px; line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:760px; margin:0 auto; padding-inline:16px; padding-block:0 120px}
+
+/* ---------- 頁首 ---------- */
+.masthead{background:var(--masthead-bg); color:#fff; padding-block:22px 20px; padding-inline:16px; margin-bottom:0}
+.masthead-in{max-width:760px; margin:0 auto}
+.eyebrow{font-size:11px; letter-spacing:.16em; font-weight:500; color:#8FBACB; margin:0 0 6px}
+.masthead h1{font-size:26px; line-height:1.25; font-weight:700; margin:0 0 6px; text-wrap:balance; color:#fff}
+.masthead p{margin:0; font-size:13px; color:#B9D2DC; line-height:1.55}
+
+/* ---------- 進度列 ---------- */
+.tracker{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:20;
+  background:var(--card); border-bottom:1px solid var(--line);
+  padding-inline:16px; box-shadow:var(--shadow);
+}
+.tracker-in{max-width:760px; margin:0 auto; display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding-block:10px}
+.count{font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums; font-size:20px; font-weight:500; color:var(--accent-strong); line-height:1}
+.count small{font-size:13px; color:var(--ink-3); font-weight:400}
+.bar{flex:1 1 120px; min-width:100px; height:6px; border-radius:3px; background:var(--line); overflow:hidden}
+.bar span{display:block; height:100%; background:var(--teal); width:0%; transition:width .25s ease}
+.bar.done span{background:var(--ok)}
+.jump{
+  font:inherit; font-size:12.5px; font-weight:500; cursor:pointer;
+  border:1px solid var(--line-2); background:var(--card-2); color:var(--ink-2);
+  border-radius:99px; padding:5px 12px;
+}
+.jump:hover{border-color:var(--teal); color:var(--teal)}
+.jump[hidden]{display:none!important}
+
+/* ---------- 區塊 ---------- */
+.sect{margin-top:28px}
+.sect-head{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:4px}
+.sect-head h2{font-size:17px; font-weight:700; margin:0; color:var(--ink)}
+.sect-tag{font-size:11px; letter-spacing:.1em; font-weight:500; color:#fff; background:var(--teal); border-radius:4px; padding:2px 7px}
+.sect-tag.b{background:var(--warn)}
+.sect-tag.c{background:var(--ink-2)}
+.sect-note{font-size:13px; color:var(--ink-2); margin:0 0 14px; line-height:1.6}
+
+/* ---------- 題目 ---------- */
+.q{
+  border:1px solid var(--line); border-left:3px solid var(--line-2);
+  background:var(--card); border-radius:var(--r); margin:0 0 10px; padding:13px 15px;
+  scroll-margin-top:90px;
+}
+.q.answered{border-left-color:var(--ok)}
+.q.flag{border-left-color:var(--amber); background:var(--amber-soft)}
+.q legend, .q .qh{
+  display:flex; gap:8px; align-items:baseline; font-weight:700; font-size:14.5px;
+  padding:0; margin:0 0 9px; color:var(--ink); width:100%;
+}
+.qn{font-family:"IBM Plex Mono",monospace; font-size:12px; font-weight:500; color:var(--ink-3); flex:none}
+.qhint{display:block; font-weight:400; font-size:12.5px; color:var(--ink-2); margin:-4px 0 9px; line-height:1.55}
+fieldset.q{min-width:0}
+
+.opts{display:flex; flex-wrap:wrap; gap:7px}
+.opts.col{flex-direction:column; gap:5px}
+.opt{
+  display:inline-flex; align-items:center; gap:7px; cursor:pointer;
+  border:1px solid var(--line-2); border-radius:99px; padding:6px 13px 6px 10px;
+  font-size:13.5px; background:var(--card); transition:.12s; line-height:1.4;
+}
+.opts.col .opt{border-radius:8px; width:100%}
+.opt:hover{border-color:var(--teal)}
+.opt input{margin:0; accent-color:var(--teal); flex:none}
+.opt:has(input:checked){background:var(--teal-soft); border-color:var(--teal); font-weight:500}
+.opt.danger:has(input:checked){background:var(--warn-soft); border-color:var(--warn); color:var(--warn)}
+.opt input:focus-visible{outline:2px solid var(--teal); outline-offset:3px}
+
+input[type=text],input[type=number],textarea{
+  font:inherit; font-size:14px; color:var(--ink); background:var(--card);
+  border:1px solid var(--line-2); border-radius:8px; padding:8px 11px; width:100%;
+}
+input:focus,textarea:focus{outline:2px solid var(--teal); outline-offset:1px; border-color:var(--teal)}
+textarea{min-height:64px; resize:vertical; line-height:1.6}
+.inline-txt{margin-top:8px}
+
+.nums{display:flex; flex-wrap:wrap; gap:9px}
+.numf{flex:1 1 92px; min-width:82px}
+.numf label{display:block; font-size:12px; color:var(--ink-2); margin-bottom:3px}
+.numf input{text-align:center; font-variant-numeric:tabular-nums; padding-inline:6px}
+
+/* ---------- 警示 ---------- */
+.alerts{display:flex; flex-direction:column; gap:8px; margin-top:11px}
+.alert{
+  border-radius:8px; padding:10px 13px; font-size:13px; line-height:1.6;
+  border-left:3px solid; background:var(--warn-soft); border-color:var(--warn); color:var(--ink);
+}
+.alert.caution{background:var(--amber-soft); border-color:var(--amber)}
+.alert b{display:block; color:var(--warn); font-size:13px; margin-bottom:1px}
+.alert.caution b{color:var(--amber-ink)}
+
+/* ---------- 產出 ---------- */
+.actionbar{
+  position:fixed; left:0; right:0; bottom:0; z-index:30;
+  background:var(--card); border-top:1px solid var(--line);
+  padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));
+  box-shadow:0 -4px 16px rgba(11,60,73,.07);
+}
+.actionbar-in{max-width:760px; margin:0 auto; display:flex; gap:10px; align-items:center}
+.btn{
+  font:inherit; font-weight:700; font-size:15px; cursor:pointer; border:0; border-radius:9px;
+  padding:12px 18px; background:var(--teal); color:var(--on-accent); flex:1; transition:.15s;
+}
+.btn:hover{background:var(--deep); color:var(--on-accent)}
+.btn.ghost{flex:none; background:transparent; color:var(--ink-2); border:1px solid var(--line-2); font-weight:500; font-size:13.5px; padding:12px 14px}
+.btn.ghost:hover{background:var(--card-2); color:var(--ink)}
+.btn:focus-visible,.jump:focus-visible{outline:2px solid var(--amber); outline-offset:2px}
+
+.output{margin-top:26px; border:1px solid var(--teal); border-radius:var(--r); overflow:hidden; box-shadow:var(--shadow)}
+.output-head{background:var(--teal-soft); padding:11px 15px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap}
+.output-head strong{font-size:14px; color:var(--accent-strong)}
+.copy{font:inherit; font-size:13px; font-weight:500; cursor:pointer; border:1px solid var(--teal); background:var(--card); color:var(--teal); border-radius:7px; padding:6px 14px}
+.copy:hover{background:var(--teal); color:var(--on-accent)}
+.sect-tag.go{background:var(--ok)}
+#picks{display:flex; flex-direction:column; gap:11px}
+.pick{
+  border:1px solid var(--line); border-left:3px solid var(--ok); background:var(--card);
+  border-radius:var(--r); padding:14px 16px; box-shadow:var(--shadow);
+}
+.pick.alt{border-left-color:var(--teal)}
+.pick.lite{border-left-color:var(--amber)}
+.rank{
+  display:inline-block; font-size:11.5px; font-weight:700; letter-spacing:.06em;
+  color:var(--on-accent); background:var(--ok); border-radius:4px; padding:2px 9px; margin-bottom:8px;
+}
+.pick.alt .rank{background:var(--teal)}
+.pick.lite .rank{background:var(--amber); color:#3A2A08}
+.rank small{font-weight:400; opacity:.85}
+a.pick-name{
+  display:block; font-size:15.5px; font-weight:700; line-height:1.5; color:var(--accent-strong);
+  text-decoration:none; margin-bottom:8px;
+}
+a.pick-name:hover{text-decoration:underline}
+a.pick-name::after{content:" ↗"; font-size:12px; opacity:.6}
+.pick-meta{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:9px}
+.pick-meta span{
+  font-size:12.5px; color:var(--ink-2); background:var(--card-2);
+  border-radius:5px; padding:3px 9px; font-variant-numeric:tabular-nums;
+}
+.pick-meta span.hi{background:var(--ok-soft); color:var(--ok); font-weight:500}
+.pick-why{font-size:13.5px; line-height:1.65; color:var(--ink)}
+.pick-why b{color:var(--ok)}
+.pick.alt .pick-why b{color:var(--teal)}
+.pick.lite .pick-why b{color:var(--amber-ink)}
+.empty{
+  border:1px dashed var(--line-2); border-radius:var(--r); background:var(--card-2);
+  padding:16px; font-size:13.5px; line-height:1.7; color:var(--ink-2);
+}
+.empty b{color:var(--ink); display:block; margin-bottom:5px}
+.idxfoot a{color:var(--teal); font-weight:500}
+.idxfoot .stale{display:block; margin:0 0 8px; padding:8px 11px; border-radius:7px; background:var(--amber-soft); color:var(--amber-ink); font-size:12.5px; font-weight:500; line-height:1.6}
+.idxfoot{margin:12px 0 0; font-size:11.5px; color:var(--ink-3); line-height:1.65}
+.whereto{padding:14px 15px; background:var(--card-2); border-bottom:1px solid var(--line)}
+.whereto-t{margin:0 0 8px; font-size:13.5px; font-weight:700; color:var(--ink)}
+.whereto-steps{margin:0 0 11px; padding-left:20px; font-size:13px; line-height:1.85; color:var(--ink-2)}
+.whereto-steps b{color:var(--ink)}
+.whereto-warn{
+  margin:0 0 9px; font-size:12.5px; line-height:1.65; color:var(--ink);
+  background:var(--warn-soft); border-left:3px solid var(--warn); border-radius:6px; padding:9px 12px;
+}
+.whereto-warn b{color:var(--warn)}
+.whereto-sub{margin:0; font-size:12px; line-height:1.6; color:var(--ink-3)}
+.whereto-sub b{color:var(--ink-2)}
+pre.gen{
+  margin:0; padding:15px; background:var(--card); overflow-x:auto;
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12.5px; line-height:1.72;
+  white-space:pre-wrap; word-break:break-word; color:var(--ink); max-height:430px; overflow-y:auto;
+}
+
+/* ---------- 說明 ---------- */
+.privacy{
+  margin-top:22px; border:1px dashed var(--line-2); border-radius:var(--r);
+  background:var(--card-2); padding:13px 15px; font-size:12.5px; color:var(--ink-2); line-height:1.7;
+}
+.privacy b{color:var(--ink)}
+.demo-note{
+  display:flex; gap:9px; align-items:flex-start; margin-top:16px; padding:10px 14px;
+  background:var(--amber-soft); border-radius:8px; font-size:12.5px; color:var(--ink-2); line-height:1.6;
+}
+.demo-note b{color:var(--amber-ink)}
+footer{margin-top:28px; padding-top:16px; border-top:1px solid var(--line); font-size:11.5px; color:var(--ink-3); line-height:1.7}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; scroll-behavior:auto!important}}
+
+/* 團體部主色 */
+:root{--grp-bg:#27425E}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--grp-bg:#1B2E44}}
+:root[data-theme="dark"]{--grp-bg:#1B2E44}
+
+
+/* ===== 團體部專用 ===== */
+.masthead{background:var(--grp-bg)}
+.pick .choose{
+  margin-top:10px; font:inherit; font-size:13px; font-weight:700; cursor:pointer;
+  border:1px solid var(--teal); background:var(--card); color:var(--teal);
+  border-radius:7px; padding:6px 14px;
+}
+.pick .choose:hover{background:var(--teal-soft)}
+.pick.chosen{border-color:var(--ok); border-left-color:var(--ok); background:var(--ok-soft)}
+.pick.chosen .choose{background:var(--ok); border-color:var(--ok); color:var(--on-accent)}
+.basebar{
+  display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; margin:0 0 12px;
+  padding:10px 14px; border-radius:8px; background:var(--card-2); font-size:13px; color:var(--ink-2);
+}
+.basebar b{color:var(--ink)}
+.basebar .custom{
+  font:inherit; font-size:12.5px; cursor:pointer; border:1px dashed var(--line-2);
+  background:transparent; color:var(--ink-2); border-radius:7px; padding:4px 11px; margin-left:auto;
+}
+.basebar .custom:hover{border-color:var(--amber); color:var(--amber-ink)}
+.basebar .custom.on{border-style:solid; border-color:var(--amber); background:var(--amber-soft); color:var(--amber-ink)}
+
+.dishes{display:flex; flex-direction:column; gap:0; border:1px solid var(--line); border-radius:var(--r); background:var(--card); overflow:hidden}
+.dish{display:grid; grid-template-columns:7.5em 1fr; gap:8px 12px; padding:11px 14px; border-top:1px solid var(--line); align-items:start}
+.dish:first-child{border-top:0}
+.dish.changed{background:var(--amber-soft)}
+.dish-h{font-size:13.5px; font-weight:700; color:var(--ink); padding-top:5px}
+.dish-b{min-width:0}
+.dish .opts{gap:5px}
+.dish .opt{padding:4px 11px 4px 8px; font-size:12.5px}
+.dish-x{margin-top:7px}
+@media (max-width:520px){ .dish{grid-template-columns:1fr} .dish-h{padding-top:0} }
+
+.dates3{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
+.dates3 label{display:block; font-size:12px; color:var(--ink-2); margin-bottom:3px}
+@media (max-width:520px){ .dates3{grid-template-columns:1fr} }
+
+.doc{margin-top:26px; border:1px solid var(--line-2); border-radius:var(--r); background:var(--card); box-shadow:var(--shadow); overflow:hidden}
+.doc-head{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+  padding:12px 16px; background:var(--grp-bg); color:#fff}
+.doc-head strong{font-size:15px}
+.doc-head .sub{font-size:12px; opacity:.8; display:block; font-weight:400}
+.doc-actions{display:flex; gap:8px}
+.doc-actions button{font:inherit; font-size:13px; font-weight:500; cursor:pointer; border-radius:7px; padding:6px 14px;
+  border:1px solid rgba(255,255,255,.55); background:transparent; color:#fff}
+.doc-actions button:hover{background:rgba(255,255,255,.14)}
+.doc-actions button.primary{background:#fff; color:#0B3C49; border-color:#fff}
+pre.docbody{margin:0; padding:16px 18px; font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif; font-size:13.5px;
+  line-height:1.85; white-space:pre-wrap; word-break:break-word; color:var(--ink); max-height:560px; overflow:auto}
+.doc-foot{padding:10px 16px; border-top:1px solid var(--line); font-size:12px; color:var(--ink-3); background:var(--card-2)}
+
+.stage2{margin-top:26px; border:1px solid var(--teal); border-radius:var(--r); background:var(--card); overflow:hidden}
+.stage2-h{padding:12px 16px; background:var(--teal-soft); border-bottom:1px solid var(--line)}
+.stage2-h strong{font-size:15px; color:var(--accent-strong)}
+.stage2-h p{margin:3px 0 0; font-size:12.5px; color:var(--ink-2); line-height:1.6}
+.stage2-b{padding:14px 16px}
+.stage2-b textarea{min-height:120px}
+.stage2-b .btn{margin-top:10px; width:100%}
+
+@media print{
+  .masthead,.tracker,.wrap>*:not(#docWrap),.actionbar,.doc-actions,.doc-foot{display:none!important}
+  body{background:#fff}
+  .wrap{padding:0}
+  #docWrap{display:block!important}
+  .doc{border:0; box-shadow:none}
+  .doc-head{background:#fff!important; color:#000!important; border-bottom:2px solid #000}
+  pre.docbody{max-height:none; overflow:visible; color:#000; font-size:12pt}
+}
+</style>
+
+<header class="masthead">
+  <div class="masthead-in">
+    <p class="eyebrow">可樂旅遊中壢分公司　團體部</p>
+    <h1>同業報價需求單</h1>
+    <p>同業來詢價就打開。問清楚條件、從官網行程挑一條當底、勾出要改的地方，一鍵產出給台北的報價需求單。</p>
+  </div>
+</header>
+
+<div class="tracker">
+  <div class="tracker-in">
+    <span class="count"><span id="done">0</span><small> / <span id="total">13</span> 欄已問</small></span>
+    <span class="bar" id="bar"><span id="barfill"></span></span>
+    <button class="jump" id="jump" type="button">跳到第一個沒問的</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="demo-note">
+    <span aria-hidden="true">▸</span>
+    <span><b>頁面開啟時是示範資料</b>（虛構的同業詢價，課堂用）。按右下角「清空重填」就是空白表單。</span>
+  </div>
+
+  <!-- ===== A 委託資訊 ===== -->
+  <section class="sect">
+    <div class="sect-head"><span class="sect-tag">A 區</span><h2>委託資訊</h2></div>
+    <p class="sect-note">是哪一家同業、找誰。這是同業公司的資料，可以填；<b>旅客名單與個資不要填在這一頁。</b></p>
+
+    <div class="q" data-q="a1" data-label="委託旅行社">
+      <div class="qh"><span class="qn">A1</span>委託旅行社</div>
+      <input type="text" id="a1" placeholder="公司名稱">
+    </div>
+
+    <div class="q" data-q="a2" data-label="承辦窗口">
+      <div class="qh"><span class="qn">A2</span>承辦窗口</div>
+      <input type="text" id="a2" placeholder="例：林經理（LINE 已加）">
+    </div>
+
+    <fieldset class="q" data-q="a3" data-label="合作關係" data-optional="1">
+      <legend><span class="qn">A3</span>合作關係<span style="font-weight:400;color:var(--ink-3);font-size:12px">（選填）</span></legend>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="a3" value="熟客常合作" id="a3-1">熟客常合作</label>
+        <label class="opt"><input type="radio" name="a3" value="合作過幾次" id="a3-2">合作過幾次</label>
+        <label class="opt"><input type="radio" name="a3" value="第一次合作" id="a3-3">第一次合作</label>
+      </div>
+    </fieldset>
+
+    <fieldset class="q" data-q="a4" data-label="團體性質">
+      <legend><span class="qn">A4</span>團體性質</legend>
+      <span class="qhint">決定台北怎麼配飯店、餐食與活動。員工旅遊常要晚宴，進香團要排寺廟時間。</span>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="a4" value="員工旅遊" id="a4-1">員工旅遊</label>
+        <label class="opt"><input type="radio" name="a4" value="獎勵旅遊" id="a4-2">獎勵旅遊</label>
+        <label class="opt"><input type="radio" name="a4" value="社團協會" id="a4-3">社團協會</label>
+        <label class="opt"><input type="radio" name="a4" value="宗教進香" id="a4-4">宗教進香</label>
+        <label class="opt"><input type="radio" name="a4" value="學校師生" id="a4-5">學校師生</label>
+        <label class="opt"><input type="radio" name="a4" value="家族親友" id="a4-6">家族親友</label>
+        <label class="opt"><input type="radio" name="a4" value="其他" id="a4-7">其他</label>
+      </div>
+    </fieldset>
+  </section>
+
+  <!-- ===== B 團體條件 ===== -->
+  <section class="sect">
+    <div class="sect-head"><span class="sect-tag">B 區</span><h2>團體條件</h2></div>
+    <p class="sect-note">台北報價一定要的東西。這一區少一欄，需求單就會被退回來問。</p>
+
+    <fieldset class="q" data-q="b1" data-label="出發地">
+      <legend><span class="qn">B1</span>出發地</legend>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="b1" value="台北（桃園機場）" id="b1-1">台北（桃園機場）</label>
+        <label class="opt"><input type="radio" name="b1" value="台中" id="b1-2">台中</label>
+        <label class="opt"><input type="radio" name="b1" value="高雄" id="b1-3">高雄</label>
+        <label class="opt"><input type="radio" name="b1" value="都可以" id="b1-4">都可以</label>
+      </div>
+    </fieldset>
+
+    <div class="q" data-q="b2" data-label="目的地">
+      <div class="qh"><span class="qn">B2</span>目的地</div>
+      <span class="qhint">寫到能挑行程的程度：「日本」太粗，「北海道」「關西」剛好。</span>
+      <input type="text" id="b2" placeholder="例：日本北海道">
+    </div>
+
+    <div class="q" data-q="b3" data-label="出發日期">
+      <div class="qh"><span class="qn">B3</span>出發日期</div>
+      <span class="qhint"><b>團體一定要問備選。</b>機位不一定拿得到，只給一個日期，台北會先卡在這裡。</span>
+      <div class="dates3">
+        <div><label for="b3a">首選</label><input type="text" id="b3a" placeholder="例：11 月下旬"></div>
+        <div><label for="b3b">備選一</label><input type="text" id="b3b" placeholder="例：12 月上旬"></div>
+        <div><label for="b3c">備選二</label><input type="text" id="b3c" placeholder="選填"></div>
+      </div>
+    </div>
+
+    <fieldset class="q" data-q="b4" data-label="天數">
+      <legend><span class="qn">B4</span>天數</legend>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="b4" value="3–4 天" id="b4-1">3–4 天</label>
+        <label class="opt"><input type="radio" name="b4" value="5–6 天" id="b4-2">5–6 天</label>
+        <label class="opt"><input type="radio" name="b4" value="7 天以上" id="b4-3">7 天以上</label>
+        <label class="opt"><input type="radio" name="b4" value="還沒定" id="b4-4">還沒定</label>
+      </div>
+    </fieldset>
+
+    <div class="q" data-q="b5" data-label="人數">
+      <div class="qh"><span class="qn">B5</span>人數與報價級距</div>
+      <span class="qhint">台北照級距報價。勾你預估人數所在的那一段，再往上下各多勾一段。</span>
+      <div class="nums" style="margin-bottom:10px">
+        <div class="numf"><label for="b5a">預估人數</label><input type="number" id="b5a" min="0"></div>
+        <div class="numf"><label for="b5b">最少成行</label><input type="number" id="b5b" min="0"></div>
+      </div>
+      <div class="opts">
+        <label class="opt"><input type="checkbox" name="b5t" value="16–20 人" id="b5t-1">16–20 人</label>
+        <label class="opt"><input type="checkbox" name="b5t" value="21–25 人" id="b5t-2">21–25 人</label>
+        <label class="opt"><input type="checkbox" name="b5t" value="26–30 人" id="b5t-3">26–30 人</label>
+        <label class="opt"><input type="checkbox" name="b5t" value="31–35 人" id="b5t-4">31–35 人</label>
+        <label class="opt"><input type="checkbox" name="b5t" value="36 人以上" id="b5t-5">36 人以上</label>
+      </div>
+    </div>
+
+    <fieldset class="q" data-q="b6" data-label="每人預算">
+      <legend><span class="qn">B6</span>每人預算</legend>
+      <span class="qhint">一定要問清楚含不含稅、含不含小費——同業報給他客人的價，通常是含的。</span>
+      <input type="text" id="b6x" placeholder="例：每人約 38,000" style="margin-bottom:8px">
+      <div class="opts">
+        <label class="opt"><input type="radio" name="b6" value="含稅含小費" id="b6-1">含稅含小費</label>
+        <label class="opt"><input type="radio" name="b6" value="含稅不含小費" id="b6-2">含稅不含小費</label>
+        <label class="opt"><input type="radio" name="b6" value="客戶沒概念" id="b6-3">同業沒講</label>
+      </div>
+    </fieldset>
+
+    <fieldset class="q" data-q="b7" data-label="最在意的一件事">
+      <legend><span class="qn">B7</span>最在意的一件事</legend>
+      <span class="qhint">只能勾一個。這一欄決定下面挑哪一條當底。</span>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="b7" value="價格" id="b7-1">價格</label>
+        <label class="opt"><input type="radio" name="b7" value="行程輕鬆不趕" id="b7-2">行程輕鬆</label>
+        <label class="opt"><input type="radio" name="b7" value="飯店好" id="b7-3">飯店好</label>
+        <label class="opt"><input type="radio" name="b7" value="吃得好" id="b7-4">吃得好</label>
+        <label class="opt"><input type="radio" name="b7" value="一定要去某個景點" id="b7-5">特定景點</label>
+      </div>
+    </fieldset>
+  </section>
+
+  <!-- ===== C 基礎行程 ===== -->
+  <section class="sect" id="baseSect">
+    <div class="sect-head"><span class="sect-tag go">C 區</span><h2>挑一條當底</h2></div>
+    <p class="sect-note" id="resultNote">依上面的條件，從官網行程裡挑出最接近的幾條。<b>選一條當底</b>，下一區再勾要改什麼。團體報價只用跟團行程當底，自由行不列入。</p>
+    <div class="q" data-q="base" data-label="基礎行程" style="padding:0;border:0;background:transparent;box-shadow:none;margin:0">
+      <input type="hidden" id="base">
+      <div class="basebar" id="basebar"></div>
+      <div id="picks"></div>
+    </div>
+    <p class="idxfoot" id="idxfoot"></p>
+  </section>
+
+  <!-- ===== D 配菜 ===== -->
+  <section class="sect">
+    <div class="sect-head"><span class="sect-tag c">D 區</span><h2>配菜：要改什麼</h2></div>
+    <p class="sect-note">以上面那條為底，<b>沒動的就維持「照原行程」</b>。有改的會變黃，並寫進需求單。</p>
+    <div class="dishes" id="dishes">
+
+      <div class="dish" data-dish="d1"><div class="dish-h">天數</div><div class="dish-b">
+        <div class="opts">
+          <label class="opt"><input type="radio" name="d1" value="照原行程" id="d1-0">照原行程</label>
+          <label class="opt"><input type="radio" name="d1" value="加天數" id="d1-1">加天數</label>
+          <label class="opt"><input type="radio" name="d1" value="減天數" id="d1-2">減天數</label>
+        </div>
+        <input type="text" class="dish-x" id="d1x" placeholder="例：改成六天，多一天自由活動" hidden>
+      </div></div>
+
+      <div class="dish" data-dish="d2"><div class="dish-h">飯店等級</div><div class="dish-b">
+        <div class="opts">
+          <label class="opt"><input type="radio" name="d2" value="照原行程" id="d2-0">照原行程</label>
+          <label class="opt"><input type="radio" name="d2" value="升級" id="d2-1">升級</label>
+          <label class="opt"><input type="radio" name="d2" value="指定飯店或區域" id="d2-2">指定</label>
+          <label class="opt"><input type="radio" name="d2" value="降級以壓低價格" id="d2-3">降級壓價</label>
+        </div>
+        <input type="text" class="dish-x" id="d2x" placeholder="例：至少一晚溫泉飯店、全程住市區" hidden>
+      </div></div>
+
+      <div class="dish" data-dish="d3"><div class="dish-h">餐食</div><div class="dish-b">
+        <div class="opts">
+          <label class="opt"><input type="radio" name="d3" value="照原行程" id="d3-0">照原行程</label>
+          <label class="opt"><input type="radio" name="d3" value="升級" id="d3-1">升級</label>
+          <label class="opt"><input type="radio" name="d3" value="部分自理" id="d3-2">部分自理</label>
+          <label class="opt"><input type="radio" name="d3" value="指定特色餐" id="d3-3">指定特色餐</label>
+        </div>
+        <input type="text" class="dish-x" id="d3x" placeholder="例：安排一餐螃蟹吃到飽" hidden>
+      </div></div>
+
+      <div class="dish" data-dish="d4"><div class="dish-h">景點</div><div class="dish-b">
+        <div class="opts">
+          <label class="opt"><input type="radio" name="d4" value="照原行程" id="d4-0">照原行程</label>
+          <label class="opt"><input type="radio" name="d4" value="要加景點" id="d4-1">要加</label>
+          <label class="opt"><input type="radio" name="d4" value="要減景點" id="d4-2">要減</label>
+          <label class="opt"><input type="radio" name="d4" value="要換景點" id="d4-3">要換</label>
+        </div>
+        <input type="text" class="dish-x" id="d4x" placeholder="例：加旭山動物園、拿掉購物點" hidden>
+      </div></div>
+
+      <div class="dish" data-dish="d5"><div class="dish-h">交通</div><div class="dish-b">
+        <div class="opts">
+          <label class="opt"><input type="radio" name="d5" value="照原行程" id="d5-0">照原行程</label>
+          <label class="opt"><input type="radio" name="d5" value="指定車型或包車" id="d5-1">指定車型</label>
+          <label class="opt"><input type="radio" name="d5" value="段落改鐵路" id="d5-2">段落改鐵路</label>
+        </div>
+        <input type="text" class="dish-x" id="d5x" placeholder="例：全程 45 人座大巴、長輩多要有車上廁所" hidden>
+      </div></div>
+
+      <div class="dish" data-dish="d6"><div class="dish-h">機票</div><div class="dish-b">
+        <div class="opts">
+          <label class="opt"><input type="radio" name="d6" value="照原行程" id="d6-0">照原行程</label>
+          <label class="opt"><input type="radio" name="d6" value="指定航空或時段" id="d6-1">指定航空／時段</label>
+          <label class="opt"><input type="radio" name="d6" value="不含機票" id="d6-2">不含機票</label>
+        </div>
+        <input type="text" class="dish-x" id="d6x" placeholder="例：去程要早班機、指定長榮" hidden>
+      </div></div>
+
+      <div class="dish" data-dish="d7"><div class="dish-h">領隊</div><div class="dish-b">
+        <div class="opts">
+          <label class="opt"><input type="radio" name="d7" value="照原行程" id="d7-0">照原行程</label>
+          <label class="opt"><input type="radio" name="d7" value="雙領隊" id="d7-1">雙領隊</label>
+          <label class="opt"><input type="radio" name="d7" value="指定領隊" id="d7-2">指定領隊</label>
+          <label class="opt"><input type="radio" name="d7" value="同業自派" id="d7-3">同業自派</label>
+        </div>
+        <input type="text" class="dish-x" id="d7x" placeholder="例：同業會派一位隨團，佔一個房" hidden>
+      </div></div>
+
+      <div class="dish" data-dish="d8"><div class="dish-h">小費與保險</div><div class="dish-b">
+        <div class="opts">
+          <label class="opt"><input type="radio" name="d8" value="照原行程" id="d8-0">照原行程</label>
+          <label class="opt"><input type="radio" name="d8" value="團費內含小費" id="d8-1">團費內含小費</label>
+          <label class="opt"><input type="radio" name="d8" value="提高保額" id="d8-2">提高保額</label>
+        </div>
+        <input type="text" class="dish-x" id="d8x" placeholder="例：小費內含、旅平險加到 500 萬" hidden>
+      </div></div>
+
+      <div class="dish" data-dish="d9"><div class="dish-h">團體活動</div><div class="dish-b">
+        <div class="opts">
+          <label class="opt"><input type="radio" name="d9" value="不需要" id="d9-0">不需要</label>
+          <label class="opt"><input type="radio" name="d9" value="晚宴或尾牙" id="d9-1">晚宴／尾牙</label>
+          <label class="opt"><input type="radio" name="d9" value="會議室" id="d9-2">會議室</label>
+          <label class="opt"><input type="radio" name="d9" value="團服布條或紀念品" id="d9-3">團服／布條</label>
+        </div>
+        <input type="text" class="dish-x" id="d9x" placeholder="例：第三晚包場晚宴，需要音響與麥克風" hidden>
+      </div></div>
+
+    </div>
+  </section>
+
+  <!-- ===== E 注意事項 ===== -->
+  <section class="sect">
+    <div class="sect-head"><span class="sect-tag b">E 區</span><h2>注意事項</h2></div>
+    <p class="sect-note">現在不問，等台北報完價才講，價格就要重報。</p>
+
+    <fieldset class="q" data-q="e1" data-label="同行者狀況">
+      <legend><span class="qn">E1</span>團員裡有沒有這些狀況</legend>
+      <div class="opts col">
+        <label class="opt"><input type="checkbox" name="e1" value="都沒有" id="e1-0" data-none="1">都沒有</label>
+        <label class="opt danger"><input type="checkbox" name="e1" value="有行動不便者" id="e1-1">有行動不便者（輪椅、拐杖、行走困難）</label>
+        <label class="opt danger"><input type="checkbox" name="e1" value="有70歲以上長輩" id="e1-2">有 70 歲以上長輩</label>
+        <label class="opt danger"><input type="checkbox" name="e1" value="有嬰幼兒" id="e1-3">有嬰幼兒</label>
+        <label class="opt danger"><input type="checkbox" name="e1" value="有素食或特殊餐" id="e1-4">有素食或特殊餐</label>
+        <label class="opt danger"><input type="checkbox" name="e1" value="有非中華民國護照者" id="e1-5">有非中華民國護照者</label>
+        <label class="opt danger"><input type="checkbox" name="e1" value="有役男" id="e1-6">有役男</label>
+      </div>
+      <div class="alerts" id="e1alerts"></div>
+    </fieldset>
+
+    <div class="q" data-q="e2" data-label="其他要注意" data-optional="1">
+      <div class="qh"><span class="qn">E2</span>其他要注意<span style="font-weight:400;color:var(--ink-3);font-size:12px">（選填）</span></div>
+      <textarea id="e2" placeholder="例：素食 2 位；董事長夫婦要一間大床房"></textarea>
+    </div>
+  </section>
+
+  <!-- ===== F 回覆期限 ===== -->
+  <section class="sect">
+    <div class="sect-head"><span class="sect-tag c">F 區</span><h2>回覆期限</h2></div>
+
+    <div class="q" data-q="f1" data-label="報價回覆期限">
+      <div class="qh"><span class="qn">F1</span>同業要幾號前拿到報價</div>
+      <span class="qhint">寫具體日期。「越快越好」台北排不了優先順序。</span>
+      <input type="text" id="f1" placeholder="例：9/25（四）前">
+    </div>
+
+    <fieldset class="q" data-q="f2" data-label="報價有效期" data-optional="1">
+      <legend><span class="qn">F2</span>希望報價有效期<span style="font-weight:400;color:var(--ink-3);font-size:12px">（選填）</span></legend>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="f2" value="7 天" id="f2-1">7 天</label>
+        <label class="opt"><input type="radio" name="f2" value="14 天" id="f2-2">14 天</label>
+        <label class="opt"><input type="radio" name="f2" value="30 天" id="f2-3">30 天</label>
+        <label class="opt"><input type="radio" name="f2" value="依台北規定" id="f2-4">依台北規定</label>
+      </div>
+    </fieldset>
+  </section>
+
+  <!-- ===== 產出：報價需求單 ===== -->
+  <div id="docWrap" hidden>
+    <div class="doc">
+      <div class="doc-head">
+        <strong>團體報價需求單<span class="sub" id="docSub"></span></strong>
+        <div class="doc-actions">
+          <button type="button" id="docPrint">列印／存 PDF</button>
+          <button type="button" class="primary" id="docCopy">複製全文</button>
+        </div>
+      </div>
+      <pre class="docbody" id="docBody"></pre>
+      <div class="doc-foot">複製後直接貼進 LINE 或 Email 給台北。這一段完全由網頁產生，沒有經過 AI，內容就是你上面填的。</div>
+    </div>
+
+    <div class="stage2">
+      <div class="stage2-h">
+        <strong>台北回價之後：產出給同業的報價</strong>
+        <p>把台北回覆的內容原封不動貼進來，按下去會產生一段給 AI 的指令。AI 會照「可樂旅遊團體報價單」的格式整理，並把台北沒回應的配菜項目另外列給你。</p>
+      </div>
+      <div class="stage2-b">
+        <textarea id="reply" placeholder="把台北回覆的報價貼在這裡（LINE 訊息、Email 內文、或 Word 裡的文字都可以）"></textarea>
+        <button class="btn" type="button" id="makeQuote">產生報價單的 AI 指令</button>
+      </div>
+    </div>
+
+    <div class="output" id="output" hidden>
+      <div class="output-head">
+        <strong>給 AI 的指令（需求單與台北回價已帶入）</strong>
+        <button class="copy" id="copy" type="button">複製全部</button>
+      </div>
+      <div class="whereto">
+        <p class="whereto-t">複製之後貼到哪裡？</p>
+        <ol class="whereto-steps">
+          <li>打開 Claude 或 ChatGPT，開一個新對話</li>
+          <li>貼上、送出</li>
+        </ol>
+        <p class="whereto-warn"><b>送出前一定要核對價格。</b>指令裡已經要求 AI 照抄台北的數字，但 AI 產出的報價單上每一個金額、人數級距、日期，都要跟台北原文對一次再寄給同業。</p>
+      </div>
+      <pre class="gen" id="gen"></pre>
+    </div>
+  </div>
+
+  <div class="privacy">
+    <b>資料不會離開這台電腦。</b>這一頁是單獨的 HTML 檔，所有處理都在你的瀏覽器裡跑，沒有任何資料被送出去。草稿存在你自己的瀏覽器裡。<br>
+    <b>不要填旅客名單與個資。</b>這張單是給台北報價用的，只需要人數與條件，不需要任何人的姓名、生日、護照號碼。
+  </div>
+
+  <footer>
+    可樂旅遊中壢分公司　AI 助理應用訓練　9/19 課堂示範品<br>
+    需求單第六段「請台北回覆」的項目，比照可樂旅遊團體報價單的欄位（現金報價級距、小孩與嬰兒價、單人房差、包含與不含、付款方式），台北回的價可以直接套進報價單。<br>
+    行程資料（cola-index.js）與直售部共用，由管理者每月更新一次，全公司重新整理網頁就生效。
+  </footer>
+</div>
+
+<div class="actionbar">
+  <div class="actionbar-in">
+    <button class="btn" id="make" type="button">產出報價需求單</button>
+    <button class="btn ghost" id="clear" type="button">清空重填</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var qs=function(s,r){return (r||document).querySelector(s)};
+  var qsa=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var KEY="cola-group-draft-v1";
+  var blocks=qsa(".q");
+  function vals(name){ return qsa('input[name="'+name+'"]:checked').map(function(i){return i.value}); }
+
+  /* ---- 索引：原始資料進來，分類在這裡算 ---- */
+  var CNM2={'一':1,'二':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10,'兩':2,
+    '十一':11,'十二':12,'十三':13,'十四':14,'十五':15};
+  function daysOf(n){
+    var m=n.match(/(\u5341[\u4e00\u4e8c\u4e09\u56db\u4e94]|[\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341\u5169])\u65e5/);
+    if(m) return CNM2[m[1]]||0;
+    m=n.match(/(\d{1,2})\s*\u65e5/); return m?+m[1]:0;
+  }
+  var SUB={
+   '日本':[['北海道',['北海道','札幌','函館','小樽','旭山','洞爷','富良野','網走','道東','TOMAMU','KIRORO','SAHORO','知床']],
+    ['東京關東',['東京','富士','箱根','伊豆','輕井澤','日光','橫濱','迪士尼','晴空塔','熱海','河口湖','磐梯','鎌倉','川越']],
+    ['關西',['關西','大阪','京都','神戶','奈良','環球影城','嵐山','宇治','有馬','姬路','美山','南紀','和歌山','伊根']],
+    ['北陸中部',['北陸','立山','合掌村','兼六園','名古屋','高山','金澤','白川鄉','新穗高','上高地','伊勢','馬籠','郡上','牧歌','飛驟']],
+    ['東北',['東北','仙台','松島','銀山','藏王','奧入瀨','青森','秋田','會津','大內宿','猊鼻','津輕','雫石','十和田']],
+    ['九州',['九州','福岡','熊本','長崎','別府','湯布院','鹿兒島','指宿','豪斯登堡','阿蘇','高千穗','柳川','門司','宮崎']],
+    ['四國山陽',['四國','高松','松山','岡山','廣島','倉敷','宮島','山陰','山陽','道後','小豆島','金刀比羅','伊予','出雲']],
+    ['沖縄',['沖縄','石垣','宮古','那霸','美麗海','古宇利']]],
+   '韓國':[['首爾',['首爾','仁川','京畿','弘大','明洞','江原','雪嶽','南怡','春川','平昌']],
+    ['釜山',['釜山','慶州','大邱','南浦','海雲臺','鎮海']],['濟州',['濟州']]],
+   '中國':[['華東',['上海','杭州','蘇州','南京','黃山','華東','烏鎮']],
+    ['華北',['北京','天津','山西','內蒙','承德']],['華中',['張家界','武漢','長沙','鳳凰']],
+    ['西南',['雲南','麗江','四川','九寨','稻城','貴州','重慶','香格里拉']],
+    ['華南',['桂林','廈門','廣州','深圳','海南','三亞']],
+    ['西北',['西安','敦煌','新疆','青海','甘肅','絲路']]],
+   '歐洲':[['南歐',['義大利','西班牙','葡萄牙','希臘','馬爾他','克羅埃西亞','西葡','羅馬','威尼斯','佛羅倫斯','托斯卡尼','巴塞隆納']],
+    ['西歐',['法國','英國','瑞士','德國','荷蘭','比利時','奧地利','愛爾蘭','法比荷','荷比法','比荷盧','荷比盧','法瑞','德瑞','瑞法','英法','英愛','德奧','巴黎','倫敦','阿爾卑斯']],
+    ['北歐',['北歐','挪威','瑞典','芬蘭','丹麥','冰島']],
+    ['東歐',['東歐','捷克','匈牙利','波蘭','斯洛伐克','奧捷','巴爾幹','羅馬尼亞']]]
+  };
+  function areaOf(c,n){
+    var g=SUB[c]; if(!g) return c;
+    for(var i=0;i<g.length;i++){ var ks=g[i][1];
+      for(var j=0;j<ks.length;j++) if(n.indexOf(ks[j])>-1) return g[i][0]; }
+    return c;
+  }
+  var TAGS2=[
+   ['溫泉',['溫泉','湯泉','湯餞','足湯','湯宿','名湯','砂浴','SPA']],
+   ['美食',['吃到飽','放題','和牛','蟹蟹','長腳蟹','美餚','會席','米其林','燒肉','抹茶','甜蝦','海鮮','龍蝦']],
+   ['親子',['迪士尼','樂園','動物園','水族館','企鵝','恐龍','樂高','KITTY','雪樂園','影城','環球']],
+   ['賞景',['紅葉','楓','櫻','花火','彩燈','點燈','夜景','雪祭','樹冰','流冰','百選','絕景','極光','鬱金香']],
+   ['鐵道',['列車','鐵道','纜車','電鐵','火車','遊覽船','遊船','扁舟','雪見舟','郵輪','遊輪']],
+   ['悠閑',['慢旅','輕旅','悠遊','漫遊','半日閑','森呼吸','半自助','度假村','渡假村']],
+   ['高檔',['五星','星野','奢華','Club Med','希爾頓','萬豪','洲際','威士汀','乃之風','綠之風','六星','精品']],
+   ['宗教',['神社','寺','朝聖','參拜','教堂','佛','廟']]
+  ];
+  function tagsOf(n){
+    var o=[]; for(var i=0;i<TAGS2.length;i++){ var ks=TAGS2[i][1];
+      for(var j=0;j<ks.length;j++) if(n.indexOf(ks[j])>-1){ o.push(TAGS2[i][0]); break; } }
+    return o;
+  }
+  function parseRaw(txt){
+    var cap="", rows=[], byNo={};
+    txt.split("\n").forEach(function(l){
+      if(!l.trim()) return;
+      if(l.charAt(0)==="#"){ var m=l.match(/\u64f7\u53d6\u65e5=([\d-]+)/); if(m) cap=m[1]; return; }
+      var p=l.split("\t"); if(p.length<6||!p[1]) return;
+      var no=p[0];
+      if(byNo[no]){ if(byNo[no].cities.indexOf(p[5])<0) byNo[no].cities.push(p[5]); return; }
+      var r={ no:no, name:p[1], price:+p[2]||0,
+        dates:(p[3]||"").split(",").filter(Boolean),
+        country:p[4], area:areaOf(p[4],p[1]), cities:[p[5]],
+        days:daysOf(p[1]), free:/\u81ea\u7531\u884c|\u534a\u81ea\u52a9/.test(p[1]),
+        tags:tagsOf(p[1]),
+        url:"https://tour.colatour.com.tw/itinerary?PatternNo="+no };
+      byNo[no]=r; rows.push(r);
+    });
+    var cs=[]; rows.forEach(function(r){ if(cs.indexOf(r.country)<0) cs.push(r.country); });
+    return { captured:cap||"\u672a\u6a19\u793a", rows:rows, countries:cs };
+  }
+  function currentRaw(){
+    return { txt:(typeof window.COLA_RAW==="string"?window.COLA_RAW:""), src:"cola-index.js" };
+  }
+  var _cur=currentRaw();
+  var META=parseRaw(_cur.txt); META.src=_cur.src;
+  var IDX=META.rows||[];
+  function freshLine(note){
+    if(!IDX.length) return "";
+    var days=null, m=(META.captured||"").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if(m) days=Math.floor((Date.now()-new Date(+m[1],+m[2]-1,+m[3]).getTime())/86400000);
+    var out='行程資料更新日 <b>'+(META.captured||'—')+'</b>　共 '+IDX.length+' 條．'+
+      (META.countries||[]).length+' 個線別．台北／台中／高雄出發　'+
+      '<a href="update.html" target="_blank" rel="noopener">資料怎麼更新？</a><br>'+
+      (note||'起價只用來排序，<b>實際售價與可售團位一律以官網當下顯示為準</b>。');
+    if(days!==null && days>35) out='<span class="stale">行程資料已經 '+days+' 天沒有更新。團名與天數通常沒變，但起價與出發日可能不準，請提醒管理者更新。</span>'+out;
+    return out;
+  }
+  var NO_DATA='<div class="empty"><b>行程資料沒有載入</b>這個網頁要跟 cola-index.js 放在同一個資料夾才能用。如果是從公司網址打開的，請聯絡管理者。</div>';
+  /* ---- 索引區塊結束 ---- */
+
+  /* ---- 共用比對工具 ---- */
+  var CITYCODE={"台北（桃園機場）":"TPE","台中":"TXG","高雄":"KHH"};
+  function uniq(a){var s={},o=[];a.forEach(function(x){if(!s[x]){s[x]=1;o.push(x);}});return o;}
+  var CNM={'一':1,'二':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10,'十一':11,'十二':12};
+  var _areas={n:-1,list:[]};
+  function allAreas(){
+    if(_areas.n!==IDX.length) _areas={n:IDX.length, list:uniq(IDX.map(function(r){return r.area;}))};
+    return _areas.list;
+  }
+  var KEYW=['北海道','東京','大阪','京都','首爾','釜山','濟州','富士','迪士尼','環球影城',
+    '立山','合掌村','函館','札幌','小樽','箱根','輕井澤','別府','湯布院','豪斯登堡','沖繩',
+    '石垣','宮古','銀山','藏王','廣島','岡山','九州','四國','東北','北陸','關西',
+    '曼谷','清邁','普吉','峴港','河內','胡志明','峇里島','長灘島','宿霧','吳哥','巴淡',
+    '巴黎','羅馬','威尼斯','倫敦','瑞士','冰島','極光','北歐','東歐','西班牙','義大利',
+    '杜拜','埃及','土耳其','摩洛哥','上海','北京','張家界','九寨','雲南','桂林','西安','敦煌'];
+  function monthsIn(txt){
+    var out=[];
+    (txt.match(/十[一二]月|[一二三四五六七八九十]月/g)||[]).forEach(function(x){ var k=x.replace('月',''); if(CNM[k]) out.push(CNM[k]); });
+    (txt.match(/(\d{1,2})\s*月/g)||[]).forEach(function(x){ var n=parseInt(x,10); if(n>=1&&n<=12) out.push(n); });
+    (txt.match(/(\d{1,2})\/(\d{1,2})/g)||[]).forEach(function(x){ var n=parseInt(x.split('/')[0],10); if(n>=1&&n<=12) out.push(n); });
+    return uniq(out);
+  }
+  function dayRangeOf(v){
+    if(!v) return null;
+    if(v.indexOf("3")===0) return [3,4];
+    if(v.indexOf("5")===0) return [5,6];
+    if(v.indexOf("7")===0) return [7,8,9,10,11,12,13,14,15];
+    return null;
+  }
+  function budgetIn(t){
+    var m=(t||"").replace(/[,，]/g,'').match(/(\d{3,7})/); if(!m) return 0;
+    var n=+m[1]; if(n<1000) n*=10000; return n;
+  }
+  function destIn(t){
+    var c=[],a=[],k=[];
+    (META.countries||[]).forEach(function(x){ if(t.indexOf(x)>-1) c.push(x); });
+    allAreas().forEach(function(x){ if(t.indexOf(x)>-1 && (META.countries||[]).indexOf(x)<0) a.push(x); });
+    KEYW.forEach(function(x){ if(t.indexOf(x)>-1) k.push(x); });
+    return {c:c,a:a,k:uniq(k),any:(c.length+a.length+k.length)>0};
+  }
+  function destHit(r,D){
+    // 講得越具體越優先：有講「北海道」就不該因為「日本」把九州也算進來
+    var specific=D.a.length||D.k.length;
+    if(specific){
+      if(D.a.indexOf(r.area)>-1) return {hit:r.area, level:2};
+      for(var i=0;i<D.k.length;i++) if(r.name.indexOf(D.k[i])>-1 || r.area.indexOf(D.k[i])>-1) return {hit:D.k[i], level:2};
+    }
+    if(D.c.indexOf(r.country)>-1) return {hit:r.country, level:1};
+    return null;
+  }
+  var A8TAG={"行程輕鬆不趕":"悠閒","飯店好":"高檔","吃得好":"美食","一定要去某個景點":null,"價格":null};
+
+  /* ---- 團體版收斂：只用跟團行程當底 ---- */
+  function rankGroup(){
+    var code=CITYCODE[vals("b1")[0]||""]||"";
+    var D=destIn(qs("#b2").value||"");
+    var months=monthsIn([qs("#b3a").value,qs("#b3b").value,qs("#b3c").value].join(" "));
+    var dayRange=dayRangeOf(vals("b4")[0]||"");
+    var budget=budgetIn(qs("#b6x").value);
+    var a8=vals("b7")[0]||"", want8=A8TAG[a8];
+    var out=[];
+    IDX.forEach(function(r){
+      if(r.free) return;
+      if(code && r.cities.indexOf(code)<0) return;
+      var dh=null;
+      if(D.any){ dh=destHit(r,D); if(!dh) return; }
+      var s=10, why=[];
+      if(dh){ s+=(dh.level===2?50:10); why.push(dh.hit); }
+      if(dayRange){ if(dayRange.indexOf(r.days)>-1){ s+=22; why.push(r.days+" 天"); } else { s-=20; } }
+      if(months.length){
+        var mh=r.dates.filter(function(d){ return months.indexOf(parseInt(d,10))>-1; });
+        if(mh.length){ s+=24; why.push(parseInt(mh[0],10)+" 月有團"); } else { s-=12; }
+      }
+      if(budget){
+        if(r.price&&r.price<=budget){ s+=20; why.push("起價在預算內"); }
+        else if(r.price&&r.price<=budget*1.2){ s+=6; }
+        else if(r.price){ s-=22; }
+      }
+      if(want8 && r.tags.indexOf(want8)>-1){ s+=26; why.push(want8); }
+      if(a8==="價格" && r.price) s+=Math.max(0,14-Math.floor(r.price/10000));
+      if(s>0) out.push({r:r,s:s,why:why,level:dh?dh.level:0});
+    });
+    if(D.any && (D.a.length||D.k.length)){
+      var l2=out.filter(function(x){return x.level===2;});
+      if(l2.length>=3) out=l2;   // 具體地點夠多條，就只留具體的；不夠才用國家層級補
+    }
+    return out.sort(function(x,y){ return y.s-x.s || x.r.price-y.r.price; });
+  }
+
+  var shown=[];
+  function findRow(no){ for(var i=0;i<IDX.length;i++) if(IDX[i].no===no) return IDX[i]; return null; }
+
+  function renderPicks(){
+    var box=qs("#picks"), bar=qs("#basebar"), foot=qs("#idxfoot");
+    foot.innerHTML=freshLine("起價只用來挑底，<b>團體報價一律以台北回覆為準</b>。");
+    var base=qs("#base").value, ranked=rankGroup();
+    shown=ranked.slice(0,5);
+    if(base && base!=="custom" && !shown.some(function(x){return x.r.no===base;})){
+      var br=findRow(base); if(br) shown.unshift({r:br,s:0,why:["已選定"]});
+    }
+    box.innerHTML="";
+    var cur=base==="custom" ? '<b>完全客製</b>（不以官網行程為底）' :
+      (base ? '已選定：<b>'+((findRow(base)||{}).name||base).slice(0,34)+'…</b>' : '還沒選底。從下面挑一條，或選完全客製。');
+    bar.innerHTML='<span>'+cur+'</span><button type="button" class="custom'+(base==="custom"?' on':'')+'" id="customBtn">完全客製，不用官網行程</button>';
+    qs("#customBtn").onclick=function(){ qs("#base").value=(qs("#base").value==="custom"?"":"custom"); refresh(); };
+
+    if(!IDX.length){ box.innerHTML=NO_DATA; return; }
+    if(!shown.length){
+      box.innerHTML='<div class="empty"><b>目前條件下找不到跟團行程可以當底</b>'+
+        '可以放寬 B2 目的地或 B4 天數再看看；或直接選「完全客製」，需求單會請台北從頭排。</div>';
+    }
+    shown.forEach(function(item,i){
+      var r=item.r, d=document.createElement("article");
+      d.className="pick"+(r.no===base?" chosen":"")+(i===0?"":" alt");
+      var meta=[(r.days?r.days+" 天":"天數待查"), r.area];
+      if(r.price) meta.push("索引起價 $"+r.price.toLocaleString());
+      if(r.dates.length) meta.push(r.dates.join(" · "));
+      d.innerHTML='<span class="rank">'+(r.no===base?"目前的底":(i===0?"最接近":"候選 "+(i+1)))+'</span>'+
+        '<a class="pick-name" href="'+r.url+'" target="_blank" rel="noopener">'+r.name+'</a>'+
+        '<div class="pick-meta">'+meta.map(function(m,j){return '<span'+(j<2?' class="hi"':'')+'>'+m+'</span>';}).join('')+'</div>'+
+        '<div class="pick-why">'+(item.why.length?'符合：'+item.why.join('、'):'')+(r.tags.length?'　｜　'+r.tags.join('、'):'')+'</div>'+
+        '<button type="button" class="choose" data-no="'+r.no+'">'+(r.no===base?"✓ 已選為底":"選這條當底")+'</button>';
+      box.appendChild(d);
+    });
+    qsa(".choose",box).forEach(function(b){
+      b.onclick=function(){ var no=b.getAttribute("data-no"); qs("#base").value=(qs("#base").value===no?"":no); refresh(); };
+    });
+    if(ranked.length){
+      qs("#resultNote").innerHTML="依上面的條件，從 <b>"+IDX.length+"</b> 條官網行程裡找到 <b>"+ranked.length+
+        "</b> 條跟團行程符合，列出最接近的 5 條。<b>選一條當底</b>，下一區再勾要改什麼。";
+    }
+  }
+
+  /* ---- 配菜：有改就展開說明欄 ---- */
+  function renderDishes(){
+    qsa(".dish").forEach(function(d){
+      var name=d.getAttribute("data-dish");
+      var v=vals(name)[0]||"";
+      var changed = v && v!=="照原行程" && v!=="不需要";
+      d.classList.toggle("changed", !!changed);
+      var x=qs("#"+name+"x"); if(x) x.hidden=!changed;
+    });
+  }
+  function ensureDishDefaults(){
+    qsa(".dish").forEach(function(d){
+      var name=d.getAttribute("data-dish");
+      if(!vals(name).length){ var first=qs('input[name="'+name+'"]',d); if(first) first.checked=true; }
+    });
+  }
+
+  /* ---- E1 警示 ---- */
+  var RULES={
+    "有行動不便者":{lv:"stop",t:"一定要先告訴台北人數與程度",d:"影響車型、飯店房型與景點安排。官網團體行程明文不接受行動不便者，客製團要另外評估。"},
+    "有70歲以上長輩":{lv:"caution",t:"請台北避開體力消耗大的段落",d:"石階多、步行長的景點要先標出來，報價前就講，事後改行程會重報。"},
+    "有嬰幼兒":{lv:"caution",t:"嬰兒價與座位要另外報",d:"需求單會請台北列嬰兒價。"},
+    "有素食或特殊餐":{lv:"caution",t:"寫清楚人數與類別",d:"在 E2 寫幾位、全素還是蛋奶素。海外團餐變化有限，要先讓同業有心理準備。"},
+    "有非中華民國護照者":{lv:"caution",t:"簽證與入境規定要另外查",d:"部分目的地與飯店對非本國籍旅客有不同規定或加價。"},
+    "有役男":{lv:"caution",t:"需申請出境許可",d:"要留作業時間，出發日太近可能來不及。"}
+  };
+  function renderAlerts(){
+    var box=qs("#e1alerts"); box.innerHTML="";
+    vals("e1").forEach(function(v){
+      var r=RULES[v]; if(!r) return;
+      var d=document.createElement("div");
+      d.className="alert"+(r.lv==="caution"?" caution":"");
+      d.innerHTML="<b>"+v+"　→　"+r.t+"</b>"+r.d;
+      box.appendChild(d);
+    });
+  }
+  qsa('input[name="e1"]').forEach(function(cb){
+    cb.addEventListener("change",function(){
+      var none=qs("#e1-0");
+      if(cb===none && none.checked){ qsa('input[name="e1"]').forEach(function(o){ if(o!==none) o.checked=false; }); }
+      else if(cb!==none && cb.checked){ none.checked=false; }
+    });
+  });
+
+  /* ---- 進度 ---- */
+  function answered(b){
+    var q=b.getAttribute("data-q");
+    if(q==="a1") return qs("#a1").value.trim()!=="";
+    if(q==="a2") return qs("#a2").value.trim()!=="";
+    if(q==="b2") return qs("#b2").value.trim()!=="";
+    if(q==="b3") return qs("#b3a").value.trim()!=="";
+    if(q==="b5") return (parseInt(qs("#b5a").value,10)||0)>0;
+    if(q==="b6") return qs("#b6x").value.trim()!=="";
+    if(q==="base") return qs("#base").value!=="";
+    if(q==="f1") return qs("#f1").value.trim()!=="";
+    if(q==="e2") return true;
+    return vals(q).length>0;
+  }
+  var REQ=blocks.filter(function(b){return !b.hasAttribute("data-optional")});
+  qs("#total").textContent=REQ.length;
+  var busy=false;
+  function refresh(){
+    if(busy) return; busy=true;
+    try{
+      renderPicks();
+      renderDishes();
+      renderAlerts();
+      var n=0, first=null;
+      blocks.forEach(function(b){
+        var ok=answered(b);
+        if(b.getAttribute("data-q")!=="base") b.classList.toggle("answered", ok && !b.hasAttribute("data-optional"));
+        if(b.hasAttribute("data-optional")) return;
+        if(ok) n++; else if(!first) first=(b.getAttribute("data-q")==="base"?qs("#baseSect"):b);
+      });
+      qs("#done").textContent=n;
+      qs("#barfill").style.width=Math.round(n/REQ.length*100)+"%";
+      qs("#bar").classList.toggle("done", n===REQ.length);
+      qs("#jump").hidden=(n===REQ.length);
+      qs("#jump")._target=first;
+      save();
+    } finally { busy=false; }
+  }
+  qs("#jump").addEventListener("click",function(){
+    var t=this._target; if(!t) return;
+    t.scrollIntoView({behavior:"smooth",block:"start"});
+    t.classList.add("flag"); setTimeout(function(){t.classList.remove("flag")},1600);
+  });
+
+  /* ---- 草稿 ---- */
+  function save(){
+    try{
+      var d={r:{},c:{},t:{}};
+      qsa("input[type=radio]").forEach(function(i){ if(i.checked) d.r[i.name]=i.id; });
+      qsa("input[type=checkbox]").forEach(function(i){ if(i.checked) d.c[i.id]=1; });
+      qsa("input[type=text],input[type=number],input[type=hidden],textarea").forEach(function(i){ if(i.value && i.id) d.t[i.id]=i.value; });
+      localStorage.setItem(KEY,JSON.stringify(d));
+    }catch(e){}
+  }
+  function load(){
+    try{
+      var raw=localStorage.getItem(KEY); if(!raw) return false;
+      var d=JSON.parse(raw);
+      Object.keys(d.r||{}).forEach(function(k){ var e=document.getElementById(d.r[k]); if(e) e.checked=true; });
+      Object.keys(d.c||{}).forEach(function(k){ var e=document.getElementById(k); if(e) e.checked=true; });
+      Object.keys(d.t||{}).forEach(function(k){ var e=document.getElementById(k); if(e) e.value=d.t[k]; });
+      return true;
+    }catch(e){ return false; }
+  }
+
+  /* ---- 示範資料（虛構）---- */
+  function demo(){
+    ["a3-2","a4-1","b1-1","b4-2","b5t-3","b5t-4","b6-2","b7-4","e1-4","f2-2","d2-1","d3-3","d9-1"]
+      .forEach(function(id){ var e=document.getElementById(id); if(e) e.checked=true; });
+    qs("#a1").value="示範旅行社（虛構）";
+    qs("#a2").value="林經理（LINE 已加）";
+    qs("#b2").value="日本北海道";
+    qs("#b3a").value="11 月下旬";
+    qs("#b3b").value="12 月上旬";
+    qs("#b5a").value="32";
+    qs("#b5b").value="25";
+    qs("#b6x").value="每人約 38,000";
+    qs("#d2x").value="至少一晚溫泉飯店";
+    qs("#d3x").value="安排一餐螃蟹吃到飽";
+    qs("#d9x").value="第三晚包場晚宴，需要音響與麥克風";
+    qs("#e2").value="素食 2 位（蛋奶素）";
+    qs("#f1").value="9/25（四）前";
+    ensureDishDefaults();
+    var r=rankGroup(); if(r.length) qs("#base").value=r[0].r.no;
+  }
+
+  /* ---- 產出報價需求單 ---- */
+  function orNone(v){ return (v&&String(v).trim())?String(v).trim():"（未提供）"; }
+  function stamp(){
+    var d=new Date(), p=function(n){return (n<10?'0':'')+n;};
+    return {
+      id:"G-"+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+"-"+p(d.getHours())+p(d.getMinutes()),
+      text:d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate()+" "+p(d.getHours())+":"+p(d.getMinutes())
+    };
+  }
+  var lastDoc="";
+  function buildDoc(){
+    var st=stamp(), t=[], miss=[];
+    REQ.forEach(function(b){ if(!answered(b)) miss.push(b.getAttribute("data-label")); });
+    var tiers=vals("b5t");
+    var base=qs("#base").value, br=(base&&base!=="custom")?findRow(base):null;
+
+    t.push("【團體報價需求單】");
+    t.push("需求單編號："+st.id+"　　填單：中壢分公司團體部");
+    t.push("填單時間："+st.text);
+    t.push("請於 "+orNone(qs("#f1").value)+" 回覆報價　　希望報價有效期："+orNone(vals("f2")[0]));
+    if(miss.length) t.push("※ 以下欄位同業尚未提供："+miss.join("、"));
+    t.push("");
+    t.push("━━ 一、委託資訊 ━━");
+    t.push("委託旅行社："+orNone(qs("#a1").value));
+    t.push("承辦窗口："+orNone(qs("#a2").value));
+    if(vals("a3").length) t.push("合作關係："+vals("a3")[0]);
+    t.push("團體性質："+orNone(vals("a4")[0]));
+    t.push("");
+    t.push("━━ 二、團體條件 ━━");
+    t.push("出發地："+orNone(vals("b1")[0]));
+    t.push("目的地："+orNone(qs("#b2").value));
+    t.push("出發日期：首選 "+orNone(qs("#b3a").value)+"／備選一 "+orNone(qs("#b3b").value)+"／備選二 "+orNone(qs("#b3c").value));
+    t.push("天數："+orNone(vals("b4")[0]));
+    t.push("人數：預估 "+orNone(qs("#b5a").value)+" 人，最少成行 "+orNone(qs("#b5b").value)+" 人");
+    t.push("請報人數級距："+(tiers.length?tiers.join("、"):"（未指定，請依預估人數報）"));
+    t.push("每人預算："+orNone(qs("#b6x").value)+(vals("b6").length?"（"+vals("b6")[0]+"）":""));
+    t.push("同業最在意："+orNone(vals("b7")[0]));
+    t.push("");
+    t.push("━━ 三、基礎行程（以此為底調整）━━");
+    if(base==="custom"){
+      t.push("完全客製，不以官網現有行程為底。請台北依以上條件從頭規劃。");
+    } else if(br){
+      t.push("團名："+br.name);
+      t.push("PatternNo："+br.no+"　　天數："+(br.days||"待查")+" 天　　出發地："+br.cities.join("／"));
+      t.push("官網："+br.url);
+      if(br.price) t.push("參考：索引起價 $"+br.price.toLocaleString()+"（"+META.captured+" 擷取，僅供參考）");
+    } else {
+      t.push("（尚未選定基礎行程）");
+    }
+    t.push("");
+    t.push("━━ 四、配菜（相對於基礎行程的調整）━━");
+    var LABEL={d1:"天數",d2:"飯店等級",d3:"餐食",d4:"景點",d5:"交通",d6:"機票",d7:"領隊",d8:"小費與保險",d9:"團體活動"};
+    var changed=0;
+    Object.keys(LABEL).forEach(function(k){
+      var v=vals(k)[0]||"照原行程";
+      if(v==="照原行程"||v==="不需要") return;
+      changed++;
+      var x=(qs("#"+k+"x")||{}).value||"";
+      t.push("・"+LABEL[k]+"　→ "+v+(x.trim()?"："+x.trim():"（細節待補）"));
+    });
+    if(!changed) t.push("全部照原行程，不做調整。");
+    else t.push("（其餘項目照原行程）");
+    t.push("");
+    t.push("━━ 五、注意事項 ━━");
+    var e1=vals("e1").filter(function(v){return v!=="都沒有";});
+    if(!vals("e1").length) t.push("・團員狀況：（未詢問）");
+    else if(!e1.length) t.push("・團員狀況：無特殊狀況");
+    else e1.forEach(function(v){ t.push("・"+v); });
+    if(qs("#e2").value.trim()) t.push("・"+qs("#e2").value.trim());
+    t.push("");
+    t.push("━━ 六、請台北回覆以下項目 ━━");
+    t.push("1. 現金報價（每人）：依上面的人數級距，分列「一般團費」與「匯款團費」");
+    t.push("2. 小孩佔床／小孩不佔床／嬰兒 價格");
+    t.push("3. 單人房差");
+    t.push("4. 成行條件（最少人數、機位需求）");
+    t.push("5. 報價包含／報價不含 項目");
+    t.push("6. 付款方式：訂金金額與期限、尾款期限");
+    t.push("7. 報價有效期限");
+    if(changed) t.push("8. 第四段每一項配菜：做得到／做不到／需加價多少，請逐項註明");
+    return {text:t.join("\n"), id:st.id};
+  }
+  qs("#make").addEventListener("click",function(){
+    var d=buildDoc(); lastDoc=d.text;
+    qs("#docBody").textContent=d.text;
+    qs("#docSub").textContent=d.id;
+    qs("#docWrap").hidden=false;
+    qs("#docWrap").scrollIntoView({behavior:"smooth",block:"start"});
+  });
+
+  function copyText(txt, btn, label){
+    var ok=function(){ btn.textContent="已複製"; setTimeout(function(){btn.textContent=label},1800); };
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(ok,fb); } else fb();
+    function fb(){
+      var ta=document.createElement("textarea"); ta.value=txt; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand("copy"); ok(); }catch(e){ btn.textContent="請手動選取複製"; }
+      document.body.removeChild(ta);
+    }
+  }
+  qs("#docCopy").addEventListener("click",function(){ copyText(qs("#docBody").textContent,this,"複製全文"); });
+  qs("#docPrint").addEventListener("click",function(){ try{ window.print(); }catch(e){} });
+
+  /* ---- 台北回價後：產生報價單 AI 指令 ---- */
+  qs("#makeQuote").addEventListener("click",function(){
+    var reply=qs("#reply").value.trim();
+    var doc=lastDoc||buildDoc().text;
+    var t=[];
+    t.push("你是可樂旅遊中壢分公司團體部的報價助理。");
+    t.push("");
+    t.push("以下是我發給台北的【團體報價需求單】：");
+    t.push("────────────────");
+    t.push(doc);
+    t.push("────────────────");
+    t.push("");
+    t.push("以下是台北回覆的報價（原封不動貼上）：");
+    t.push("────────────────");
+    t.push(reply || "〔還沒貼上台北的回覆。沒有台北的價格之前，你不可以產出任何報價數字，只能告訴我缺什麼。〕");
+    t.push("────────────────");
+    t.push("");
+    t.push("請產出一份給委託旅行社的報價，格式比照「可樂旅遊團體報價單」：");
+    t.push("一、基本資料：團名、委託公司、委託人、出發日期、報價日期、報價有效期");
+    t.push("二、現金報價（以人計）：依人數級距列表，分「一般團費」「匯款團費」兩欄；");
+    t.push("　　另列 小孩佔床／小孩不佔床／嬰兒／單人房差／成行條件");
+    t.push("三、備註");
+    t.push("四、費用項目：報價包含／報價不含");
+    t.push("五、付款方式：訂金、尾款");
+    t.push("");
+    t.push("紅線，一條都不能違反：");
+    t.push("1. 所有價格、日期、人數級距、包含與不含項目，一律照抄台北的回覆。");
+    t.push("   不准改寫、不准四捨五入、不准自己算折扣或總價。");
+    t.push("2. 台北回覆裡沒有的項目，寫【待台北確認】，不准自己補，也不准沿用官網起價。");
+    t.push("3. 不准自己加任何優惠、贈品、保證、「最低價」「限時」之類的字眼。");
+    t.push("4. 需求單第四段有提出、但台北回覆沒回應的配菜，不要放進給同業的報價，另外列給我。");
+    t.push("");
+    t.push("輸出三段：");
+    t.push("① 給同業的 LINE 開頭訊息（100 字內）：告訴對方報價好了、附件是報價單、請他留意報價有效期。");
+    t.push("② 給同業的報價單全文（可以直接貼進 Word）。");
+    t.push("③ 給我自己的核對清單：");
+    t.push("   - 台北沒有回應的配菜項目");
+    t.push("   - 需求單與台北回覆之間對不上的地方（人數級距、日期、天數、包含項目）");
+    t.push("   - 這份報價掛我的名字送出去，最可能出事的是哪一句");
+    t.push("     （這一題不准回答「沒有問題」，一定要指出一句最脆弱的）");
+    t.push("");
+    t.push("用繁體中文、台灣用語。語氣專業、簡潔，不要浮誇，不要用驚嘆號。");
+    qs("#gen").textContent=t.join("\n");
+    qs("#output").hidden=false;
+    qs("#output").scrollIntoView({behavior:"smooth",block:"start"});
+  });
+  qs("#copy").addEventListener("click",function(){ copyText(qs("#gen").textContent,this,"複製全部"); });
+
+  qs("#clear").addEventListener("click",function(){
+    qsa("input[type=radio],input[type=checkbox]").forEach(function(i){i.checked=false});
+    qsa("input[type=text],input[type=number],input[type=hidden],textarea").forEach(function(i){i.value=""});
+    qs("#docWrap").hidden=true; qs("#output").hidden=true; lastDoc="";
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    ensureDishDefaults();
+    refresh();
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+
+
+  document.addEventListener("input",function(e){ if(e.target && e.target.id!=="reply") refresh(); });
+  document.addEventListener("change",function(e){ if(e.target && e.target.type!=="file") refresh(); });
+
+  if(!load()) demo();
+  ensureDishDefaults();
+  refresh();
+})();
+</script>

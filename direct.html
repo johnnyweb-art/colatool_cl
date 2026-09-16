@@ -1,0 +1,954 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>客戶需求蒐集表</title>
+<script src="cola-index.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#F4F7F8; --card:#FFFFFF; --card-2:#EDF3F5;
+  --ink:#12262E; --ink-2:#4A6470; --ink-3:#7C949E;
+  --deep:#0B3C49; --teal:#1C7293; --teal-soft:#E4EEF3;
+  --amber:#E8A33D; --amber-soft:#FBF2E0;
+  --warn:#B8451E; --warn-soft:#FBEAE3;
+  --ok:#2E7D5B; --ok-soft:#E3F1EA;
+  --line:#D6E1E6; --line-2:#BDCDD5;
+  --on-accent:#FFFFFF; --masthead-bg:#0B3C49; --accent-strong:#0B3C49; --amber-ink:#8A5A08;
+  --shadow:0 1px 2px rgba(11,60,73,.06),0 4px 14px rgba(11,60,73,.05);
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0D1618; --card:#162328; --card-2:#1D2C31;
+    --ink:#E2ECEF; --ink-2:#9BB2BA; --ink-3:#71898F;
+    --deep:#8FBACB; --teal:#57A8C8; --teal-soft:#19313B;
+    --amber:#F0B75A; --amber-soft:#2E2617;
+    --warn:#EC8158; --warn-soft:#331B14;
+    --ok:#5DBF92; --ok-soft:#142C22;
+    --line:#2A3B41; --line-2:#3A4E55;
+    --on-accent:#06181E; --masthead-bg:#0B2830; --accent-strong:#57A8C8; --amber-ink:#F0B75A;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0D1618; --card:#162328; --card-2:#1D2C31;
+  --ink:#E2ECEF; --ink-2:#9BB2BA; --ink-3:#71898F;
+  --deep:#8FBACB; --teal:#57A8C8; --teal-soft:#19313B;
+  --amber:#F0B75A; --amber-soft:#2E2617;
+  --warn:#EC8158; --warn-soft:#331B14;
+  --ok:#5DBF92; --ok-soft:#142C22;
+  --line:#2A3B41; --line-2:#3A4E55;
+  --on-accent:#06181E; --masthead-bg:#0B2830; --accent-strong:#57A8C8; --amber-ink:#F0B75A;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+  font-size:15px; line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:760px; margin:0 auto; padding-inline:16px; padding-block:0 120px}
+
+/* ---------- 頁首 ---------- */
+.masthead{background:var(--masthead-bg); color:#fff; padding-block:22px 20px; padding-inline:16px; margin-bottom:0}
+.masthead-in{max-width:760px; margin:0 auto}
+.eyebrow{font-size:11px; letter-spacing:.16em; font-weight:500; color:#8FBACB; margin:0 0 6px}
+.masthead h1{font-size:26px; line-height:1.25; font-weight:700; margin:0 0 6px; text-wrap:balance; color:#fff}
+.masthead p{margin:0; font-size:13px; color:#B9D2DC; line-height:1.55}
+
+/* ---------- 進度列 ---------- */
+.tracker{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:20;
+  background:var(--card); border-bottom:1px solid var(--line);
+  padding-inline:16px; box-shadow:var(--shadow);
+}
+.tracker-in{max-width:760px; margin:0 auto; display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding-block:10px}
+.count{font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums; font-size:20px; font-weight:500; color:var(--accent-strong); line-height:1}
+.count small{font-size:13px; color:var(--ink-3); font-weight:400}
+.bar{flex:1 1 120px; min-width:100px; height:6px; border-radius:3px; background:var(--line); overflow:hidden}
+.bar span{display:block; height:100%; background:var(--teal); width:0%; transition:width .25s ease}
+.bar.done span{background:var(--ok)}
+.jump{
+  font:inherit; font-size:12.5px; font-weight:500; cursor:pointer;
+  border:1px solid var(--line-2); background:var(--card-2); color:var(--ink-2);
+  border-radius:99px; padding:5px 12px;
+}
+.jump:hover{border-color:var(--teal); color:var(--teal)}
+.jump[hidden]{display:none!important}
+
+/* ---------- 區塊 ---------- */
+.sect{margin-top:28px}
+.sect-head{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:4px}
+.sect-head h2{font-size:17px; font-weight:700; margin:0; color:var(--ink)}
+.sect-tag{font-size:11px; letter-spacing:.1em; font-weight:500; color:#fff; background:var(--teal); border-radius:4px; padding:2px 7px}
+.sect-tag.b{background:var(--warn)}
+.sect-tag.c{background:var(--ink-2)}
+.sect-note{font-size:13px; color:var(--ink-2); margin:0 0 14px; line-height:1.6}
+
+/* ---------- 題目 ---------- */
+.q{
+  border:1px solid var(--line); border-left:3px solid var(--line-2);
+  background:var(--card); border-radius:var(--r); margin:0 0 10px; padding:13px 15px;
+  scroll-margin-top:90px;
+}
+.q.answered{border-left-color:var(--ok)}
+.q.flag{border-left-color:var(--amber); background:var(--amber-soft)}
+.q legend, .q .qh{
+  display:flex; gap:8px; align-items:baseline; font-weight:700; font-size:14.5px;
+  padding:0; margin:0 0 9px; color:var(--ink); width:100%;
+}
+.qn{font-family:"IBM Plex Mono",monospace; font-size:12px; font-weight:500; color:var(--ink-3); flex:none}
+.qhint{display:block; font-weight:400; font-size:12.5px; color:var(--ink-2); margin:-4px 0 9px; line-height:1.55}
+fieldset.q{min-width:0}
+
+.opts{display:flex; flex-wrap:wrap; gap:7px}
+.opts.col{flex-direction:column; gap:5px}
+.opt{
+  display:inline-flex; align-items:center; gap:7px; cursor:pointer;
+  border:1px solid var(--line-2); border-radius:99px; padding:6px 13px 6px 10px;
+  font-size:13.5px; background:var(--card); transition:.12s; line-height:1.4;
+}
+.opts.col .opt{border-radius:8px; width:100%}
+.opt:hover{border-color:var(--teal)}
+.opt input{margin:0; accent-color:var(--teal); flex:none}
+.opt:has(input:checked){background:var(--teal-soft); border-color:var(--teal); font-weight:500}
+.opt.danger:has(input:checked){background:var(--warn-soft); border-color:var(--warn); color:var(--warn)}
+.opt input:focus-visible{outline:2px solid var(--teal); outline-offset:3px}
+
+input[type=text],input[type=number],textarea{
+  font:inherit; font-size:14px; color:var(--ink); background:var(--card);
+  border:1px solid var(--line-2); border-radius:8px; padding:8px 11px; width:100%;
+}
+input:focus,textarea:focus{outline:2px solid var(--teal); outline-offset:1px; border-color:var(--teal)}
+textarea{min-height:64px; resize:vertical; line-height:1.6}
+.inline-txt{margin-top:8px}
+
+.nums{display:flex; flex-wrap:wrap; gap:9px}
+.numf{flex:1 1 92px; min-width:82px}
+.numf label{display:block; font-size:12px; color:var(--ink-2); margin-bottom:3px}
+.numf input{text-align:center; font-variant-numeric:tabular-nums; padding-inline:6px}
+
+/* ---------- 警示 ---------- */
+.alerts{display:flex; flex-direction:column; gap:8px; margin-top:11px}
+.alert{
+  border-radius:8px; padding:10px 13px; font-size:13px; line-height:1.6;
+  border-left:3px solid; background:var(--warn-soft); border-color:var(--warn); color:var(--ink);
+}
+.alert.caution{background:var(--amber-soft); border-color:var(--amber)}
+.alert b{display:block; color:var(--warn); font-size:13px; margin-bottom:1px}
+.alert.caution b{color:var(--amber-ink)}
+
+/* ---------- 產出 ---------- */
+.actionbar{
+  position:fixed; left:0; right:0; bottom:0; z-index:30;
+  background:var(--card); border-top:1px solid var(--line);
+  padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));
+  box-shadow:0 -4px 16px rgba(11,60,73,.07);
+}
+.actionbar-in{max-width:760px; margin:0 auto; display:flex; gap:10px; align-items:center}
+.btn{
+  font:inherit; font-weight:700; font-size:15px; cursor:pointer; border:0; border-radius:9px;
+  padding:12px 18px; background:var(--teal); color:var(--on-accent); flex:1; transition:.15s;
+}
+.btn:hover{background:var(--deep); color:var(--on-accent)}
+.btn.ghost{flex:none; background:transparent; color:var(--ink-2); border:1px solid var(--line-2); font-weight:500; font-size:13.5px; padding:12px 14px}
+.btn.ghost:hover{background:var(--card-2); color:var(--ink)}
+.btn:focus-visible,.jump:focus-visible{outline:2px solid var(--amber); outline-offset:2px}
+
+.output{margin-top:26px; border:1px solid var(--teal); border-radius:var(--r); overflow:hidden; box-shadow:var(--shadow)}
+.output-head{background:var(--teal-soft); padding:11px 15px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap}
+.output-head strong{font-size:14px; color:var(--accent-strong)}
+.copy{font:inherit; font-size:13px; font-weight:500; cursor:pointer; border:1px solid var(--teal); background:var(--card); color:var(--teal); border-radius:7px; padding:6px 14px}
+.copy:hover{background:var(--teal); color:var(--on-accent)}
+.sect-tag.go{background:var(--ok)}
+#picks{display:flex; flex-direction:column; gap:11px}
+.pick{
+  border:1px solid var(--line); border-left:3px solid var(--ok); background:var(--card);
+  border-radius:var(--r); padding:14px 16px; box-shadow:var(--shadow);
+}
+.pick.alt{border-left-color:var(--teal)}
+.pick.lite{border-left-color:var(--amber)}
+.rank{
+  display:inline-block; font-size:11.5px; font-weight:700; letter-spacing:.06em;
+  color:var(--on-accent); background:var(--ok); border-radius:4px; padding:2px 9px; margin-bottom:8px;
+}
+.pick.alt .rank{background:var(--teal)}
+.pick.lite .rank{background:var(--amber); color:#3A2A08}
+.rank small{font-weight:400; opacity:.85}
+a.pick-name{
+  display:block; font-size:15.5px; font-weight:700; line-height:1.5; color:var(--accent-strong);
+  text-decoration:none; margin-bottom:8px;
+}
+a.pick-name:hover{text-decoration:underline}
+a.pick-name::after{content:" ↗"; font-size:12px; opacity:.6}
+.pick-meta{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:9px}
+.pick-meta span{
+  font-size:12.5px; color:var(--ink-2); background:var(--card-2);
+  border-radius:5px; padding:3px 9px; font-variant-numeric:tabular-nums;
+}
+.pick-meta span.hi{background:var(--ok-soft); color:var(--ok); font-weight:500}
+.pick-why{font-size:13.5px; line-height:1.65; color:var(--ink)}
+.pick-why b{color:var(--ok)}
+.pick.alt .pick-why b{color:var(--teal)}
+.pick.lite .pick-why b{color:var(--amber-ink)}
+.empty{
+  border:1px dashed var(--line-2); border-radius:var(--r); background:var(--card-2);
+  padding:16px; font-size:13.5px; line-height:1.7; color:var(--ink-2);
+}
+.empty b{color:var(--ink); display:block; margin-bottom:5px}
+.idxfoot a{color:var(--teal); font-weight:500}
+.idxfoot .stale{display:block; margin:0 0 8px; padding:8px 11px; border-radius:7px; background:var(--amber-soft); color:var(--amber-ink); font-size:12.5px; font-weight:500; line-height:1.6}
+.idxfoot{margin:12px 0 0; font-size:11.5px; color:var(--ink-3); line-height:1.65}
+.whereto{padding:14px 15px; background:var(--card-2); border-bottom:1px solid var(--line)}
+.whereto-t{margin:0 0 8px; font-size:13.5px; font-weight:700; color:var(--ink)}
+.whereto-steps{margin:0 0 11px; padding-left:20px; font-size:13px; line-height:1.85; color:var(--ink-2)}
+.whereto-steps b{color:var(--ink)}
+.whereto-warn{
+  margin:0 0 9px; font-size:12.5px; line-height:1.65; color:var(--ink);
+  background:var(--warn-soft); border-left:3px solid var(--warn); border-radius:6px; padding:9px 12px;
+}
+.whereto-warn b{color:var(--warn)}
+.whereto-sub{margin:0; font-size:12px; line-height:1.6; color:var(--ink-3)}
+.whereto-sub b{color:var(--ink-2)}
+pre.gen{
+  margin:0; padding:15px; background:var(--card); overflow-x:auto;
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12.5px; line-height:1.72;
+  white-space:pre-wrap; word-break:break-word; color:var(--ink); max-height:430px; overflow-y:auto;
+}
+
+/* ---------- 說明 ---------- */
+.privacy{
+  margin-top:22px; border:1px dashed var(--line-2); border-radius:var(--r);
+  background:var(--card-2); padding:13px 15px; font-size:12.5px; color:var(--ink-2); line-height:1.7;
+}
+.privacy b{color:var(--ink)}
+.demo-note{
+  display:flex; gap:9px; align-items:flex-start; margin-top:16px; padding:10px 14px;
+  background:var(--amber-soft); border-radius:8px; font-size:12.5px; color:var(--ink-2); line-height:1.6;
+}
+.demo-note b{color:var(--amber-ink)}
+footer{margin-top:28px; padding-top:16px; border-top:1px solid var(--line); font-size:11.5px; color:var(--ink-3); line-height:1.7}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; scroll-behavior:auto!important}}
+</style>
+
+<header class="masthead">
+  <div class="masthead-in">
+    <p class="eyebrow">可樂旅遊中壢分公司　直售部</p>
+    <h1>客戶需求蒐集表</h1>
+    <p>接到電話就打開，邊問邊勾。問完直接看下面的行程，不必自己去官網翻。</p>
+  </div>
+</header>
+
+<div class="tracker">
+  <div class="tracker-in">
+    <span class="count"><span id="done">0</span><small> / 14 欄已問</small></span>
+    <span class="bar" id="bar"><span id="barfill"></span></span>
+    <button class="jump" id="jump" type="button">跳到第一個沒問的</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="demo-note">
+    <span aria-hidden="true">▸</span>
+    <span><b>頁面開啟時是示範資料</b>（李小姐的案例，課堂上用）。按右下角「清空重填」就是空白表單。</span>
+  </div>
+
+  <!-- ===== A ===== -->
+  <section class="sect">
+    <div class="sect-head"><span class="sect-tag">A 區</span><h2>配對條件</h2></div>
+    <p class="sect-note">決定「推哪三條」。這八欄少一欄，後面挑出來的行程就可能整組不能用。</p>
+
+    <fieldset class="q" data-q="a1" data-label="出發地">
+      <legend><span class="qn">A1</span>出發地</legend>
+      <span class="qhint">官網是依出發地分開賣的。這一欄沒問到，後面全部白做。</span>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="a1" value="台北（桃園機場）" id="a1-1">台北（桃園機場）</label>
+        <label class="opt"><input type="radio" name="a1" value="台中" id="a1-2">台中</label>
+        <label class="opt"><input type="radio" name="a1" value="高雄" id="a1-3">高雄</label>
+        <label class="opt"><input type="radio" name="a1" value="都可以" id="a1-4">都可以</label>
+      </div>
+    </fieldset>
+
+    <div class="q" data-q="a2" data-label="想去哪裡">
+      <div class="qh"><span class="qn">A2</span>想去哪裡</div>
+      <span class="qhint">可以模糊。「想看楓葉」「小孩想去環球影城」都算答案 —— 照客戶原話寫。</span>
+      <input type="text" id="a2" placeholder="例：想帶爸媽去日本或韓國">
+    </div>
+
+    <fieldset class="q" data-q="a3" data-label="出發日期">
+      <legend><span class="qn">A3</span>出發日期</legend>
+      <span class="qhint">決定「有沒有團」。官網每個出發日的售價都不一樣，差距可到四千元。</span>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="a3" value="固定就這一天" id="a3-1">固定就這一天</label>
+        <label class="opt"><input type="radio" name="a3" value="某一週" id="a3-2">某一週</label>
+        <label class="opt"><input type="radio" name="a3" value="某個月" id="a3-3">某個月</label>
+        <label class="opt"><input type="radio" name="a3" value="都可以" id="a3-4">都可以</label>
+      </div>
+      <input class="inline-txt" type="text" id="a3x" placeholder="哪一天／哪一週／哪個月">
+    </fieldset>
+
+    <fieldset class="q" data-q="a4" data-label="可接受天數">
+      <legend><span class="qn">A4</span>可接受天數</legend>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="a4" value="3–4 天" id="a4-1">3–4 天</label>
+        <label class="opt"><input type="radio" name="a4" value="5–6 天" id="a4-2">5–6 天</label>
+        <label class="opt"><input type="radio" name="a4" value="7 天以上" id="a4-3">7 天以上</label>
+        <label class="opt"><input type="radio" name="a4" value="都可以" id="a4-4">都可以</label>
+      </div>
+    </fieldset>
+
+    <div class="q" data-q="a5" data-label="人數與房間">
+      <div class="qh"><span class="qn">A5</span>人數與房間</div>
+      <span class="qhint">有人要單人房就一定有房差。這一欄沒問，報出去的價會被客戶推翻。</span>
+      <div class="nums">
+        <div class="numf"><label for="a5a">大人</label><input type="number" id="a5a" min="0" value=""></div>
+        <div class="numf"><label for="a5b">小孩佔床</label><input type="number" id="a5b" min="0" value=""></div>
+        <div class="numf"><label for="a5c">小孩不佔床</label><input type="number" id="a5c" min="0" value=""></div>
+        <div class="numf"><label for="a5d">嬰兒</label><input type="number" id="a5d" min="0" value=""></div>
+        <div class="numf"><label for="a5e">需單人房</label><input type="number" id="a5e" min="0" value=""></div>
+      </div>
+    </div>
+
+    <fieldset class="q" data-q="a6" data-label="預算">
+      <legend><span class="qn">A6</span>每人預算</legend>
+      <span class="qhint">一定要問含不含稅。官網有些商品標的是不含稅價，差很多。</span>
+      <input type="text" id="a6x" placeholder="每人約多少元" style="margin-bottom:8px">
+      <div class="opts">
+        <label class="opt"><input type="radio" name="a6" value="含稅" id="a6-1">含稅</label>
+        <label class="opt"><input type="radio" name="a6" value="不含稅" id="a6-2">不含稅</label>
+        <label class="opt"><input type="radio" name="a6" value="客戶沒概念" id="a6-3">客戶沒概念</label>
+      </div>
+    </fieldset>
+
+    <fieldset class="q" data-q="a7" data-label="跟團或自由行">
+      <legend><span class="qn">A7</span>跟團還是自由行</legend>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="a7" value="跟團" id="a7-1">跟團（有領隊、有安排）</label>
+        <label class="opt"><input type="radio" name="a7" value="自由行" id="a7-2">自由行（機＋酒）</label>
+        <label class="opt"><input type="radio" name="a7" value="還沒決定，兩種都想聽" id="a7-3">還沒決定</label>
+      </div>
+    </fieldset>
+
+    <fieldset class="q" data-q="a8" data-label="最在意的一件事">
+      <legend><span class="qn">A8</span>最在意的一件事</legend>
+      <span class="qhint">只能勾一個。勾兩個以上等於沒勾 —— 這一欄決定那三條行程要怎麼排差異。</span>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="a8" value="價格" id="a8-1">價格</label>
+        <label class="opt"><input type="radio" name="a8" value="行程輕鬆不趕" id="a8-2">行程輕鬆不趕</label>
+        <label class="opt"><input type="radio" name="a8" value="飯店好" id="a8-3">飯店好</label>
+        <label class="opt"><input type="radio" name="a8" value="吃得好" id="a8-4">吃得好</label>
+        <label class="opt"><input type="radio" name="a8" value="一定要去某個景點" id="a8-5">一定要去某景點</label>
+        <label class="opt"><input type="radio" name="a8" value="直飛不轉機" id="a8-6">直飛不轉機</label>
+      </div>
+    </fieldset>
+  </section>
+
+  <!-- ===== B ===== -->
+  <section class="sect">
+    <div class="sect-head"><span class="sect-tag b">B 區</span><h2>排除條件</h2></div>
+    <p class="sect-note">決定「能不能推」。這一區問起來不舒服，但不問會出事 —— 下面每一項，官網訂購須知都明文寫著要事先告知，事後才講會產生費用或被取消資格。</p>
+
+    <fieldset class="q" data-q="b1" data-label="特殊身分">
+      <legend><span class="qn">B1</span>同行的人裡面，有沒有這些狀況</legend>
+      <div class="opts col">
+        <label class="opt"><input type="checkbox" name="b1" value="都沒有" id="b1-0" data-none="1">都沒有</label>
+        <label class="opt danger"><input type="checkbox" name="b1" value="年滿70歲且無親友陪同" id="b1-1">年滿 70 歲，而且沒有親友陪同</label>
+        <label class="opt danger"><input type="checkbox" name="b1" value="行動不便" id="b1-2">行動不便（坐輪椅、拄拐杖、行走困難）</label>
+        <label class="opt danger"><input type="checkbox" name="b1" value="未滿18歲且未與法定代理人同行" id="b1-3">未滿 18 歲，而且不跟法定代理人同行</label>
+        <label class="opt danger"><input type="checkbox" name="b1" value="孕婦" id="b1-4">孕婦</label>
+        <label class="opt danger"><input type="checkbox" name="b1" value="攜嬰幼兒" id="b1-5">帶嬰幼兒同行</label>
+      </div>
+      <div class="alerts" id="b1alerts"></div>
+    </fieldset>
+
+    <fieldset class="q" data-q="b2" data-label="特殊餐食">
+      <legend><span class="qn">B2</span>特殊餐食</legend>
+      <span class="qhint">海外團餐變化有限，要先讓客戶有心理準備。</span>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="b2" value="沒有" id="b2-1">沒有</label>
+        <label class="opt"><input type="radio" name="b2" value="有" id="b2-2">有</label>
+      </div>
+      <input class="inline-txt" type="text" id="b2x" placeholder="素食幾位／其他需求">
+    </fieldset>
+
+    <fieldset class="q" data-q="b3" data-label="證件狀況">
+      <legend><span class="qn">B3</span>證件</legend>
+      <div class="opts col">
+        <label class="opt"><input type="checkbox" name="b3" value="護照效期已確認滿六個月" id="b3-1">護照效期已確認距出發日滿六個月</label>
+        <label class="opt danger"><input type="checkbox" name="b3" value="護照效期還沒查" id="b3-2">護照效期還沒查</label>
+        <label class="opt danger"><input type="checkbox" name="b3" value="有役男" id="b3-3">有役男（需申請出境許可）</label>
+        <label class="opt danger"><input type="checkbox" name="b3" value="有非中華民國護照者" id="b3-4">有人不是持中華民國護照</label>
+      </div>
+      <div class="alerts" id="b3alerts"></div>
+    </fieldset>
+
+    <div class="q" data-q="b4" data-label="其他要注意的" data-optional="1">
+      <div class="qh"><span class="qn">B4</span>其他要注意的<span style="font-weight:400;color:var(--ink-3);font-size:12px">（選填）</span></div>
+      <span class="qhint">客戶講了但上面沒地方填的，寫在這裡。這一欄常常是最關鍵的判斷點。</span>
+      <textarea id="b4" placeholder="例：爸爸 73 歲，膝蓋不好走遠路，但有家人全程陪同"></textarea>
+    </div>
+  </section>
+
+  <!-- ===== C ===== -->
+  <section class="sect">
+    <div class="sect-head"><span class="sect-tag c">C 區</span><h2>跟進條件</h2></div>
+    <p class="sect-note">決定「怎麼跟」。這三欄不影響推哪一條，但影響成不成交。</p>
+
+    <fieldset class="q" data-q="c1" data-label="誰決定">
+      <legend><span class="qn">C1</span>誰決定</legend>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="c1" value="客戶本人" id="c1-1">客戶本人就能決定</label>
+        <label class="opt"><input type="radio" name="c1" value="要跟家人商量" id="c1-2">要跟家人商量</label>
+        <label class="opt"><input type="radio" name="c1" value="公司／福委會決定" id="c1-3">公司／福委會</label>
+      </div>
+    </fieldset>
+
+    <fieldset class="q" data-q="c2" data-label="何時要答覆">
+      <legend><span class="qn">C2</span>什麼時候要答覆</legend>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="c2" value="今天" id="c2-1">今天</label>
+        <label class="opt"><input type="radio" name="c2" value="這兩天" id="c2-2">這兩天</label>
+        <label class="opt"><input type="radio" name="c2" value="這禮拜" id="c2-3">這禮拜</label>
+        <label class="opt"><input type="radio" name="c2" value="還很久" id="c2-4">還很久</label>
+      </div>
+    </fieldset>
+
+    <fieldset class="q" data-q="c3" data-label="聯絡方式">
+      <legend><span class="qn">C3</span>怎麼聯絡最方便</legend>
+      <div class="opts">
+        <label class="opt"><input type="checkbox" name="c3" value="LINE" id="c3-1">LINE</label>
+        <label class="opt"><input type="checkbox" name="c3" value="電話" id="c3-2">電話</label>
+        <label class="opt"><input type="checkbox" name="c3" value="Email" id="c3-3">Email</label>
+      </div>
+      <input class="inline-txt" type="text" id="c3x" placeholder="方便的時段">
+    </fieldset>
+  </section>
+
+  <!-- ===== 收斂結果 ===== -->
+  <section class="sect" id="resultSect">
+    <div class="sect-head"><span class="sect-tag go">結果</span><h2>幫你收斂出來的行程</h2></div>
+    <p class="sect-note" id="resultNote">依上面填的條件，從可樂旅遊官網行程資料裡篩出來。<b>點團名直接開官網</b>，看到的是即時售價與可售團位。</p>
+    <div id="picks"></div>
+    <p class="idxfoot" id="idxfoot"></p>
+  </section>
+
+  <div class="output" id="output" hidden>
+    <div class="output-head">
+      <strong>給 AI 的指令（三條行程已帶入）</strong>
+      <button class="copy" id="copy" type="button">複製全部</button>
+    </div>
+    <div class="whereto">
+      <p class="whereto-t">複製之後貼到哪裡？</p>
+      <ol class="whereto-steps">
+        <li>打開 Claude 或 ChatGPT</li>
+        <li>開一個新對話，貼上、送出</li>
+      </ol>
+      <p class="whereto-sub" style="margin-bottom:11px">就這樣。<b>候選行程已經包在指令裡了</b>，不用另外準備專案或知識庫。</p>
+      <p class="whereto-warn"><b>但一定要先貼候選行程。</b>上面「候選行程」欄位空著就按產生，AI 手上沒有任何真實行程——它不會說「我沒資料」，它會直接編一條看起來很像可樂旅遊的行程給你，團名、飯店、天數全是假的。</p>
+      <p class="whereto-sub">常賣的線別可以省掉每次複製：把 15–20 條常賣行程做成一個 txt 放進<b>專案知識庫</b>，之後每次只要貼需求表。做法見課堂講義。</p>
+    </div>
+    <pre class="gen" id="gen"></pre>
+  </div>
+
+  <div class="privacy">
+    <b>資料不會離開這台電腦。</b>這一頁是單獨的 HTML 檔，所有處理都在你的瀏覽器裡跑，沒有任何一筆資料被送出去，也不需要連網路。草稿存在你自己的瀏覽器裡，換一台電腦就看不到。<br>
+    <b>不要填客戶姓名與電話。</b>這張表的用途是產出「要貼給 AI 的需求摘要」。姓名、電話、護照號碼留在你自己的系統，不要經過這裡。
+  </div>
+
+  <footer>
+    可樂旅遊中壢分公司　AI 助理應用訓練　9/19 課堂示範品<br>
+    欄位依據：可樂旅遊官網團體旅遊訂購須知（2026-09-16 擷取）與課前需求調查 N＝14。<br>
+    這個工具只負責把需求問齊、把指令組好。<strong>它不判斷行程適不適合，也不產生售價</strong> —— 那是 AI 與你的工作。
+  </footer>
+</div>
+
+<div class="actionbar">
+  <div class="actionbar-in">
+    <button class="btn" id="make" type="button">產生客戶說明話術</button>
+    <button class="btn ghost" id="clear" type="button">清空重填</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var qs=function(s,r){return (r||document).querySelector(s)};
+  var qsa=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var KEY="cola-zhixiao-draft-v1";
+
+  var TEXT_OF={a2:"a2",a3:"a3x",a6:"a6x",b2:"b2x",c3:"c3x"};
+  var blocks=qsa(".q");
+
+  function vals(name){
+    return qsa('input[name="'+name+'"]:checked').map(function(i){return i.value});
+  }
+  function answered(b){
+    var q=b.getAttribute("data-q");
+    if(q==="a2") return qs("#a2").value.trim()!=="";
+    if(q==="a5") return (parseInt(qs("#a5a").value,10)||0)>0;
+    if(q==="b4") return true;
+    return vals(q).length>0;
+  }
+
+  /* ---- B 區即時警示 ---- */
+  var RULES={
+    "行動不便":{lv:"stop",t:"團體旅遊不得推薦",d:"官網訂購須知明文：行動不便者（輪椅、拐杖、行走困難）請勿報名團體旅遊。請改推自由行，或另行安排。"},
+    "年滿70歲且無親友陪同":{lv:"stop",t:"須於報名時主動告知",d:"若在出發前 3 個工作日內才提出，可能收取必要費用。"},
+    "未滿18歲且未與法定代理人同行":{lv:"stop",t:"契約書需法定代理人簽名",d:"未簽名前報名不算有效。"},
+    "孕婦":{lv:"caution",t:"要先問懷孕週數與胎數",d:"27 週以上需備妥適航申請書與診斷書，經航空公司審核。單胞胎 36 週、多胞胎 32 週以上不得搭機。"},
+    "攜嬰幼兒":{lv:"caution",t:"報名時要主動告知",d:"嬰兒票與餐食、座位安排都要另外確認。"},
+    "護照效期還沒查":{lv:"stop",t:"先查護照效期再談行程",d:"效期距出發日不足六個月，多數目的地無法入境。這一項沒確認，後面挑的行程都可能作廢。"},
+    "有役男":{lv:"caution",t:"需申請出境許可",d:"須向相關主管機關申請，要留作業時間。"},
+    "有非中華民國護照者":{lv:"caution",t:"相關規定需自行查明",d:"官網所載規定對象為持中華民國護照之旅客。部分飯店可能加價。"}
+  };
+  function renderAlerts(){
+    [["b1","#b1alerts"],["b3","#b3alerts"]].forEach(function(p){
+      var box=qs(p[1]); box.innerHTML="";
+      vals(p[0]).forEach(function(v){
+        var r=RULES[v]; if(!r) return;
+        var d=document.createElement("div");
+        d.className="alert"+(r.lv==="caution"?" caution":"");
+        d.innerHTML="<b>"+v+"　→　"+r.t+"</b>"+r.d;
+        box.appendChild(d);
+      });
+    });
+  }
+
+  /* ---- 「都沒有」互斥 ---- */
+  qsa('input[name="b1"]').forEach(function(cb){
+    cb.addEventListener("change",function(){
+      var none=qs("#b1-0");
+      if(cb===none && none.checked){
+        qsa('input[name="b1"]').forEach(function(o){ if(o!==none) o.checked=false; });
+      } else if(cb!==none && cb.checked){ none.checked=false; }
+    });
+  });
+
+  /* ---- 進度 ---- */
+  var TOTAL=blocks.filter(function(b){return !b.hasAttribute("data-optional")}).length;
+  function refresh(){
+    var n=0, first=null;
+    blocks.forEach(function(b){
+      var ok=answered(b);
+      b.classList.toggle("answered", ok && !b.hasAttribute("data-optional"));
+      if(b.hasAttribute("data-optional")) return;
+      if(ok) n++; else if(!first) first=b;
+    });
+    qs("#done").textContent=n;
+    qs("#barfill").style.width=Math.round(n/TOTAL*100)+"%";
+    qs("#bar").classList.toggle("done", n===TOTAL);
+    qs("#jump").hidden = (n===TOTAL);
+    qs("#jump")._target=first;
+    renderAlerts();
+    renderPicks();
+    save();
+  }
+  qs("#jump").addEventListener("click",function(){
+    var t=this._target; if(!t) return;
+    t.scrollIntoView({behavior:"smooth",block:"start"});
+    t.classList.add("flag");
+    setTimeout(function(){t.classList.remove("flag")},1600);
+  });
+
+  /* ---- 草稿 ---- */
+  function save(){
+    try{
+      var d={r:{},c:{},t:{}};
+      qsa("input[type=radio]").forEach(function(i){ if(i.checked) d.r[i.name]=i.id; });
+      qsa("input[type=checkbox]").forEach(function(i){ if(i.checked) d.c[i.id]=1; });
+      qsa("input[type=text],input[type=number],textarea").forEach(function(i){ if(i.value) d.t[i.id]=i.value; });
+      localStorage.setItem(KEY,JSON.stringify(d));
+    }catch(e){}
+  }
+  function load(){
+    try{
+      var raw=localStorage.getItem(KEY); if(!raw) return false;
+      var d=JSON.parse(raw);
+      Object.keys(d.r||{}).forEach(function(k){ var e=document.getElementById(d.r[k]); if(e) e.checked=true; });
+      Object.keys(d.c||{}).forEach(function(k){ var e=document.getElementById(k); if(e) e.checked=true; });
+      Object.keys(d.t||{}).forEach(function(k){ var e=document.getElementById(k); if(e) e.value=d.t[k]; });
+      return true;
+    }catch(e){ return false; }
+  }
+
+  /* ---- 示範資料 ---- */
+  function demo(){
+    ["a1-1","a3-3","a4-4","a6-3","a7-3","a8-2","b1-0","b2-1","b3-2","c1-2","c2-3","c3-1"]
+      .forEach(function(id){ var e=document.getElementById(id); if(e) e.checked=true; });
+    qs("#a2").value="想帶爸媽去日本或韓國";
+    qs("#a3x").value="十二月，日期還有點彈性";
+    qs("#a5a").value="4";
+    qs("#a6x").value="每人約 20,000";
+    qs("#b4").value="爸爸 73 歲，膝蓋不好走遠路，但媽媽與我們全程陪同。";
+    qs("#c3x").value="晚上七點後";
+  }
+
+  /* ---- 產生指令 ---- */
+  function line(label,v){ return "・"+label+"：" + (v && v.length ? v : "（未問到）"); }
+  function make(){
+    var miss=[];
+    blocks.forEach(function(b){
+      if(b.hasAttribute("data-optional")) return;
+      if(!answered(b)) miss.push(b.getAttribute("data-q").toUpperCase()+" "+b.getAttribute("data-label"));
+    });
+
+    var people=[];
+    [["a5a","大人"],["a5b","小孩佔床"],["a5c","小孩不佔床"],["a5d","嬰兒"],["a5e","需單人房"]].forEach(function(p){
+      var n=parseInt(qs("#"+p[0]).value,10)||0; if(n>0) people.push(p[1]+" "+n+" 位");
+    });
+
+    var a3=vals("a3").join("、"), a3x=qs("#a3x").value.trim();
+    var a6=vals("a6").join("、"), a6x=qs("#a6x").value.trim();
+    var b2=vals("b2").join("、"), b2x=qs("#b2x").value.trim();
+    var c3=vals("c3").join("、"), c3x=qs("#c3x").value.trim();
+
+    var t=[];
+    t.push("【客戶需求蒐集表】");
+    t.push("填寫時間："+new Date().toLocaleString("zh-TW",{hour12:false}));
+    t.push("");
+    t.push("── A　配對條件 ──");
+    t.push(line("出發地",vals("a1").join("、")));
+    t.push(line("想去哪裡",qs("#a2").value.trim()));
+    t.push(line("出發日期",(a3?a3:"")+(a3x?"（"+a3x+"）":"")));
+    t.push(line("可接受天數",vals("a4").join("、")));
+    t.push(line("人數與房間",people.join("、")));
+    t.push(line("每人預算",(a6x?a6x:"")+(a6?"（"+a6+"）":"")));
+    t.push(line("跟團或自由行",vals("a7").join("、")));
+    t.push(line("最在意的一件事",vals("a8").join("、")));
+    t.push("");
+    t.push("── B　排除條件 ──");
+    t.push(line("特殊身分",vals("b1").join("、")));
+    t.push(line("特殊餐食",(b2?b2:"")+(b2x?"（"+b2x+"）":"")));
+    t.push(line("證件狀況",vals("b3").join("、")));
+    var b4=qs("#b4").value.trim();
+    if(b4) t.push("・其他要注意："+b4);
+    t.push("");
+    t.push("── C　跟進條件 ──");
+    t.push(line("誰決定",vals("c1").join("、")));
+    t.push(line("何時要答覆",vals("c2").join("、")));
+    t.push(line("聯絡方式",(c3?c3:"")+(c3x?"（"+c3x+"）":"")));
+    t.push("");
+
+    if(miss.length){
+      t.push("⚠ 以下欄位「這通電話沒有問到」，請當成未知處理，不要替我假設：");
+      miss.forEach(function(m){ t.push("　- "+m); });
+      t.push("");
+    }
+
+    t.push("【已經幫我收斂出來的三條行程】");
+    t.push("（這是從可樂旅遊官網索引篩出來的，都是真實存在的行程）");
+    t.push("");
+    if(picked.length){
+      picked.forEach(function(p){
+        var r=p.r;
+        t.push("【"+p.p+"】"+r.name);
+        t.push("　天數："+r.days+" 天　地區："+r.area+(r.free?(/半自助/.test(r.name)?"　跟團半自助":"　自由行"):"　跟團"));
+        if(r.tags.length) t.push("　特色："+r.tags.join("、"));
+        if(r.dates.length) t.push("　官網顯示的出發日："+r.dates.join("、")+"（可能還有更多）");
+        t.push("　官網連結："+r.url);
+        t.push("");
+      });
+    }else{
+      t.push("〔目前條件下沒有篩出行程。請回上面把 A2 想去哪裡、A3 出發日期、A4 天數其中一項放寬。〕");
+      t.push("〔在沒有行程的情況下，你不可以推薦任何行程，只能告訴我缺什麼。〕");
+      t.push("");
+    }
+    t.push("──────── 以下是給你的工作 ────────");
+    t.push("");
+    t.push("請把上面三條寫成一則可以直接傳給客戶的說明（LINE 用），讓他看得懂差在哪裡。");
+    t.push("");
+    t.push("1. 只能用上面這三條。不准增加、不准替換、不准自己補一條很像的行程。");
+    t.push("2. 團名一字不改，照抄。每一條都要附上官網連結。");
+    t.push("3. 【不要寫任何價格數字。】售價與可售團位隨時在變。");
+    t.push("   要比價位只能寫相對關係（三條裡最省／中間／最高），");
+    t.push("   金額一律寫「實際售價請看連結」。");
+    t.push("4. 行程內容你只知道團名裡寫的那些。團名沒寫的（飯店等級、航班、餐食、");
+    t.push("   有沒有含稅、幾人成行）一律不准寫，需要提到就寫「這部分我再幫您確認」。");
+    t.push("5. B 區有勾選或有「其他要注意」時，把該注意的事項獨立寫一段給我（不是給客戶），");
+    t.push("   屬於業務判斷的（例如「膝蓋不好」算不算行動不便）標出來讓我決定。");
+    t.push("");
+    t.push("輸出三段：");
+    t.push("① 給客戶的訊息：開頭一句話說「我照您的需求挑了三個方向」，");
+    t.push("   接著三條，每條 2–3 句話講清楚它的特色與差在哪，附連結。");
+    t.push("   結尾問一句能推進成交的話（不要用「有任何問題歡迎詢問」這種空話）。");
+    t.push("② 三條差異對照表：比較天數、地區、風格、特色。價格欄只寫相對高低。");
+    t.push("③ 給我自己的提醒：");
+    t.push("   - 送出前要回官網確認什麼");
+    t.push("   - B 區那些限制要在哪個時間點跟客戶講");
+    t.push("   - 這則訊息掛我的名字送出去，最可能出事的是哪一句");
+    t.push("     （這一題不准回答「沒有問題」，一定要指出一句最脆弱的）");
+    t.push("");
+    t.push("用繁體中文、台灣用語。語氣自然專業，不要浮誇，不要用驚嘆號。");
+
+    var out=t.join("\n");
+    qs("#gen").textContent=out;
+    qs("#output").hidden=false;
+    qs("#output").scrollIntoView({behavior:"smooth",block:"start"});
+  }
+
+  qs("#make").addEventListener("click",make);
+  qs("#copy").addEventListener("click",function(){
+    var b=this, txt=qs("#gen").textContent;
+    var done=function(){ b.textContent="已複製"; setTimeout(function(){b.textContent="複製全部"},1800); };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(done,function(){fallback()});
+    } else { fallback(); }
+    function fallback(){
+      var ta=document.createElement("textarea");
+      ta.value=txt; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand("copy"); done(); }catch(e){ b.textContent="請手動選取複製"; }
+      document.body.removeChild(ta);
+    }
+  });
+  qs("#clear").addEventListener("click",function(){
+    qsa("input[type=radio],input[type=checkbox]").forEach(function(i){i.checked=false});
+    qsa("input[type=text],input[type=number],textarea").forEach(function(i){i.value=""});
+    qs("#output").hidden=true;
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    refresh();
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+
+  /* ================= 行程收斂引擎 ================= */
+  /* ---- 索引：原始資料進來，分類在這裡算 ---- */
+  var CNM2={'一':1,'二':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10,'兩':2,
+    '十一':11,'十二':12,'十三':13,'十四':14,'十五':15};
+  function daysOf(n){
+    var m=n.match(/(\u5341[\u4e00\u4e8c\u4e09\u56db\u4e94]|[\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341\u5169])\u65e5/);
+    if(m) return CNM2[m[1]]||0;
+    m=n.match(/(\d{1,2})\s*\u65e5/); return m?+m[1]:0;
+  }
+  var SUB={
+   '日本':[['北海道',['北海道','札幌','函館','小樽','旭山','洞爷','富良野','網走','道東','TOMAMU','KIRORO','SAHORO','知床']],
+    ['東京關東',['東京','富士','箱根','伊豆','輕井澤','日光','橫濱','迪士尼','晴空塔','熱海','河口湖','磐梯','鎌倉','川越']],
+    ['關西',['關西','大阪','京都','神戶','奈良','環球影城','嵐山','宇治','有馬','姬路','美山','南紀','和歌山','伊根']],
+    ['北陸中部',['北陸','立山','合掌村','兼六園','名古屋','高山','金澤','白川鄉','新穗高','上高地','伊勢','馬籠','郡上','牧歌','飛驟']],
+    ['東北',['東北','仙台','松島','銀山','藏王','奧入瀨','青森','秋田','會津','大內宿','猊鼻','津輕','雫石','十和田']],
+    ['九州',['九州','福岡','熊本','長崎','別府','湯布院','鹿兒島','指宿','豪斯登堡','阿蘇','高千穗','柳川','門司','宮崎']],
+    ['四國山陽',['四國','高松','松山','岡山','廣島','倉敷','宮島','山陰','山陽','道後','小豆島','金刀比羅','伊予','出雲']],
+    ['沖縄',['沖縄','石垣','宮古','那霸','美麗海','古宇利']]],
+   '韓國':[['首爾',['首爾','仁川','京畿','弘大','明洞','江原','雪嶽','南怡','春川','平昌']],
+    ['釜山',['釜山','慶州','大邱','南浦','海雲臺','鎮海']],['濟州',['濟州']]],
+   '中國':[['華東',['上海','杭州','蘇州','南京','黃山','華東','烏鎮']],
+    ['華北',['北京','天津','山西','內蒙','承德']],['華中',['張家界','武漢','長沙','鳳凰']],
+    ['西南',['雲南','麗江','四川','九寨','稻城','貴州','重慶','香格里拉']],
+    ['華南',['桂林','廈門','廣州','深圳','海南','三亞']],
+    ['西北',['西安','敦煌','新疆','青海','甘肅','絲路']]],
+   '歐洲':[['南歐',['義大利','西班牙','葡萄牙','希臘','馬爾他','克羅埃西亞','西葡','羅馬','威尼斯','佛羅倫斯','托斯卡尼','巴塞隆納']],
+    ['西歐',['法國','英國','瑞士','德國','荷蘭','比利時','奧地利','愛爾蘭','法比荷','荷比法','比荷盧','荷比盧','法瑞','德瑞','瑞法','英法','英愛','德奧','巴黎','倫敦','阿爾卑斯']],
+    ['北歐',['北歐','挪威','瑞典','芬蘭','丹麥','冰島']],
+    ['東歐',['東歐','捷克','匈牙利','波蘭','斯洛伐克','奧捷','巴爾幹','羅馬尼亞']]]
+  };
+  function areaOf(c,n){
+    var g=SUB[c]; if(!g) return c;
+    for(var i=0;i<g.length;i++){ var ks=g[i][1];
+      for(var j=0;j<ks.length;j++) if(n.indexOf(ks[j])>-1) return g[i][0]; }
+    return c;
+  }
+  var TAGS2=[
+   ['溫泉',['溫泉','湯泉','湯餞','足湯','湯宿','名湯','砂浴','SPA']],
+   ['美食',['吃到飽','放題','和牛','蟹蟹','長腳蟹','美餚','會席','米其林','燒肉','抹茶','甜蝦','海鮮','龍蝦']],
+   ['親子',['迪士尼','樂園','動物園','水族館','企鵝','恐龍','樂高','KITTY','雪樂園','影城','環球']],
+   ['賞景',['紅葉','楓','櫻','花火','彩燈','點燈','夜景','雪祭','樹冰','流冰','百選','絕景','極光','鬱金香']],
+   ['鐵道',['列車','鐵道','纜車','電鐵','火車','遊覽船','遊船','扁舟','雪見舟','郵輪','遊輪']],
+   ['悠閑',['慢旅','輕旅','悠遊','漫遊','半日閑','森呼吸','半自助','度假村','渡假村']],
+   ['高檔',['五星','星野','奢華','Club Med','希爾頓','萬豪','洲際','威士汀','乃之風','綠之風','六星','精品']],
+   ['宗教',['神社','寺','朝聖','參拜','教堂','佛','廟']]
+  ];
+  function tagsOf(n){
+    var o=[]; for(var i=0;i<TAGS2.length;i++){ var ks=TAGS2[i][1];
+      for(var j=0;j<ks.length;j++) if(n.indexOf(ks[j])>-1){ o.push(TAGS2[i][0]); break; } }
+    return o;
+  }
+  function parseRaw(txt){
+    var cap="", rows=[], byNo={};
+    txt.split("\n").forEach(function(l){
+      if(!l.trim()) return;
+      if(l.charAt(0)==="#"){ var m=l.match(/\u64f7\u53d6\u65e5=([\d-]+)/); if(m) cap=m[1]; return; }
+      var p=l.split("\t"); if(p.length<6||!p[1]) return;
+      var no=p[0];
+      if(byNo[no]){ if(byNo[no].cities.indexOf(p[5])<0) byNo[no].cities.push(p[5]); return; }
+      var r={ no:no, name:p[1], price:+p[2]||0,
+        dates:(p[3]||"").split(",").filter(Boolean),
+        country:p[4], area:areaOf(p[4],p[1]), cities:[p[5]],
+        days:daysOf(p[1]), free:/\u81ea\u7531\u884c|\u534a\u81ea\u52a9/.test(p[1]),
+        tags:tagsOf(p[1]),
+        url:"https://tour.colatour.com.tw/itinerary?PatternNo="+no };
+      byNo[no]=r; rows.push(r);
+    });
+    var cs=[]; rows.forEach(function(r){ if(cs.indexOf(r.country)<0) cs.push(r.country); });
+    return { captured:cap||"\u672a\u6a19\u793a", rows:rows, countries:cs };
+  }
+  function currentRaw(){
+    return { txt:(typeof window.COLA_RAW==="string"?window.COLA_RAW:""), src:"cola-index.js" };
+  }
+  var _cur=currentRaw();
+  var META=parseRaw(_cur.txt); META.src=_cur.src;
+  var IDX=META.rows||[];
+  function freshLine(note){
+    if(!IDX.length) return "";
+    var days=null, m=(META.captured||"").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if(m) days=Math.floor((Date.now()-new Date(+m[1],+m[2]-1,+m[3]).getTime())/86400000);
+    var out='行程資料更新日 <b>'+(META.captured||'—')+'</b>　共 '+IDX.length+' 條．'+
+      (META.countries||[]).length+' 個線別．台北／台中／高雄出發　'+
+      '<a href="update.html" target="_blank" rel="noopener">資料怎麼更新？</a><br>'+
+      (note||'起價只用來排序，<b>實際售價與可售團位一律以官網當下顯示為準</b>。');
+    if(days!==null && days>35) out='<span class="stale">行程資料已經 '+days+' 天沒有更新。團名與天數通常沒變，但起價與出發日可能不準，請提醒管理者更新。</span>'+out;
+    return out;
+  }
+  var NO_DATA='<div class="empty"><b>行程資料沒有載入</b>這個網頁要跟 cola-index.js 放在同一個資料夾才能用。如果是從公司網址打開的，請聯絡管理者。</div>';
+  /* ---- 索引區塊結束 ---- */
+  var CITYCODE={"台北（桃園機場）":"TPE","台中":"TXG","高雄":"KHH"};
+  var picked=[];
+
+  function uniq(a){var s={},o=[];a.forEach(function(x){if(!s[x]){s[x]=1;o.push(x);}});return o;}
+  var CNM={'一':1,'二':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10,'十一':11,'十二':12};
+  var _areas={n:-1,list:[]};
+  function allAreas(){
+    if(_areas.n!==IDX.length) _areas={n:IDX.length, list:uniq(IDX.map(function(r){return r.area;}))};
+    return _areas.list;
+  }
+  var KEY=['北海道','東京','大阪','京都','首爾','釜山','濟州','富士','迪士尼','環球影城',
+    '立山','合掌村','函館','札幌','小樽','箱根','輕井澤','別府','湯布院','豪斯登堡','沖繩',
+    '石垣','宮古','銀山','藏王','廣島','岡山','九州','四國','東北','北陸','關西','沖繩',
+    '曼谷','清邁','普吉','峴港','河內','胡志明','峇里島','長灘島','宿霧','吳哥','巴淡',
+    '巴黎','羅馬','威尼斯','倫敦','瑞士','冰島','極光','北歐','東歐','西班牙','義大利',
+    '杜拜','埃及','土耳其','摩洛哥','上海','北京','張家界','九寨','雲南','桂林','西安','敦煌'];
+
+  function wantMonths(){
+    var txt=(vals("a3")[0]||"")+" "+qs("#a3x").value, out=[];
+    (txt.match(/十[一二]月|[一二三四五六七八九十]月/g)||[]).forEach(function(x){
+      var k=x.replace('月',''); if(CNM[k]) out.push(CNM[k]); });
+    (txt.match(/(\d{1,2})\s*月/g)||[]).forEach(function(x){
+      var n=parseInt(x,10); if(n>=1&&n<=12) out.push(n); });
+    (txt.match(/(\d{1,2})\/(\d{1,2})/g)||[]).forEach(function(x){
+      var n=parseInt(x.split('/')[0],10); if(n>=1&&n<=12) out.push(n); });
+    return uniq(out);
+  }
+  function wantDays(){
+    var v=vals("a4")[0]||"";
+    if(v.indexOf("3")===0) return [3,4];
+    if(v.indexOf("5")===0) return [5,6];
+    if(v.indexOf("7")===0) return [7,8,9,10,11,12,13,14,15];
+    return null;
+  }
+  function wantBudget(){
+    var m=qs("#a6x").value.replace(/[,，]/g,'').match(/(\d{3,7})/);
+    if(!m) return 0;
+    var n=+m[1]; if(n<1000) n*=10000; return n;
+  }
+  function wantDest(){
+    var t=qs("#a2").value||"", c=[],a=[],k=[];
+    (META.countries||[]).forEach(function(x){ if(t.indexOf(x)>-1) c.push(x); });
+    allAreas().forEach(function(x){ if(t.indexOf(x)>-1 && (META.countries||[]).indexOf(x)<0) a.push(x); });
+    KEY.forEach(function(x){ if(t.indexOf(x)>-1) k.push(x); });
+    return {c:c,a:a,k:uniq(k),any:(c.length+a.length+k.length)>0};
+  }
+  function destHit(r,D){
+    // 講得越具體越優先：有講「北海道」就不該因為「日本」把九州也算進來
+    var specific=D.a.length||D.k.length;
+    if(specific){
+      if(D.a.indexOf(r.area)>-1) return {hit:r.area, level:2};
+      for(var i=0;i<D.k.length;i++) if(r.name.indexOf(D.k[i])>-1 || r.area.indexOf(D.k[i])>-1) return {hit:D.k[i], level:2};
+    }
+    if(D.c.indexOf(r.country)>-1) return {hit:r.country, level:1};
+    return null;
+  }
+  var A8TAG={"行程輕鬆不趕":"悠閒","飯店好":"高檔","吃得好":"美食","一定要去某個景點":null,"價格":null,"直飛不轉機":null};
+
+  function scoreAll(){
+    var months=wantMonths(), dayRange=wantDays(), budget=wantBudget(), D=wantDest();
+    var free=vals("a7")[0]||"", a8=vals("a8")[0]||"", want8=A8TAG[a8];
+    var code=CITYCODE[vals("a1")[0]||""]||"";
+    var out=[];
+    IDX.forEach(function(r){
+      // ── 硬條件：不符合就整條排除 ──
+      if(code && r.cities.indexOf(code)<0) return;
+      var dh=null;
+      if(D.any){ dh=destHit(r,D); if(!dh) return; }
+      if(free==="跟團" && r.free) return;
+      if(free==="自由行" && !r.free) return;
+      // ── 軟條件：計分 ──
+      var s=10, why=[];
+      if(dh) { s+=(dh.level===2?50:10); why.push(dh.hit); }
+      if(dayRange){ if(dayRange.indexOf(r.days)>-1){ s+=22; why.push(r.days+" 天"); } else { s-=20; } }
+      if(months.length){
+        var mh=r.dates.filter(function(d){ return months.indexOf(parseInt(d,10))>-1; });
+        if(mh.length){ s+=24; why.push(months[0]+" 月有團"); } else { s-=16; }
+      }
+      if(budget){
+        if(r.price&&r.price<=budget){ s+=20; why.push("在預算內"); }
+        else if(r.price&&r.price<=budget*1.25){ s+=4; }
+        else if(r.price){ s-=22; }
+      }
+      if(want8 && r.tags.indexOf(want8)>-1){ s+=26; why.push(want8); }
+      if(a8==="行程輕鬆不趕" && free!=="自由行" && r.free) s-=18;
+      if(a8==="價格" && r.price) s+=Math.max(0,14-Math.floor(r.price/10000));
+      if(s>0) out.push({r:r,s:s,why:why,level:dh?dh.level:0});
+    });
+    if(D.any && (D.a.length||D.k.length)){
+      var l2=out.filter(function(x){return x.level===2;});
+      if(l2.length>=3) out=l2;   // 具體地點夠多條，就只留具體的；不夠才用國家層級補
+    }
+    return out.sort(function(x,y){ return y.s-x.s || x.r.price-y.r.price; });
+  }
+
+  function card(item,cls,rank,note){
+    var r=item.r, d=document.createElement("article");
+    d.className="pick"+(cls?" "+cls:"");
+    var meta=[(r.days?r.days+" 天":"天數待查"), r.area];
+    if(r.price) meta.push("索引起價 $"+r.price.toLocaleString());
+    if(r.dates.length) meta.push(r.dates.join(" · "));
+    if(r.free) meta.push(/半自助/.test(r.name)?"跟團半自助":"自由行");
+    d.innerHTML='<span class="rank">'+rank+'</span>'+
+      '<a class="pick-name" href="'+r.url+'" target="_blank" rel="noopener">'+r.name+'</a>'+
+      '<div class="pick-meta">'+meta.map(function(m,i){return '<span'+(i<2?' class="hi"':'')+'>'+m+'</span>';}).join('')+'</div>'+
+      '<div class="pick-why"><b>'+note+'</b>'+(item.why.length?'　符合：'+item.why.join('、'):'')+
+      (r.tags.length?'　｜　'+r.tags.join('、'):'')+'</div>';
+    return d;
+  }
+
+  function renderPicks(){
+    var box=qs("#picks"), foot=qs("#idxfoot");
+    box.innerHTML=""; picked=[];
+    foot.innerHTML=freshLine();
+    if(!IDX.length){ box.innerHTML=NO_DATA; return; }
+    var ranked=scoreAll();
+    if(!ranked.length){
+      var D=wantDest(), tips=[];
+      if(D.any) tips.push("「"+qs("#a2").value.trim()+"」在索引裡找不到對應的線別");
+      if(vals("a4")[0]&&vals("a4")[0]!=="都可以") tips.push("天數限制（"+vals("a4")[0]+"）");
+      if(vals("a7")[0]&&vals("a7")[0]!=="還沒決定，兩種都想聽") tips.push(vals("a7")[0]);
+      box.innerHTML='<div class="empty"><b>目前條件下沒有符合的行程</b>'+
+        (tips.length?'可能卡在：'+tips.join('、')+'。<br>':'')+
+        '把 A2 想去哪裡、A3 出發日期、A4 天數其中一項放寬再看看。</div>';
+      return;
+    }
+    var best=ranked[0];
+    function diff(x){ return x.r.area!==best.r.area || x.r.free!==best.r.free || x.r.days!==best.r.days; }
+    var up=null,down=null,upAny=null,downAny=null;
+    for(var i=1;i<ranked.length;i++){
+      var x=ranked[i];
+      if(best.r.price&&x.r.price>best.r.price*1.08){ if(!upAny)upAny=x; if(!up&&diff(x))up=x; }
+      if(best.r.price&&x.r.price<best.r.price*0.92){ if(!downAny)downAny=x; if(!down&&diff(x))down=x; }
+      if(up&&down) break;
+    }
+    up=up||upAny; down=down||downAny;
+    box.appendChild(card(best,"","最貼近","全部條件都滿足，沒加碼也沒妥協。"));
+    picked.push({p:"最貼近",r:best.r});
+    if(up){ box.appendChild(card(up,"alt","加一點","多花一些，規格或內容更好。")); picked.push({p:"加一點",r:up.r}); }
+    if(down){ box.appendChild(card(down,"lite","省一點","更省，但要跟客戶講清楚少了什麼。")); picked.push({p:"省一點",r:down.r}); }
+    qs("#resultNote").innerHTML="依上面填的條件，從 <b>"+IDX.length+"</b> 條官網行程裡篩出 <b>"+
+      ranked.length+"</b> 條符合，再排出下面三條。<b>點團名直接開官網</b>，看到的是即時售價與可售團位。";
+  }
+
+  document.addEventListener("input",refresh);
+  document.addEventListener("change",refresh);
+
+  if(!load()) demo();
+  refresh();
+})();
+</script>
