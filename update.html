@@ -163,7 +163,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
         <span class="sub">要先登入管理這個網站的 GitHub 帳號。</span>
         <div class="runwrap"><a class="runbtn" id="runLink" href="https://github.com/johnnyweb-art/colatool_cl/actions/workflows/update-index.yml" target="_blank" rel="noopener">開啟「更新行程資料」頁面 ↗</a></div>
       </li>
-      <li>頁面右邊有一個 <span class="gh">Run workflow ▾</span> 按鈕，點它。</li>
+      <li>頁面右邊有一個 <span class="gh">Run workflow ▾</span> 按鈕，點它。
+        <span class="sub">如果看到的是一份清單，先點左邊的「更新行程資料」。</span></li>
       <li>跳出一個小框，直接點裡面綠色的 <span class="gh green">Run workflow</span>。
         <span class="sub">其他選項都不用改。</span></li>
       <li>約 5 分鐘後，清單最上面那一筆出現<b>綠色勾勾</b>，就是盤點完成。
@@ -337,7 +338,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
   </section>
 
   <p class="why">
-    <b>自動更新怎麼運作？</b>設定檔是 <code>.github/workflows/update-index.yml</code>，盤點程式是 <code>stocktake.cjs</code>，都在這個網站的 GitHub 裡。每週一早上，GitHub 會用它自己的電腦打開可樂官網的搜尋頁，把行程清單讀下來、換掉網站上的 <code>cola-index.js</code>。它只讀官網公開的頁面，跟你自己一頁一頁點開搜尋結果一樣，不會碰到登入或訂單資料。<br>
+    <b>自動更新怎麼運作？</b>設定檔在 <code>.github/workflows</code> 資料夾裡，盤點程式是 <code>stocktake.cjs</code>，都在這個網站的 GitHub 裡。每週一早上，GitHub 會用它自己的電腦打開可樂官網的搜尋頁，把行程清單讀下來、換掉網站上的 <code>cola-index.js</code>。它只讀官網公開的頁面，跟你自己一頁一頁點開搜尋結果一樣，不會碰到登入或訂單資料。<br>
     <b>會更新什麼：</b>行程清單、起價與官網顯示的出發日。工具頁上的欄位、規則與畫面不會變。<br>
     <b>保護機制：</b>如果這次抓到的行程少於 1000 筆（平常約 2000 筆），就判定這次有問題、不換資料，網站繼續用舊的。
   </p>
@@ -350,7 +351,16 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
   if(m){
     var seg=location.pathname.split("/").filter(Boolean);
     var repo=(seg.length && !/\.html?$/.test(seg[0])) ? seg[0] : (m[1]+".github.io");
-    run.href="https://github.com/"+m[1]+"/"+repo+"/actions/workflows/update-index.yml";
+    var base="https://github.com/"+m[1]+"/"+repo;
+    run.href=base+"/actions";
+    fetch("https://api.github.com/repos/"+m[1]+"/"+repo+"/actions/workflows")
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        var ws=(d&&d.workflows)||[];
+        var w=ws.filter(function(x){ return /更新行程資料/.test(x.name); })[0]||ws[0];
+        if(w&&w.path) run.href=base+"/actions/workflows/"+w.path.split("/").pop();
+      })
+      .catch(function(){});
   }
 
   var bm=document.getElementById("bm"), hint=document.getElementById("bmhint");

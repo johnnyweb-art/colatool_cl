@@ -724,6 +724,48 @@ pre.docbody{margin:0; padding:16px 18px; font-family:"Noto Sans TC","Microsoft J
       for(var j=0;j<ks.length;j++) if(n.indexOf(ks[j])>-1){ o.push(TAGS2[i][0]); break; } }
     return o;
   }
+  /* ---- 國家校正：官網搜尋結果會夾帶「推薦行程」，所以先看團名裡的地名 ---- */
+  var EVID=[
+    ['郵輪',['郵輪','遊輪','探險號','公主號','皇家加勒比','諾唯真']],
+    ['港澳',['香港','澳門','港澳']],
+    ['台灣',['花蓮','台東','花東','墾丁','澎湖','馬祖','日月潭','阿里山','奮起湖','嘉義','鄒族','南投','綠島','蘭嶼','太魯閣','宜蘭','清境','合歡山','武陵農場','福壽山','梨山','拉拉山','司馬庫斯','溪頭','杉林溪','鹿港','九份','平溪','野柳','小琉球','高鐵假期']],
+    ['日本',['日本','北海道','東京','大阪','京都','關西','九州','四國','沖繩','北陸','名古屋','富士','合掌村','立山','函館','札幌','小樽','箱根','輕井澤','別府','湯布院','福岡','石垣','宮古島','廣島','岡山','山陰','山陽','奈良','神戶','伊勢','金澤','上高地','仙台','青森','秋田','鹿兒島','長崎','熊本','宮崎','TOMAMU','KIRORO','SAHORO','日光','河口湖','伊豆','銀山','藏王','奧入瀨','豪斯登堡','指宿']],
+    ['韓國',['韓國','首爾','釜山','濟州','大邱','慶州','江原','雪嶽','南怡','春川','仁川','全州','統營','麗水','安東','釜慶','釜邱']],
+    ['中國',['中國','上海','北京','張家界','雲南','麗江','四川','九寨','桂林','廈門','西安','敦煌','新疆','黃山','杭州','蘇州','南京','重慶','貴州','青海','西藏','內蒙','哈爾濱','長白山','青島','廣州','深圳','三亞','江南','絲路','華東','成都','稻城','大理','昆明','香格里拉','武夷山','雪鄉','霧凇']],
+    ['泰國',['泰國','曼谷','清邁','普吉','芭達雅','華欣','清萊','喀比','蘇美']],
+    ['越南',['越南','峴港','河內','胡志明','下龍灣','芽莊','富國島','會安','大叻','中越']],
+    ['馬來西亞',['馬來西亞','吉隆坡','沙巴','檳城','蘭卡威','亞庇','麻六甲','馬六甲']],
+    ['新加坡',['新加坡','聖淘沙','獅城','新馬']],
+    ['印尼',['印尼','峇里島','巴里島','巴淡','民丹','雅加達','日惹','龍目','科摩多']],
+    ['菲律賓',['菲律賓','長灘島','宿霧','薄荷島','巴拉望','馬尼拉','愛妮島']],
+    ['印度',['印度','斯里蘭卡','尼泊爾','不丹','馬爾地夫','喀什米爾','拉達克']],
+    ['杜拜',['杜拜','阿布達比','阿聯','卡達','約旦','沙烏地','阿曼','以色列']],
+    ['土耳其',['土耳其','伊斯坦堡','卡帕多奇亞','棉花堡']],
+    ['埃及',['埃及','開羅','摩洛哥','肯亞','南非','非洲','突尼西亞']],
+    ['歐洲',['歐洲','義大利','法國','西班牙','葡萄牙','英國','瑞士','德國','奧地利','荷蘭','比利時','捷克','匈牙利','波蘭','克羅埃西亞','希臘','北歐','東歐','西歐','南歐','冰島','挪威','瑞典','芬蘭','丹麥','巴爾幹','斯洛維尼亞','羅馬尼亞','保加利亞','波羅的海','愛爾蘭','蘇格蘭','馬爾他','法比荷','德瑞','奧捷','西葡','俄羅斯','喬治亞','高加索','阿爾卑斯','少女峰','新天鵝堡']],
+    ['紐西蘭',['紐西蘭','皇后鎮','基督城']],
+    ['澳洲',['澳洲','雪梨','墨爾本','黃金海岸','凱恩斯','伯斯','塔斯馬尼亞','大堡礁','烏魯魯']],
+    ['加拿大',['加拿大','溫哥華','洛磯山','多倫多','班夫','黃刀','魁北克']],
+    ['美國',['美國','紐約','洛杉磯','舊金山','夏威夷','拉斯維加斯','美西','美東','阿拉斯加','黃石','大峽谷']],
+    ['關島',['關島','塞班']],
+    ['帛琉',['帛琉']]
+  ];
+  function isDomestic(name){
+    if(/[（(](台北|桃園|中壢|南崁|新竹|苗栗|台中|彰化|嘉義|台南|高雄|板橋)[、，]/.test(name)) return true;
+    var tw=EVID[2][1];
+    for(var i=0;i<tw.length;i++) if(name.indexOf(tw[i])>-1) return true;
+    return false;
+  }
+  function countryOf(kw,name){
+    if(isDomestic(name)) return '台灣';
+    var hits=[];
+    for(var i=0;i<EVID.length;i++){
+      var ks=EVID[i][1];
+      for(var j=0;j<ks.length;j++){ if(name.indexOf(ks[j])>-1){ hits.push(EVID[i][0]); break; } }
+    }
+    if(hits.indexOf(kw)>-1) return kw;
+    return hits.length ? hits[0] : kw;
+  }
   function parseRaw(txt){
     var cap="", rows=[], byNo={};
     txt.split("\n").forEach(function(l){
@@ -732,9 +774,10 @@ pre.docbody{margin:0; padding:16px 18px; font-family:"Noto Sans TC","Microsoft J
       var p=l.split("\t"); if(p.length<6||!p[1]) return;
       var no=p[0];
       if(byNo[no]){ if(byNo[no].cities.indexOf(p[5])<0) byNo[no].cities.push(p[5]); return; }
+      var cty=countryOf(p[4],p[1]);
       var r={ no:no, name:p[1], price:+p[2]||0,
         dates:(p[3]||"").split(",").filter(Boolean),
-        country:p[4], area:areaOf(p[4],p[1]), cities:[p[5]],
+        country:cty, area:areaOf(cty,p[1]), cities:[p[5]],
         days:daysOf(p[1]), free:/\u81ea\u7531\u884c|\u534a\u81ea\u52a9/.test(p[1]),
         tags:tagsOf(p[1]),
         url:"https://tour.colatour.com.tw/itinerary?PatternNo="+no };
@@ -801,6 +844,14 @@ pre.docbody{margin:0; padding:16px 18px; font-family:"Noto Sans TC","Microsoft J
     (META.countries||[]).forEach(function(x){ if(t.indexOf(x)>-1) c.push(x); });
     allAreas().forEach(function(x){ if(t.indexOf(x)>-1 && (META.countries||[]).indexOf(x)<0) a.push(x); });
     KEYW.forEach(function(x){ if(t.indexOf(x)>-1) k.push(x); });
+    EVID.forEach(function(g){
+      if(g[0]==="台灣") return;
+      g[1].forEach(function(x){
+        if(t.indexOf(x)<0 || (META.countries||[]).indexOf(x)>-1 || allAreas().indexOf(x)>-1) return;
+        k.push(x); c.push(g[0]);
+      });
+    });
+    c=uniq(c);
     return {c:c,a:a,k:uniq(k),any:(c.length+a.length+k.length)>0};
   }
   function destHit(r,D){
@@ -825,6 +876,7 @@ pre.docbody{margin:0; padding:16px 18px; font-family:"Noto Sans TC","Microsoft J
     var a8=vals("b7")[0]||"", want8=A8TAG[a8];
     var out=[];
     IDX.forEach(function(r){
+      if(r.country==="台灣") return;
       if(r.free) return;
       if(code && r.cities.indexOf(code)<0) return;
       var dh=null;
@@ -870,6 +922,18 @@ pre.docbody{margin:0; padding:16px 18px; font-family:"Noto Sans TC","Microsoft J
     qs("#customBtn").onclick=function(){ qs("#base").value=(qs("#base").value==="custom"?"":"custom"); refresh(); };
 
     if(!IDX.length){ box.innerHTML=NO_DATA; return; }
+    var hasAny=destIn(qs("#b2").value||"").any || monthsIn([qs("#b3a").value,qs("#b3b").value,qs("#b3c").value].join(" ")).length || dayRangeOf(vals("b4")[0]||"") || budgetIn(qs("#b6x").value);
+    var twHit=((EVID.filter(function(x){return x[0]==="台灣";})[0]||["",[]])[1]).filter(function(k){ return (qs("#b2").value||"").indexOf(k)>-1; });
+    if(twHit.length){
+      qs("#resultNote").innerHTML="依上面的條件，從官網行程裡挑出最接近的幾條。<b>選一條當底</b>，下一區再勾要改什麼。團體報價只用跟團行程當底，自由行不列入。";
+      box.innerHTML='<div class="empty"><b>「'+twHit[0]+'」是國內行程，不在這份資料裡</b>這個工具收的是可樂的國外團體旅遊。國內行程請到 <a href="https://twtour.colatour.com.tw/" target="_blank" rel="noopener">可樂國內旅遊網站</a> 查。</div>';
+      return;
+    }
+    if(!hasAny && base!=="custom"){
+      qs("#resultNote").innerHTML="依上面的條件，從官網行程裡挑出最接近的幾條。<b>選一條當底</b>，下一區再勾要改什麼。團體報價只用跟團行程當底，自由行不列入。";
+      box.innerHTML='<div class="empty"><b>還沒填條件</b>在 B2 寫目的地，或填 B3 出發日期、B4 天數、B6 預算其中一項，這裡就會列出可以當底的行程。</div>';
+      return;
+    }
     if(!shown.length){
       box.innerHTML='<div class="empty"><b>目前條件下找不到跟團行程可以當底</b>'+
         '可以放寬 B2 目的地或 B4 天數再看看；或直接選「完全客製」，需求單會請台北從頭排。</div>';
