@@ -289,13 +289,44 @@ pre.docbody{margin:0; padding:16px 18px; font-family:"Noto Sans TC","Microsoft J
   line-height:1.85; white-space:pre-wrap; word-break:break-word; color:var(--ink); max-height:560px; overflow:auto}
 .doc-foot{padding:10px 16px; border-top:1px solid var(--line); font-size:12px; color:var(--ink-3); background:var(--card-2)}
 
-.stage2{margin-top:26px; border:1px solid var(--teal); border-radius:var(--r); background:var(--card); overflow:hidden}
-.stage2-h{padding:12px 16px; background:var(--teal-soft); border-bottom:1px solid var(--line)}
-.stage2-h strong{font-size:15px; color:var(--accent-strong)}
-.stage2-h p{margin:3px 0 0; font-size:12.5px; color:var(--ink-2); line-height:1.6}
-.stage2-b{padding:14px 16px}
-.stage2-b textarea{min-height:120px}
-.stage2-b .btn{margin-top:10px; width:100%}
+/* ---- G 區：給同業的報價單 ---- */
+.qf{border:1px solid var(--line); background:var(--card); border-radius:var(--r); padding:13px 15px 15px; margin:0 0 12px}
+.qf-h{display:flex; align-items:center; justify-content:space-between; gap:6px 12px; flex-wrap:wrap;
+  font-weight:700; font-size:14.5px; margin:0 0 10px; color:var(--ink)}
+.qf-h small{flex:1 1 100%; font-weight:400; font-size:12px; color:var(--ink-3); line-height:1.5}
+.qgrid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px 12px}
+.qgrid.three{grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:10px}
+.qfld{display:block; min-width:0}
+.qfld>span{display:block; font-size:12px; color:var(--ink-2); margin-bottom:3px}
+.qfld>span i{font-style:normal; color:var(--ink-3)}
+.qfld.wide{grid-column:1/-1}
+.qfld output{display:block; padding:8px 11px; border-radius:8px; background:var(--card-2); font-size:14px; min-height:40px; font-variant-numeric:tabular-nums}
+input[type=date],input[type=time]{
+  font:inherit; font-size:14px; color:var(--ink); background:var(--card); color-scheme:light dark;
+  border:1px solid var(--line-2); border-radius:8px; padding:7px 10px; width:100%; min-height:40px
+}
+@media (max-width:560px){ .qgrid,.qgrid.three{grid-template-columns:1fr} }
+.mini{font:inherit; font-size:12.5px; font-weight:500; cursor:pointer; border:1px solid var(--teal);
+  background:var(--card); color:var(--teal); border-radius:7px; padding:5px 12px}
+.mini:hover{background:var(--teal-soft)}
+.tiers{display:flex; flex-direction:column; gap:6px; margin-bottom:8px}
+.tier{display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) minmax(0,1fr) 36px; gap:6px; align-items:center}
+.tier-h{font-size:12px; color:var(--ink-2); margin-bottom:3px}
+.tier-h i{font-style:normal; color:var(--ink-3)}
+.tier input{font-variant-numeric:tabular-nums}
+.tier .del{font:inherit; font-size:13px; cursor:pointer; border:1px solid var(--line-2); background:var(--card);
+  color:var(--ink-3); border-radius:7px; height:38px}
+.tier .del:hover{border-color:var(--warn); color:var(--warn)}
+.qcheck{margin:14px 0 10px; display:flex; flex-direction:column; gap:8px}
+.qcheck .ok{padding:10px 13px; border-radius:8px; background:var(--ok-soft); color:var(--ok); font-size:13px; font-weight:500; line-height:1.6}
+.dlbtn{width:100%}
+details.aichk{margin-top:16px; border:1px solid var(--line); border-radius:var(--r); background:var(--card)}
+details.aichk summary{cursor:pointer; padding:12px 15px; font-weight:700; font-size:14px; color:var(--ink-2)}
+.aichk-b{padding:0 15px 15px}
+.aichk-b p{margin:0 0 10px; font-size:13px; color:var(--ink-2); line-height:1.6}
+.aichk-b textarea{min-height:110px}
+.aichk-b .btn{margin-top:10px; width:100%}
+details.aichk .output{margin:0 15px 15px}
 
 @media print{
   .masthead,.tracker,.wrap>*:not(#docWrap),.actionbar,.doc-actions,.doc-foot{display:none!important}
@@ -312,7 +343,7 @@ pre.docbody{margin:0; padding:16px 18px; font-family:"Noto Sans TC","Microsoft J
   <div class="masthead-in">
     <p class="eyebrow">可樂旅遊中壢分公司　團體部</p>
     <h1>同業報價需求單</h1>
-    <p>同業來詢價就打開。問清楚條件、從官網行程挑一條當底、勾出要改的地方，一鍵產出給台北的報價需求單。</p>
+    <p>同業來詢價就打開。問清楚條件、從官網行程挑一條當底、勾出要改的地方，下載給台北的需求單（Word）。台北回價後在 G 區填價錢，再下載給同業的報價單（Word）。</p>
   </div>
 </header>
 
@@ -610,51 +641,123 @@ pre.docbody{margin:0; padding:16px 18px; font-family:"Noto Sans TC","Microsoft J
       <div class="doc-head">
         <strong>團體報價需求單<span class="sub" id="docSub"></span></strong>
         <div class="doc-actions">
-          <button type="button" id="docPrint">列印／存 PDF</button>
-          <button type="button" class="primary" id="docCopy">複製全文</button>
+          <button type="button" id="docCopy">複製文字</button>
+          <button type="button" class="primary" id="docWord">下載 Word 檔</button>
         </div>
       </div>
       <pre class="docbody" id="docBody"></pre>
-      <div class="doc-foot">複製後直接貼進 LINE 或 Email 給台北。這一段完全由網頁產生，沒有經過 AI，內容就是你上面填的。</div>
-    </div>
-
-    <div class="stage2">
-      <div class="stage2-h">
-        <strong>台北回價之後：產出給同業的報價</strong>
-        <p>把台北回覆的內容原封不動貼進來，按下去會產生一段給 AI 的指令。AI 會照「可樂旅遊團體報價單」的格式整理，並把台北沒回應的配菜項目另外列給你。</p>
-      </div>
-      <div class="stage2-b">
-        <textarea id="reply" placeholder="把台北回覆的報價貼在這裡（LINE 訊息、Email 內文、或 Word 裡的文字都可以）"></textarea>
-        <button class="btn" type="button" id="makeQuote">產生報價單的 AI 指令</button>
-      </div>
-    </div>
-
-    <div class="output" id="output" hidden>
-      <div class="output-head">
-        <strong>給 AI 的指令（需求單與台北回價已帶入）</strong>
-        <button class="copy" id="copy" type="button">複製全部</button>
-      </div>
-      <div class="whereto">
-        <p class="whereto-t">複製之後貼到哪裡？</p>
-        <ol class="whereto-steps">
-          <li>打開 Claude 或 ChatGPT，開一個新對話</li>
-          <li>貼上、送出</li>
-        </ol>
-        <p class="whereto-warn"><b>送出前一定要核對價格。</b>指令裡已經要求 AI 照抄台北的數字，但 AI 產出的報價單上每一個金額、人數級距、日期，都要跟台北原文對一次再寄給同業。</p>
-      </div>
-      <pre class="gen" id="gen"></pre>
+      <div class="doc-foot"><b>Word 檔寄給台北。</b>第六段是空白表格，欄位跟下面 G 區的報價單一樣，請台北直接填好回傳。要貼 LINE 就按「複製文字」。這份內容完全由網頁產生，沒有經過 AI。</div>
     </div>
   </div>
 
+  <!-- ===== G 給同業的報價單 ===== -->
+  <section class="sect" id="quoteSect">
+    <div class="sect-head"><span class="sect-tag go">G 區</span><h2>台北回價之後：給同業的報價單</h2></div>
+    <p class="sect-note">台北回價後再填。填完按最下面的按鈕，下載 Word 版「可樂旅遊團體報價單」。<b>價錢和條件都照台北回覆填，網頁不會自己算或補數字。</b>沒填的地方，Word 檔裡會標黃底「待填」。</p>
+
+    <div class="qf">
+      <div class="qf-h">一、基本資料<button type="button" class="mini" id="qFill">從上面 A～C 區帶入</button></div>
+      <div class="qgrid">
+        <label class="qfld wide"><span>團名</span><input type="text" id="q_title" placeholder="例：示範旅行社-北海道五日"></label>
+        <label class="qfld"><span>委託公司</span><input type="text" id="q_company"></label>
+        <label class="qfld"><span>委託人</span><input type="text" id="q_contact" placeholder="例：林經理"></label>
+        <label class="qfld"><span>電話 <i>選填</i></span><input type="text" id="q_tel"></label>
+        <label class="qfld"><span>電子郵件 <i>選填</i></span><input type="text" id="q_mail"></label>
+        <label class="qfld wide"><span>地址 <i>選填</i></span><input type="text" id="q_addr"></label>
+      </div>
+      <div class="qgrid three">
+        <label class="qfld"><span>出發日期</span><input type="date" id="q_dep"></label>
+        <label class="qfld"><span>天數</span><input type="number" id="q_days" min="1" max="40"></label>
+        <div class="qfld"><span>回程日期 <i>自動算</i></span><output id="q_ret">—</output></div>
+        <label class="qfld"><span>報價日期</span><input type="date" id="q_qdate"></label>
+        <label class="qfld"><span>報價有效截止日</span><input type="date" id="q_valid"></label>
+        <label class="qfld"><span>截止時間 <i>選填</i></span><input type="time" id="q_validt"></label>
+      </div>
+    </div>
+
+    <div class="qf">
+      <div class="qf-h">現金報價<small>每人、新台幣。照台北回覆填；匯款團費沒有就留白，報價單會自動改成一欄。</small></div>
+      <div class="tier tier-h" aria-hidden="true"><span>人數級距</span><span>一般團費</span><span>匯款團費 <i>選填</i></span><span></span></div>
+      <div class="tiers" id="tiers"></div>
+      <input type="hidden" id="q_tiers">
+      <button type="button" class="mini" id="addTier">＋ 加一個級距</button>
+      <div class="qgrid" style="margin-top:12px">
+        <label class="qfld"><span>小孩佔床／加床</span><input type="text" id="q_child" placeholder="例：同大人售價（2 足歲以上未滿 12 歲）"></label>
+        <label class="qfld"><span>小孩不佔床</span><input type="text" id="q_nobed" placeholder="例：減 3,000 元"></label>
+        <label class="qfld"><span>嬰兒</span><input type="text" id="q_infant" placeholder="例：4,400 元／人"></label>
+        <label class="qfld"><span>單人房差</span><input type="text" id="q_single" placeholder="例：每人 NT$ 11,000 元"></label>
+        <label class="qfld wide"><span>成行條件</span><input type="text" id="q_cond" placeholder="例：25 位大人以上同時出發；機位需求後成行率需達 95%"></label>
+        <label class="qfld wide"><span>備註 <i>一行一點，選填</i></span><textarea id="q_notes" rows="4" placeholder="例：以上報價為目前暫定報價，如遇航空公司調漲票價，將重新報價"></textarea></label>
+      </div>
+    </div>
+
+    <div class="qf">
+      <div class="qf-h">二、費用項目<small>一行一點。預設是公司報價單常用的寫法，請照台北回覆逐行改。</small></div>
+      <div class="qgrid">
+        <label class="qfld wide"><span>報價包含</span><textarea id="q_inc" rows="5"></textarea></label>
+        <label class="qfld wide"><span>報價不含</span><textarea id="q_exc" rows="4"></textarea></label>
+        <label class="qfld wide"><span>保險</span><textarea id="q_ins" rows="2"></textarea></label>
+      </div>
+    </div>
+
+    <div class="qf">
+      <div class="qf-h">三、付款方式</div>
+      <div class="qgrid">
+        <label class="qfld wide"><span>訂金</span><input type="text" id="q_deposit" placeholder="例：簽約時每人 NT$ 25,000，簽約後三個工作天內付清"></label>
+        <label class="qfld wide"><span>尾款</span><input type="text" id="q_balance" placeholder="例：於行前說明會時付清"></label>
+      </div>
+    </div>
+
+    <div class="qf">
+      <div class="qf-h">承辦資訊與匯款帳號<small>只要填一次，這台電腦會記住；按「清空重填」也不會清掉。</small></div>
+      <div class="qgrid">
+        <label class="qfld"><span>承辦業務</span><input type="text" id="s_rep" class="keep" placeholder="例：陳美麗 小姐"></label>
+        <label class="qfld"><span>業務電話</span><input type="text" id="s_tel" class="keep" placeholder="例：0977-888-999"></label>
+        <label class="qfld"><span>承辦店長 <i>選填</i></span><input type="text" id="s_mgr" class="keep"></label>
+        <label class="qfld"><span>承辦分公司</span><input type="text" id="s_branch" class="keep"></label>
+        <label class="qfld"><span>匯款銀行</span><input type="text" id="s_bank" class="keep" placeholder="銀行名稱與代碼"></label>
+        <label class="qfld"><span>戶名</span><input type="text" id="s_acname" class="keep"></label>
+        <label class="qfld wide"><span>帳號</span><input type="text" id="s_acno" class="keep" inputmode="numeric"></label>
+      </div>
+    </div>
+
+    <div class="qcheck" id="qcheck" aria-live="polite"></div>
+    <button type="button" class="btn dlbtn" id="dlQuote">下載給同業的報價單（Word 檔）</button>
+
+    <details class="aichk">
+      <summary>選用：請 AI 核對台北原文</summary>
+      <div class="aichk-b">
+        <p>把台北的回覆原封不動貼進來，按下去會產生一段核對指令。AI 只負責逐項比對台北原文和上面的報價單有沒有對不上，不會改你的報價單。</p>
+        <textarea id="reply" placeholder="把台北回覆的報價貼在這裡（LINE 訊息、Email 內文、或 Word 裡的文字都可以）"></textarea>
+        <button class="btn" type="button" id="makeCheck">產生核對指令</button>
+      </div>
+      <div class="output" id="output" hidden>
+        <div class="output-head">
+          <strong>給 AI 的核對指令（台北原文與報價單已帶入）</strong>
+          <button class="copy" id="copy" type="button">複製全部</button>
+        </div>
+        <div class="whereto">
+          <p class="whereto-t">複製之後貼到哪裡？</p>
+          <ol class="whereto-steps">
+            <li>打開 Claude 或 ChatGPT，開一個新對話</li>
+            <li>貼上、送出</li>
+          </ol>
+          <p class="whereto-warn"><b>AI 說「一致」也要自己再看一次。</b>核對表只是幫你找漏看的地方；寄出前，每個金額和日期還是要跟台北原文對過。</p>
+        </div>
+        <pre class="gen" id="gen"></pre>
+      </div>
+    </details>
+  </section>
+
   <div class="privacy">
-    <b>資料不會離開這台電腦。</b>這一頁是單獨的 HTML 檔，所有處理都在你的瀏覽器裡跑，沒有任何資料被送出去。草稿存在你自己的瀏覽器裡。<br>
-    <b>不要填旅客名單與個資。</b>這張單是給台北報價用的，只需要人數與條件，不需要任何人的姓名、生日、護照號碼。
+    <b>資料不會離開這台電腦。</b>所有處理都在你的瀏覽器裡跑，沒有任何資料被送出去；Word 檔也是在你的電腦上產生，直接存到「下載」資料夾。草稿存在你自己的瀏覽器裡。<br>
+    <b>不要填旅客名單與個資。</b>需求單和報價單只需要同業公司的聯絡資料、人數與條件，不需要任何旅客的姓名、生日、護照號碼。
   </div>
 
   <footer>
     可樂旅遊中壢分公司　AI 助理應用訓練　9/19 課堂示範品<br>
-    需求單第六段「請台北回覆」的項目，比照可樂旅遊團體報價單的欄位（現金報價級距、小孩與嬰兒價、單人房差、包含與不含、付款方式），台北回的價可以直接套進報價單。<br>
-    行程資料（cola-index.js）與直售部共用，由管理者每月更新一次，全公司重新整理網頁就生效。
+    需求單 Word 檔第六段「請台北回覆」的表格，欄位跟可樂旅遊團體報價單一樣（現金報價級距、小孩與嬰兒價、單人房差、包含與不含、付款方式），台北填好回傳後照著填進 G 區就好。<br>
+    行程資料（cola-index.js）與直售部共用，每週一自動更新，重新整理網頁就生效。
   </footer>
 </div>
 
@@ -1024,9 +1127,12 @@ pre.docbody{margin:0; padding:16px 18px; font-family:"Noto Sans TC","Microsoft J
   function refresh(){
     if(busy) return; busy=true;
     try{
+      tiersSync();
       renderPicks();
       renderDishes();
       renderAlerts();
+      renderQuote();
+      if(!qs("#docWrap").hidden) showReq();
       var n=0, first=null;
       blocks.forEach(function(b){
         var ok=answered(b);
@@ -1049,14 +1155,30 @@ pre.docbody{margin:0; padding:16px 18px; font-family:"Noto Sans TC","Microsoft J
   });
 
   /* ---- 草稿 ---- */
+  var TEXTS="input[type=text],input[type=number],input[type=hidden],input[type=date],input[type=time],textarea";
   function save(){
     try{
       var d={r:{},c:{},t:{}};
       qsa("input[type=radio]").forEach(function(i){ if(i.checked) d.r[i.name]=i.id; });
       qsa("input[type=checkbox]").forEach(function(i){ if(i.checked) d.c[i.id]=1; });
-      qsa("input[type=text],input[type=number],input[type=hidden],textarea").forEach(function(i){ if(i.value && i.id) d.t[i.id]=i.value; });
+      qsa(TEXTS).forEach(function(i){ if(i.value && i.id && !i.classList.contains("keep")) d.t[i.id]=i.value; });
       localStorage.setItem(KEY,JSON.stringify(d));
     }catch(e){}
+    saveKeep();
+  }
+  /* 承辦人與匯款帳號：另外存，清空重填也留著 */
+  var KEY_STAFF="cola-group-staff-v1", BRANCH="可樂旅遊旅行社股份有限公司 中壢分公司";
+  function saveKeep(){
+    try{
+      var d={}; qsa(".keep").forEach(function(i){ if(i.value.trim()) d[i.id]=i.value; });
+      localStorage.setItem(KEY_STAFF,JSON.stringify(d));
+    }catch(e){}
+  }
+  function loadKeep(){
+    var d={};
+    try{ d=JSON.parse(localStorage.getItem(KEY_STAFF)||"{}")||{}; }catch(e){ d={}; }
+    qsa(".keep").forEach(function(i){ if(d[i.id]) i.value=d[i.id]; });
+    if(!qs("#s_branch").value.trim()) qs("#s_branch").value=BRANCH;
   }
   function load(){
     try{
@@ -1088,97 +1210,72 @@ pre.docbody{margin:0; padding:16px 18px; font-family:"Noto Sans TC","Microsoft J
     qs("#f1").value="9/25（四）前";
     ensureDishDefaults();
     var r=rankGroup(); if(r.length) qs("#base").value=r[0].r.no;
+    // G 區：假設台北已經回價（數字都是虛構的）
+    fillFromAbove(false);
+    var today=new Date();
+    qs("#q_dep").value=ymd(nextDate(today,11,24));
+    qs("#q_valid").value=ymd(addDays(today,7));
+    qs("#q_validt").value="16:00";
+    tiersSet([{t:"26～30 人",g:"39800",r:"39000"},{t:"31～35 人",g:"38600",r:"37800"}]);
+    qs("#q_child").value="同大人售價（2 足歲以上未滿 12 歲）";
+    qs("#q_nobed").value="減 3,000 元";
+    qs("#q_infant").value="4,400 元／人";
+    qs("#q_single").value="每人 NT$ 11,000 元";
+    qs("#q_cond").value="25 位大人以上同時出發；機位需求後成行率需達 95%";
+    qs("#q_notes").value="以上報價為目前暫定報價，如遇航空公司調漲票價，將於第一時間通知並重新報價。\n此為現金優惠報價，刷卡每人需另加 NT$ 1,200 元。\n團體房型為兩人一室，出發前如有旅客取消導致單人住房，須補足單人房差。";
+    qs("#q_deposit").value="簽約時每人 NT$ 25,000，簽約後三個工作天內付清（即期票、現金或匯款）";
+    qs("#q_balance").value="於行前說明會時付清";
   }
 
-  /* ---- 產出報價需求單 ---- */
-  function orNone(v){ return (v&&String(v).trim())?String(v).trim():"（未提供）"; }
+  /* ---- 共用小工具 ---- */
+  function pad(n){ return (n<10?"0":"")+n; }
   function stamp(){
-    var d=new Date(), p=function(n){return (n<10?'0':'')+n;};
+    var d=new Date();
     return {
-      id:"G-"+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+"-"+p(d.getHours())+p(d.getMinutes()),
-      text:d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate()+" "+p(d.getHours())+":"+p(d.getMinutes())
+      id:"G-"+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+"-"+pad(d.getHours())+pad(d.getMinutes()),
+      text:d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate()+" "+pad(d.getHours())+":"+pad(d.getMinutes())
     };
   }
-  var lastDoc="";
-  function buildDoc(){
-    var st=stamp(), t=[], miss=[];
-    REQ.forEach(function(b){ if(!answered(b)) miss.push(b.getAttribute("data-label")); });
-    var tiers=vals("b5t");
-    var base=qs("#base").value, br=(base&&base!=="custom")?findRow(base):null;
-
-    t.push("【團體報價需求單】");
-    t.push("需求單編號："+st.id+"　　填單：中壢分公司團體部");
-    t.push("填單時間："+st.text);
-    t.push("請於 "+orNone(qs("#f1").value)+" 回覆報價　　希望報價有效期："+orNone(vals("f2")[0]));
-    if(miss.length) t.push("※ 以下欄位同業尚未提供："+miss.join("、"));
-    t.push("");
-    t.push("━━ 一、委託資訊 ━━");
-    t.push("委託旅行社："+orNone(qs("#a1").value));
-    t.push("承辦窗口："+orNone(qs("#a2").value));
-    if(vals("a3").length) t.push("合作關係："+vals("a3")[0]);
-    t.push("團體性質："+orNone(vals("a4")[0]));
-    t.push("");
-    t.push("━━ 二、團體條件 ━━");
-    t.push("出發地："+orNone(vals("b1")[0]));
-    t.push("目的地："+orNone(qs("#b2").value));
-    t.push("出發日期：首選 "+orNone(qs("#b3a").value)+"／備選一 "+orNone(qs("#b3b").value)+"／備選二 "+orNone(qs("#b3c").value));
-    t.push("天數："+orNone(vals("b4")[0]));
-    t.push("人數：預估 "+orNone(qs("#b5a").value)+" 人，最少成行 "+orNone(qs("#b5b").value)+" 人");
-    t.push("請報人數級距："+(tiers.length?tiers.join("、"):"（未指定，請依預估人數報）"));
-    t.push("每人預算："+orNone(qs("#b6x").value)+(vals("b6").length?"（"+vals("b6")[0]+"）":""));
-    t.push("同業最在意："+orNone(vals("b7")[0]));
-    t.push("");
-    t.push("━━ 三、基礎行程（以此為底調整）━━");
-    if(base==="custom"){
-      t.push("完全客製，不以官網現有行程為底。請台北依以上條件從頭規劃。");
-    } else if(br){
-      t.push("團名："+br.name);
-      t.push("PatternNo："+br.no+"　　天數："+(br.days||"待查")+" 天　　出發地："+br.cities.join("／"));
-      t.push("官網："+br.url);
-      if(br.price) t.push("參考：索引起價 $"+br.price.toLocaleString()+"（"+META.captured+" 擷取，僅供參考）");
-    } else {
-      t.push("（尚未選定基礎行程）");
-    }
-    t.push("");
-    t.push("━━ 四、配菜（相對於基礎行程的調整）━━");
-    var LABEL={d1:"天數",d2:"飯店等級",d3:"餐食",d4:"景點",d5:"交通",d6:"機票",d7:"領隊",d8:"小費與保險",d9:"團體活動"};
-    var changed=0;
-    Object.keys(LABEL).forEach(function(k){
-      var v=vals(k)[0]||"照原行程";
-      if(v==="照原行程"||v==="不需要") return;
-      changed++;
-      var x=(qs("#"+k+"x")||{}).value||"";
-      t.push("・"+LABEL[k]+"　→ "+v+(x.trim()?"："+x.trim():"（細節待補）"));
-    });
-    if(!changed) t.push("全部照原行程，不做調整。");
-    else t.push("（其餘項目照原行程）");
-    t.push("");
-    t.push("━━ 五、注意事項 ━━");
-    var e1=vals("e1").filter(function(v){return v!=="都沒有";});
-    if(!vals("e1").length) t.push("・團員狀況：（未詢問）");
-    else if(!e1.length) t.push("・團員狀況：無特殊狀況");
-    else e1.forEach(function(v){ t.push("・"+v); });
-    if(qs("#e2").value.trim()) t.push("・"+qs("#e2").value.trim());
-    t.push("");
-    t.push("━━ 六、請台北回覆以下項目 ━━");
-    t.push("1. 現金報價（每人）：依上面的人數級距，分列「一般團費」與「匯款團費」");
-    t.push("2. 小孩佔床／小孩不佔床／嬰兒 價格");
-    t.push("3. 單人房差");
-    t.push("4. 成行條件（最少人數、機位需求）");
-    t.push("5. 報價包含／報價不含 項目");
-    t.push("6. 付款方式：訂金金額與期限、尾款期限");
-    t.push("7. 報價有效期限");
-    if(changed) t.push("8. 第四段每一項配菜：做得到／做不到／需加價多少，請逐項註明");
-    return {text:t.join("\n"), id:st.id};
+  function orNone(v){ return (v&&String(v).trim())?String(v).trim():"（未提供）"; }
+  function noParen(s){ return String(s||"").replace(/[（(][^）)]*[）)]/g,"").trim(); }
+  function ymd(d){ return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+  function parseYMD(v){ var m=String(v||"").match(/^(\d{4})-(\d{2})-(\d{2})$/); return m?new Date(+m[1],+m[2]-1,+m[3]):null; }
+  function addDays(d,n){ return new Date(d.getFullYear(),d.getMonth(),d.getDate()+n); }
+  function nextDate(from,m,day){ var x=new Date(from.getFullYear(),m-1,day); return x<from?new Date(from.getFullYear()+1,m-1,day):x; }
+  var WEEK="日一二三四五六";
+  function fmtDate(d,wk){ return d.getFullYear()+"/"+pad(d.getMonth()+1)+"/"+pad(d.getDate())+(wk?"（"+WEEK.charAt(d.getDay())+"）":""); }
+  function cnNum(n){
+    var c=["零","一","二","三","四","五","六","七","八","九","十"];
+    if(n<=10) return c[n];
+    if(n<20) return "十"+c[n-10];
+    return c[Math.floor(n/10)]+"十"+(n%10?c[n%10]:"");
   }
-  qs("#make").addEventListener("click",function(){
-    var d=buildDoc(); lastDoc=d.text;
-    qs("#docBody").textContent=d.text;
-    qs("#docSub").textContent=d.id;
-    qs("#docWrap").hidden=false;
-    qs("#docWrap").scrollIntoView({behavior:"smooth",block:"start"});
-  });
-
+  function money(v){
+    var s=String(v||"").trim();
+    if(/^(NT\$|\$)?\s*[\d,，]+\s*元?$/i.test(s)){
+      var n=parseInt(s.replace(/[^\d]/g,""),10);
+      if(!isNaN(n)) return "NT$ "+n.toLocaleString("en-US");
+    }
+    return s;
+  }
+  function val(id){ return qs("#"+id).value.trim(); }
+  function lines(id){
+    return qs("#"+id).value.split(/\n+/).map(function(l){
+      return l.replace(/^\s*([・•●◆\-－*]|\d{1,2}[.、．)）])\s*/,"").trim();
+    }).filter(Boolean);
+  }
+  var CITYNAME={TPE:"台北",TXG:"台中",KHH:"高雄"};
+  var DISHLABEL={d1:"天數",d2:"飯店等級",d3:"餐食",d4:"景點",d5:"交通",d6:"機票",d7:"領隊",d8:"小費與保險",d9:"團體活動"};
+  function fileName(parts){
+    return parts.filter(Boolean).join("_").replace(/[\\\/:*?"<>|]+/g,"").replace(/\s+/g,"").slice(0,90)+".docx";
+  }
+  function saveFile(blob,name){
+    var url=URL.createObjectURL(blob), a=document.createElement("a");
+    a.href=url; a.download=name; a.style.display="none";
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); },4000);
+  }
+  function flash(btn,msg,label){ btn.textContent=msg; setTimeout(function(){ btn.textContent=label; },2600); }
   function copyText(txt, btn, label){
     var ok=function(){ btn.textContent="已複製"; setTimeout(function(){btn.textContent=label},1800); };
     if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(ok,fb); } else fb();
@@ -1189,51 +1286,620 @@ pre.docbody{margin:0; padding:16px 18px; font-family:"Noto Sans TC","Microsoft J
       document.body.removeChild(ta);
     }
   }
-  qs("#docCopy").addEventListener("click",function(){ copyText(qs("#docBody").textContent,this,"複製全文"); });
-  qs("#docPrint").addEventListener("click",function(){ try{ window.print(); }catch(e){} });
 
-  /* ---- 台北回價後：產生報價單 AI 指令 ---- */
-  qs("#makeQuote").addEventListener("click",function(){
-    var reply=qs("#reply").value.trim();
-    var doc=lastDoc||buildDoc().text;
+  /* ================= Word 檔產生器 =================
+     不靠外部套件：網頁自己組 Word 的 XML，再打包成 .docx（不壓縮的 zip）。
+     標籤順序照 Office Open XML 規格排，Word 才打得開，改的時候要小心。 */
+  var DOCX=(function(){
+    var K={PUR:"7E3094", LAV:"F3EAF7", MAG:"D0157A", YEL:"FFD23F", GRAY:"7F7F7F", RED:"C00000", LINE:"D3C9DB",
+           STRIPE:["1E9BD7","F26A21","5DB031","FFC20E","E4007F"]};
+    // 中文字型要用中文名稱，再在字型表註明英文別名；只寫英文名，Word 有時會把中文換成新細明體
+    var FONT="Microsoft JhengHei", FONT_TW="微軟正黑體", FULL=9864;
+    function esc(s){
+      return String(s==null?"":s).replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g,"")
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+    function R(text,o){
+      o=o||{};
+      var pr=(o.b?"<w:b/><w:bCs/>":"")+(o.color?'<w:color w:val="'+o.color+'"/>':"")+
+        (o.sz?'<w:sz w:val="'+o.sz+'"/><w:szCs w:val="'+o.sz+'"/>':"")+
+        (o.hl?'<w:highlight w:val="yellow"/>':"")+(o.u?'<w:u w:val="single"/>':"");
+      return String(text==null?"":text).split("\n").map(function(line,i){
+        return "<w:r>"+(pr?"<w:rPr>"+pr+"</w:rPr>":"")+(i?"<w:br/>":"")+'<w:t xml:space="preserve">'+esc(line)+"</w:t></w:r>";
+      }).join("");
+    }
+    function MISS(word,sz){ return R(word||"待填",{b:1,color:K.RED,sz:sz,hl:1}); }
+    function P(runs,o){
+      o=o||{};
+      var pr=(o.keep?"<w:keepNext/>":"")+
+        (o.rule?'<w:pBdr><w:bottom w:val="single" w:sz="12" w:space="3" w:color="'+o.rule+'"/></w:pBdr>':"")+
+        (o.tabR?'<w:tabs><w:tab w:val="right" w:pos="'+o.tabR+'"/></w:tabs>':"")+
+        '<w:spacing w:before="'+(o.before||0)+'" w:after="'+(o.after||0)+'"/>'+
+        (o.hang?'<w:ind w:left="'+o.hang+'" w:hanging="'+o.hang+'"/>':"")+
+        (o.jc?'<w:jc w:val="'+o.jc+'"/>':"")+
+        (o.markSz?'<w:rPr><w:sz w:val="'+o.markSz+'"/><w:szCs w:val="'+o.markSz+'"/></w:rPr>':"");
+      return "<w:p><w:pPr>"+pr+"</w:pPr>"+(runs||"")+"</w:p>";
+    }
+    function C(w,body,o){
+      o=o||{};
+      var m=o.mar;
+      var pr='<w:tcW w:w="'+w+'" w:type="dxa"/>'+(o.span>1?'<w:gridSpan w:val="'+o.span+'"/>':"")+
+        (o.fill?'<w:shd w:val="clear" w:color="auto" w:fill="'+o.fill+'"/>':"")+
+        (m?'<w:tcMar><w:top w:w="'+m[0]+'" w:type="dxa"/><w:left w:w="'+m[1]+'" w:type="dxa"/><w:bottom w:w="'+m[2]+'" w:type="dxa"/><w:right w:w="'+m[3]+'" w:type="dxa"/></w:tcMar>':"")+
+        '<w:vAlign w:val="'+(o.v||"center")+'"/>';
+      return "<w:tc><w:tcPr>"+pr+"</w:tcPr>"+(body||P(""))+"</w:tc>";
+    }
+    function TR(cells,o){
+      o=o||{};
+      return "<w:tr><w:trPr><w:cantSplit/>"+
+        (o.h?'<w:trHeight w:val="'+o.h+'" w:hRule="'+(o.exact?"exact":"atLeast")+'"/>':"")+
+        (o.head?"<w:tblHeader/>":"")+"</w:trPr>"+cells.join("")+"</w:tr>";
+    }
+    function TBL(grid,rows,o){
+      o=o||{};
+      var m=o.mar||[50,110,50,110];
+      var bd=["top","left","bottom","right","insideH","insideV"].map(function(s){
+        return o.noBorder?'<w:'+s+' w:val="nil"/>':'<w:'+s+' w:val="single" w:sz="4" w:space="0" w:color="'+K.LINE+'"/>';
+      }).join("");
+      return "<w:tbl><w:tblPr>"+
+        '<w:tblW w:w="'+grid.reduce(function(a,b){return a+b;},0)+'" w:type="dxa"/><w:jc w:val="center"/>'+
+        "<w:tblBorders>"+bd+"</w:tblBorders>"+'<w:tblLayout w:type="fixed"/>'+
+        '<w:tblCellMar><w:top w:w="'+m[0]+'" w:type="dxa"/><w:left w:w="'+m[1]+'" w:type="dxa"/><w:bottom w:w="'+m[2]+'" w:type="dxa"/><w:right w:w="'+m[3]+'" w:type="dxa"/></w:tblCellMar>'+
+        "</w:tblPr><w:tblGrid>"+grid.map(function(g){ return '<w:gridCol w:w="'+g+'"/>'; }).join("")+"</w:tblGrid>"+
+        rows.join("")+"</w:tbl>";
+    }
+    function LAB(w,t,o){ o=o||{}; return C(w,P(R(t,{b:1}),{jc:o.jc}),{fill:K.LAV}); }
+    function DARK(w,t){ return C(w,P(R(t,{b:1,color:"FFFFFF"}),{jc:"center"}),{fill:K.PUR}); }
+    function H(t){ return P(R(t,{b:1,color:K.PUR,sz:26}),{rule:K.PUR,before:320,after:140,keep:1}); }
+    function SUBH(t,note){ return P(R(t,{b:1,color:K.PUR,sz:23})+(note?R("　"+note,{color:K.GRAY,sz:17}):""),{before:260,after:90,keep:1}); }
+    function BUL(t,o){ return P(R("・"+t,o),{hang:200,after:30}); }
+    function banner(title,right){
+      var w=[1973,1973,1973,1973,1972];
+      // 標題列只用一格（分兩格，Word 轉 PDF 時中間會出現細線），右邊的字用靠右定位點排
+      var top=TR([
+        C(FULL,P(R("可樂旅遊",{b:1,color:K.YEL,sz:40})+R("  "+title,{b:1,color:"FFFFFF",sz:40})+
+          (right?"<w:r><w:tab/></w:r>"+R(right,{color:"FFFFFF",sz:18}):""),{tabR:FULL-600}),{span:5,fill:K.PUR,mar:[130,300,130,300]})
+      ],{h:860});
+      var stripe=TR(K.STRIPE.map(function(c,i){ return C(w[i],P("",{markSz:2}),{fill:c,mar:[0,0,0,0]}); }),{h:90,exact:1});
+      return TBL(w,[top,stripe],{noBorder:1,mar:[0,0,0,0]});
+    }
+    function link(rid,url){ return '<w:hyperlink r:id="'+rid+'" w:history="1">'+R(url,{color:"0563C1",sz:18,u:1})+"</w:hyperlink>"; }
+
+    var CRC=null;
+    function crc32(bytes){
+      if(!CRC){
+        CRC=[];
+        for(var n=0;n<256;n++){ var c=n; for(var k=0;k<8;k++) c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1); CRC[n]=c>>>0; }
+      }
+      var x=0xFFFFFFFF;
+      for(var i=0;i<bytes.length;i++) x=CRC[(x^bytes[i])&255]^(x>>>8);
+      return (x^0xFFFFFFFF)>>>0;
+    }
+    function zip(files){
+      var enc=new TextEncoder(), parts=[], dir=[], off=0, now=new Date();
+      var dd=((now.getFullYear()-1980)<<9)|((now.getMonth()+1)<<5)|now.getDate();
+      var tt=(now.getHours()<<11)|(now.getMinutes()<<5)|Math.floor(now.getSeconds()/2);
+      files.forEach(function(f){
+        var name=enc.encode(f[0]), data=enc.encode(f[1]), crc=crc32(data);
+        var h=new DataView(new ArrayBuffer(30));
+        h.setUint32(0,0x04034b50,true); h.setUint16(4,20,true); h.setUint16(6,0,true); h.setUint16(8,0,true);
+        h.setUint16(10,tt,true); h.setUint16(12,dd,true); h.setUint32(14,crc,true);
+        h.setUint32(18,data.length,true); h.setUint32(22,data.length,true);
+        h.setUint16(26,name.length,true); h.setUint16(28,0,true);
+        parts.push(h.buffer,name,data);
+        var c=new DataView(new ArrayBuffer(46));
+        c.setUint32(0,0x02014b50,true); c.setUint16(4,20,true); c.setUint16(6,20,true); c.setUint16(8,0,true); c.setUint16(10,0,true);
+        c.setUint16(12,tt,true); c.setUint16(14,dd,true); c.setUint32(16,crc,true);
+        c.setUint32(20,data.length,true); c.setUint32(24,data.length,true);
+        c.setUint16(28,name.length,true); c.setUint16(30,0,true); c.setUint16(32,0,true); c.setUint16(34,0,true); c.setUint16(36,0,true);
+        c.setUint32(38,0,true); c.setUint32(42,off,true);
+        dir.push(c.buffer,name);
+        off+=30+name.length+data.length;
+      });
+      var size=dir.reduce(function(a,x){ return a+x.byteLength; },0);
+      var e=new DataView(new ArrayBuffer(22));
+      e.setUint32(0,0x06054b50,true); e.setUint16(4,0,true); e.setUint16(6,0,true);
+      e.setUint16(8,files.length,true); e.setUint16(10,files.length,true);
+      e.setUint32(12,size,true); e.setUint32(16,off,true); e.setUint16(20,0,true);
+      return new Blob(parts.concat(dir,[e.buffer]),{type:"application/vnd.openxmlformats-officedocument.wordprocessingml.document"});
+    }
+    var XH='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+    var NS_W="http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+    var REL="http://schemas.openxmlformats.org/officeDocument/2006/relationships";
+    var PKG="http://schemas.openxmlformats.org/package/2006/relationships";
+    function build(body,links,title){
+      var rels='<Relationship Id="rIdSt" Type="'+REL+'/styles" Target="styles.xml"/>'+
+        '<Relationship Id="rIdSe" Type="'+REL+'/settings" Target="settings.xml"/>'+
+        '<Relationship Id="rIdFt" Type="'+REL+'/fontTable" Target="fontTable.xml"/>'+
+        links.map(function(u,i){ return '<Relationship Id="rIdL'+(i+1)+'" Type="'+REL+'/hyperlink" Target="'+esc(u)+'" TargetMode="External"/>'; }).join("");
+      return zip([
+        ["[Content_Types].xml", XH+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'+
+          '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'+
+          '<Default Extension="xml" ContentType="application/xml"/>'+
+          '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'+
+          '<Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>'+
+          '<Override PartName="/word/settings.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"/>'+
+          '<Override PartName="/word/fontTable.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.fontTable+xml"/>'+
+          '<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>'+
+          "</Types>"],
+        ["_rels/.rels", XH+'<Relationships xmlns="'+PKG+'">'+
+          '<Relationship Id="rId1" Type="'+REL+'/officeDocument" Target="word/document.xml"/>'+
+          '<Relationship Id="rId2" Type="'+PKG+'/metadata/core-properties" Target="docProps/core.xml"/>'+
+          "</Relationships>"],
+        ["docProps/core.xml", XH+'<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'+
+          "<dc:title>"+esc(title)+"</dc:title><dc:creator>"+esc("可樂旅遊中壢分公司")+"</dc:creator>"+
+          '<dcterms:created xsi:type="dcterms:W3CDTF">'+new Date().toISOString().replace(/\.\d{3}Z$/,"Z")+"</dcterms:created>"+
+          "</cp:coreProperties>"],
+        ["word/_rels/document.xml.rels", XH+'<Relationships xmlns="'+PKG+'">'+rels+"</Relationships>"],
+        ["word/document.xml", XH+'<w:document xmlns:w="'+NS_W+'" xmlns:r="'+REL+'"><w:body>'+body+
+          '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="794" w:right="1021" w:bottom="794" w:left="1021" w:header="425" w:footer="425" w:gutter="0"/></w:sectPr>'+
+          "</w:body></w:document>"],
+        ["word/styles.xml", XH+'<w:styles xmlns:w="'+NS_W+'"><w:docDefaults>'+
+          '<w:rPrDefault><w:rPr><w:rFonts w:ascii="'+FONT+'" w:eastAsia="'+FONT_TW+'" w:hAnsi="'+FONT+'" w:cs="'+FONT+'"/><w:color w:val="262626"/><w:sz w:val="20"/><w:szCs w:val="20"/><w:lang w:val="en-US" w:eastAsia="zh-TW" w:bidi="ar-SA"/></w:rPr></w:rPrDefault>'+
+          '<w:pPrDefault><w:pPr><w:spacing w:after="0" w:line="276" w:lineRule="auto"/></w:pPr></w:pPrDefault>'+
+          "</w:docDefaults>"+
+          '<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style>'+
+          '<w:style w:type="table" w:default="1" w:styleId="TableNormal"><w:name w:val="Normal Table"/><w:uiPriority w:val="99"/><w:semiHidden/><w:unhideWhenUsed/>'+
+          '<w:tblPr><w:tblInd w:w="0" w:type="dxa"/><w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:left w:w="108" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:right w:w="108" w:type="dxa"/></w:tblCellMar></w:tblPr></w:style>'+
+          "</w:styles>"],
+        ["word/settings.xml", XH+'<w:settings xmlns:w="'+NS_W+'"><w:defaultTabStop w:val="480"/><w:characterSpacingControl w:val="compressPunctuation"/>'+
+          '<w:compat><w:compatSetting w:name="compatibilityMode" w:uri="http://schemas.microsoft.com/office/word" w:val="15"/></w:compat>'+
+          '<w:themeFontLang w:val="en-US" w:eastAsia="zh-TW"/></w:settings>'],
+        ["word/fontTable.xml", XH+'<w:fonts xmlns:w="'+NS_W+'">'+
+          ['<w:font w:name="'+FONT_TW+'"><w:altName w:val="'+FONT+'"/>','<w:font w:name="'+FONT+'"><w:altName w:val="'+FONT_TW+'"/>'].map(function(head){
+            return head+'<w:panose1 w:val="020B0604030504040204"/><w:charset w:val="88"/><w:family w:val="swiss"/><w:pitch w:val="variable"/></w:font>';
+          }).join("")+
+          "</w:fonts>"]
+      ]);
+    }
+    return {K:K,FULL:FULL,R:R,P:P,C:C,TR:TR,TBL:TBL,MISS:MISS,LAB:LAB,DARK:DARK,H:H,SUBH:SUBH,BUL:BUL,banner:banner,link:link,build:build};
+  })();
+
+  /* ---- 報價需求單：先收資料，文字版與 Word 版共用 ---- */
+  function collectReq(){
+    var st=stamp(), miss=[];
+    REQ.forEach(function(b){ if(!answered(b)) miss.push(b.getAttribute("data-label")); });
+    var base=qs("#base").value, dishes=[];
+    Object.keys(DISHLABEL).forEach(function(k){
+      var v=vals(k)[0]||"照原行程";
+      if(v==="照原行程"||v==="不需要") return;
+      dishes.push({label:DISHLABEL[k], v:v, x:((qs("#"+k+"x")||{}).value||"").trim()});
+    });
+    var e1=vals("e1");
+    return {
+      id:st.id, time:st.text, miss:miss, due:val("f1"), validity:vals("f2")[0]||"",
+      a1:val("a1"), a2:val("a2"), a3:vals("a3")[0]||"", a4:vals("a4")[0]||"",
+      b1:vals("b1")[0]||"", b2:val("b2"),
+      date1:val("b3a"), date2:val("b3b"), date3:val("b3c"),
+      days:vals("b4")[0]||"", est:val("b5a"), min:val("b5b"), tiers:vals("b5t"),
+      budget:val("b6x"), budgetNote:vals("b6")[0]||"", care:vals("b7")[0]||"",
+      base:base, br:(base&&base!=="custom")?findRow(base):null, dishes:dishes,
+      e1asked:e1.length>0, e1:e1.filter(function(v){ return v!=="都沒有"; }), e2:val("e2"),
+      rep:val("s_rep"), rtel:val("s_tel"),
+      demo:/示範|虛構/.test(val("a1"))
+    };
+  }
+
+  function reqText(Rq){
     var t=[];
-    t.push("你是可樂旅遊中壢分公司團體部的報價助理。");
+    t.push("【團體報價需求單】");
+    t.push("需求單編號："+Rq.id+"　　填單：中壢分公司團體部"+(Rq.rep?" "+Rq.rep:""));
+    t.push("填單時間："+Rq.time);
+    t.push("請於 "+orNone(Rq.due)+" 回覆報價　　希望報價有效期："+orNone(Rq.validity));
+    if(Rq.miss.length) t.push("※ 以下欄位同業尚未提供："+Rq.miss.join("、"));
     t.push("");
-    t.push("以下是我發給台北的【團體報價需求單】：");
+    t.push("━━ 一、委託資訊 ━━");
+    t.push("委託旅行社："+orNone(Rq.a1));
+    t.push("承辦窗口："+orNone(Rq.a2));
+    if(Rq.a3) t.push("合作關係："+Rq.a3);
+    t.push("團體性質："+orNone(Rq.a4));
+    t.push("");
+    t.push("━━ 二、團體條件 ━━");
+    t.push("出發地："+orNone(Rq.b1));
+    t.push("目的地："+orNone(Rq.b2));
+    t.push("出發日期：首選 "+orNone(Rq.date1)+"／備選一 "+orNone(Rq.date2)+"／備選二 "+orNone(Rq.date3));
+    t.push("天數："+orNone(Rq.days));
+    t.push("人數：預估 "+orNone(Rq.est)+" 人，最少成行 "+orNone(Rq.min)+" 人");
+    t.push("請報人數級距："+(Rq.tiers.length?Rq.tiers.join("、"):"（未指定，請依預估人數報）"));
+    t.push("每人預算："+orNone(Rq.budget)+(Rq.budgetNote?"（"+Rq.budgetNote+"）":""));
+    t.push("同業最在意："+orNone(Rq.care));
+    t.push("");
+    t.push("━━ 三、基礎行程（以此為底調整）━━");
+    if(Rq.base==="custom"){
+      t.push("完全客製，不以官網現有行程為底。請台北依以上條件從頭規劃。");
+    } else if(Rq.br){
+      t.push("團名："+Rq.br.name);
+      t.push("PatternNo："+Rq.br.no+"　　天數："+(Rq.br.days||"待查")+" 天　　出發地："+Rq.br.cities.map(function(c){ return CITYNAME[c]||c; }).join("／"));
+      t.push("官網："+Rq.br.url);
+      if(Rq.br.price) t.push("參考：索引起價 $"+Rq.br.price.toLocaleString()+"（"+META.captured+" 擷取，僅供參考）");
+    } else {
+      t.push("（尚未選定基礎行程）");
+    }
+    t.push("");
+    t.push("━━ 四、配菜（相對於基礎行程的調整）━━");
+    if(!Rq.dishes.length){
+      t.push("全部照原行程，不做調整。");
+    } else {
+      Rq.dishes.forEach(function(d){ t.push("・"+d.label+"　→ "+d.v+(d.x?"："+d.x:"（細節待補）")); });
+      t.push("（其餘項目照原行程）");
+    }
+    t.push("");
+    t.push("━━ 五、注意事項 ━━");
+    if(!Rq.e1asked) t.push("・團員狀況：（未詢問）");
+    else if(!Rq.e1.length) t.push("・團員狀況：無特殊狀況");
+    else Rq.e1.forEach(function(v){ t.push("・"+v); });
+    if(Rq.e2) t.push("・"+Rq.e2);
+    t.push("");
+    t.push("━━ 六、請台北回覆以下項目 ━━");
+    t.push("1. 現金報價（每人）：依上面的人數級距，分列「一般團費」與「匯款團費」");
+    t.push("2. 小孩佔床／小孩不佔床／嬰兒 價格");
+    t.push("3. 單人房差");
+    t.push("4. 成行條件（最少人數、機位需求）");
+    t.push("5. 報價包含／報價不含 項目，以及保險");
+    t.push("6. 付款方式：訂金金額與期限、尾款期限");
+    t.push("7. 報價有效期限");
+    if(Rq.dishes.length) t.push("8. 第四段每一項配菜：做得到／做不到／需加價多少，請逐項註明");
+    return t.join("\n");
+  }
+
+  /* ---- 給台北的需求單（Word）---- */
+  function reqWord(Rq){
+    var D=DOCX, K=D.K, R=D.R, P=D.P, C=D.C, TR=D.TR, TBL=D.TBL, LAB=D.LAB;
+    var L=1700, W=3232, W3=W+L+W, b=[], links=[];
+    function V(text,need){ return text?R(text):(need?D.MISS("未提供"):R("—",{color:K.GRAY})); }
+
+    b.push(D.banner("團體報價需求單","中壢分公司團體部 → 台北總部"));
+    if(Rq.demo) b.push(P(R("【示範資料】內容是虛構的，課堂練習用，請勿寄出",{b:1,color:K.RED}),{jc:"center",before:160}));
+    b.push(P(R((noParen(Rq.a1)||"同業")+"｜"+(Rq.b2||"目的地未填")+"　團體報價需求",{b:1,color:K.PUR,sz:32}),{jc:"center",before:300,after:60}));
+    if(Rq.miss.length) b.push(P(R("※ 以下欄位同業尚未提供："+Rq.miss.join("、"),{color:K.MAG,sz:17}),{jc:"center",after:40}));
+    b.push(P("",{after:60,markSz:8}));
+    b.push(TBL([L,W,L,W],[
+      TR([LAB(L,"需求單編號"),C(W,P(R(Rq.id))),LAB(L,"填單時間"),C(W,P(R(Rq.time)))],{h:400}),
+      TR([LAB(L,"填單人"),C(W,P(R("中壢分公司團體部"+(Rq.rep?"\n"+Rq.rep+(Rq.rtel?"　"+Rq.rtel:""):"")))),LAB(L,"請於此前回覆"),C(W,P(V(Rq.due,1)))],{h:400}),
+      TR([LAB(L,"希望報價有效期"),C(W3,P(V(Rq.validity)),{span:3})],{h:400})
+    ]));
+
+    b.push(D.H("一、委託資訊"));
+    b.push(TBL([L,W,L,W],[
+      TR([LAB(L,"委託旅行社"),C(W,P(V(Rq.a1,1))),LAB(L,"承辦窗口"),C(W,P(V(Rq.a2,1)))],{h:400}),
+      TR([LAB(L,"合作關係"),C(W,P(V(Rq.a3))),LAB(L,"團體性質"),C(W,P(V(Rq.a4,1)))],{h:400})
+    ]));
+
+    b.push(D.H("二、團體條件"));
+    var dates=Rq.date1?R("首選 "+Rq.date1+"　／　備選一 "+(Rq.date2||"未提供")+(Rq.date3?"　／　備選二 "+Rq.date3:"")):D.MISS("未提供");
+    b.push(TBL([L,W,L,W],[
+      TR([LAB(L,"出發地"),C(W,P(V(Rq.b1,1))),LAB(L,"目的地"),C(W,P(V(Rq.b2,1)))],{h:400}),
+      TR([LAB(L,"出發日期"),C(W3,P(dates),{span:3})],{h:400}),
+      TR([LAB(L,"天數"),C(W,P(V(Rq.days,1))),LAB(L,"人數"),C(W,P(Rq.est?R("預估 "+Rq.est+" 人"+(Rq.min?"，最少成行 "+Rq.min+" 人":"")):D.MISS("未提供")))],{h:400}),
+      TR([LAB(L,"請報人數級距"),C(W3,P(R(Rq.tiers.length?Rq.tiers.join("、"):"未指定，請依預估人數報")),{span:3})],{h:400}),
+      TR([LAB(L,"每人預算"),C(W,P(Rq.budget?R(Rq.budget+(Rq.budgetNote?"（"+Rq.budgetNote+"）":"")):D.MISS("未提供"))),LAB(L,"同業最在意"),C(W,P(V(Rq.care,1)))],{h:400})
+    ]));
+
+    b.push(D.H("三、基礎行程（以此為底調整）"));
+    if(Rq.base==="custom"){
+      b.push(TBL([D.FULL],[TR([C(D.FULL,P(R("完全客製，不以官網現有行程為底。請台北依以上條件從頭規劃。",{b:1})),{fill:K.LAV})],{h:460})]));
+    } else if(Rq.br){
+      var br=Rq.br; links.push(br.url);
+      b.push(TBL([L,W,L,W],[
+        TR([LAB(L,"團名"),C(W3,P(R(br.name,{b:1})),{span:3})],{h:400}),
+        TR([LAB(L,"行程編號"),C(W,P(R(br.no))),LAB(L,"天數"),C(W,P(R(br.days?br.days+" 天":"待查")))],{h:400}),
+        TR([LAB(L,"出發地"),C(W,P(R(br.cities.map(function(c){ return CITYNAME[c]||c; }).join("／")||"—"))),LAB(L,"參考起價"),
+            C(W,P(br.price?R("$"+br.price.toLocaleString())+R("\n"+META.captured+" 官網擷取，僅供參考",{color:K.GRAY,sz:16}):R("—",{color:K.GRAY})))],{h:400}),
+        TR([LAB(L,"官網連結"),C(W3,P(D.link("rIdL1",br.url)),{span:3})],{h:400})
+      ]));
+    } else {
+      b.push(P(D.MISS("尚未選定基礎行程"),{before:40}));
+    }
+
+    b.push(D.H("四、配菜（相對於基礎行程的調整）"));
+    if(!Rq.dishes.length){
+      b.push(P(R("全部照原行程，不做調整。"),{before:40}));
+    } else {
+      var dr=[TR([D.DARK(1500,"項目"),D.DARK(2300,"調整方式"),D.DARK(6064,"說明")],{h:420,head:1})];
+      Rq.dishes.forEach(function(d){
+        dr.push(TR([LAB(1500,d.label,{jc:"center"}),C(2300,P(R(d.v))),C(6064,P(d.x?R(d.x):D.MISS("細節待補")))],{h:420}));
+      });
+      b.push(TBL([1500,2300,6064],dr));
+      b.push(P(R("其餘項目照原行程。",{color:K.GRAY,sz:18}),{before:60}));
+    }
+
+    b.push(D.H("五、注意事項"));
+    if(!Rq.e1asked) b.push(P(R("・團員狀況：")+D.MISS("未詢問"),{hang:200,after:30}));
+    else if(!Rq.e1.length) b.push(D.BUL("團員狀況：無特殊狀況"));
+    else Rq.e1.forEach(function(v){ b.push(D.BUL(v)); });
+    if(Rq.e2) Rq.e2.split(/\n+/).forEach(function(l){ if(l.trim()) b.push(D.BUL(l.trim())); });
+
+    b.push(D.H("六、請台北回覆（直接填在下面表格，回傳給中壢）"));
+    b.push(P(R("金額請寫每人新台幣。中壢會照這幾張表製作給同業的「可樂旅遊團體報價單」，欄位名稱相同。",{color:K.GRAY,sz:18}),{after:100}));
+    var pr=[TR([D.DARK(3288,"人數級距"),D.DARK(3288,"一般團費（每人）"),D.DARK(3288,"匯款團費（每人）")],{h:420,head:1})];
+    (Rq.tiers.length?Rq.tiers.map(function(t){ return t.replace(/–/g,"～"); }):["","",""]).forEach(function(t){
+      pr.push(TR([C(3288,P(R(t),{jc:"center"})),C(3288,P("")),C(3288,P(""))],{h:500}));
+    });
+    b.push(TBL([3288,3288,3288],pr));
+    b.push(P("",{after:100,markSz:10}));
+    var F=[["小孩佔床／加床",480],["小孩不佔床",480],["嬰兒",480],["單人房差",480],["成行條件",600],["報價有效截止日",480],
+           ["報價包含",1200],["報價不含",1200],["保險",600],["訂金（金額與期限）",600],["尾款（期限）",480]];
+    b.push(TBL([2300,7564],F.map(function(f){ return TR([LAB(2300,f[0]),C(7564,P(""))],{h:f[1]}); })));
+    if(Rq.dishes.length){
+      b.push(P("",{after:100,markSz:10}));
+      var cr=[TR([D.DARK(3200,"配菜項目"),D.DARK(1700,"做得到嗎"),D.DARK(4964,"加價／說明")],{h:420,head:1})];
+      Rq.dishes.forEach(function(d){
+        cr.push(TR([C(3200,P(R(d.label+"：",{b:1})+R(d.v+(d.x?"（"+d.x+"）":"")))),C(1700,P(R("□ 可　□ 不可"),{jc:"center"})),C(4964,P(""))],{h:520}));
+      });
+      b.push(TBL([3200,1700,4964],cr));
+    }
+    b.push(P(R("可樂旅遊中壢分公司團體部"+(Rq.rep?"　承辦："+Rq.rep:"")+(Rq.rtel?"　"+Rq.rtel:""),{b:1,color:K.PUR,sz:20}),{jc:"center",before:360}));
+    return D.build(b.join(""),links,"團體報價需求單 "+Rq.id);
+  }
+
+  function showReq(){
+    var Rq=collectReq();
+    qs("#docBody").textContent=reqText(Rq);
+    qs("#docSub").textContent=Rq.id;
+    return Rq;
+  }
+  qs("#make").addEventListener("click",function(){
+    showReq();
+    qs("#docWrap").hidden=false;
+    fillFromAbove(false);
+    refresh();
+    qs("#docWrap").scrollIntoView({behavior:"smooth",block:"start"});
+  });
+  qs("#docWord").addEventListener("click",function(){
+    var Rq=showReq();
+    saveFile(reqWord(Rq),fileName(["團體報價需求單",noParen(Rq.a1),Rq.id.slice(2)]));
+    flash(this,"已下載，到「下載」資料夾找","下載 Word 檔");
+  });
+  qs("#docCopy").addEventListener("click",function(){ showReq(); copyText(qs("#docBody").textContent,this,"複製文字"); });
+
+  /* ---- G 區：人數級距 ---- */
+  function tierRow(t){
+    t=t||{};
+    var d=document.createElement("div"); d.className="tier";
+    d.innerHTML='<input type="text" data-k="t" placeholder="例：21～25 人" aria-label="人數級距">'+
+      '<input type="text" data-k="g" inputmode="numeric" placeholder="例：39800" aria-label="一般團費">'+
+      '<input type="text" data-k="r" inputmode="numeric" placeholder="選填" aria-label="匯款團費">'+
+      '<button type="button" class="del" aria-label="刪除這個級距">✕</button>';
+    ["t","g","r"].forEach(function(k){ qs('[data-k="'+k+'"]',d).value=t[k]||""; });
+    qs(".del",d).addEventListener("click",function(){
+      d.remove();
+      if(!qsa(".tier",qs("#tiers")).length) qs("#tiers").appendChild(tierRow());
+      refresh();
+    });
+    return d;
+  }
+  function tiersGet(){
+    return qsa(".tier",qs("#tiers")).map(function(d){
+      return {t:qs('[data-k="t"]',d).value.trim(), g:qs('[data-k="g"]',d).value.trim(), r:qs('[data-k="r"]',d).value.trim()};
+    });
+  }
+  function tiersSync(){ qs("#q_tiers").value=JSON.stringify(tiersGet()); }
+  function tiersSet(list){
+    var box=qs("#tiers"); box.innerHTML="";
+    (list&&list.length?list:[{}]).forEach(function(t){ box.appendChild(tierRow(t)); });
+    tiersSync();
+  }
+  function parseTiers(s){ try{ var a=JSON.parse(s||"[]"); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+  qs("#addTier").addEventListener("click",function(){
+    var row=tierRow(); qs("#tiers").appendChild(row);
+    refresh(); qs("input",row).focus();
+  });
+
+  /* ---- G 區：從上面帶入、預設文字 ---- */
+  function fillFromAbove(force){
+    function put(id,v){ var e=qs("#"+id); if(e&&v&&(force||!e.value.trim())) e.value=v; }
+    var a1=val("a1"), dest=val("b2");
+    var base=qs("#base").value, br=(base&&base!=="custom")?findRow(base):null;
+    var days=(br&&br.days&&(vals("d1")[0]||"照原行程")==="照原行程")?br.days:0;
+    put("q_company",a1);
+    put("q_contact",noParen(qs("#a2").value));
+    put("q_title",[noParen(a1),dest+(days?cnNum(days)+"日":"")].filter(Boolean).join("-"));
+    if(days) put("q_days",String(days));
+    if(!val("q_qdate")) qs("#q_qdate").value=ymd(new Date());
+    var tg=tiersGet();
+    var hasPrice=tg.some(function(x){ return x.g||x.r; }), hasAny=tg.some(function(x){ return x.t||x.g||x.r; });
+    if(!hasPrice&&(force||!hasAny)){
+      var tv=vals("b5t");
+      if(tv.length) tiersSet(tv.map(function(t){ return {t:t.replace(/–/g,"～")}; }));
+    }
+  }
+  var DEF={
+    q_inc:"機票／來回團體經濟艙機票（不得更改航班及日期），含兩地機場稅及燃油稅\n住宿／行程表所列飯店（兩人一室）\n餐食／以行程表標示為主\n遊覽／行程表中所列行程（註明自費項目者除外）\n行李／依各航空公司規定",
+    q_exc:"領隊、導遊、司機服務費\n新辦護照工本費（已持照者則無此項）\n行程以外的個人支出，如行李小費、房間小費、飲料、酒水、電話費、自費行程、行李超重費等",
+    q_ins:"依規定投保旅行業履約保證保險\n依規定投保旅行業責任保險"
+  };
+  function applyDefaults(force){
+    Object.keys(DEF).forEach(function(id){ var e=qs("#"+id); if(force||!e.value.trim()) e.value=DEF[id]; });
+  }
+  qs("#qFill").addEventListener("click",function(){ fillFromAbove(true); refresh(); });
+
+  /* ---- G 區：收資料、檢查 ---- */
+  function quoteData(){
+    var Q={
+      title:val("q_title"), company:val("q_company"), contact:val("q_contact"),
+      tel:val("q_tel"), mail:val("q_mail"), addr:val("q_addr"),
+      dep:parseYMD(val("q_dep")), days:parseInt(val("q_days"),10)||0,
+      qdate:parseYMD(val("q_qdate")), valid:parseYMD(val("q_valid")), validt:val("q_validt"),
+      tiers:tiersGet().filter(function(x){ return x.t||x.g||x.r; }),
+      child:val("q_child"), nobed:val("q_nobed"), infant:val("q_infant"), single:val("q_single"), cond:val("q_cond"),
+      notes:lines("q_notes"), inc:lines("q_inc"), exc:lines("q_exc"), ins:lines("q_ins"),
+      deposit:val("q_deposit"), balance:val("q_balance"),
+      rep:val("s_rep"), rtel:val("s_tel"), mgr:val("s_mgr"), branch:val("s_branch"),
+      bank:val("s_bank"), acname:val("s_acname"), acno:val("s_acno")
+    };
+    Q.ret=(Q.dep&&Q.days>0)?addDays(Q.dep,Q.days-1):null;
+    Q.hasRemit=Q.tiers.some(function(x){ return x.r; });
+    Q.demo=/示範|虛構/.test(Q.company+Q.title);
+    return Q;
+  }
+  function quoteChecks(Q){
+    var need=[], warn=[];
+    if(!Q.title) need.push("團名");
+    if(!Q.company) need.push("委託公司");
+    if(!Q.contact) need.push("委託人");
+    if(!Q.dep) need.push("出發日期");
+    if(!Q.days) need.push("天數");
+    if(!Q.qdate) need.push("報價日期");
+    if(!Q.valid) need.push("報價有效截止日");
+    if(!Q.tiers.some(function(x){ return x.g; })) need.push("團費");
+    if(Q.tiers.some(function(x){ return (x.g||x.r)&&!x.t; })) need.push("人數級距");
+    [["小孩佔床／加床","child"],["小孩不佔床","nobed"],["嬰兒","infant"],["單人房差","single"],["成行條件","cond"]]
+      .forEach(function(x){ if(!Q[x[1]]) need.push(x[0]); });
+    if(!Q.inc.length) need.push("報價包含");
+    if(!Q.exc.length) need.push("報價不含");
+    if(!Q.ins.length) need.push("保險");
+    if(!Q.deposit) need.push("訂金");
+    if(!Q.balance) need.push("尾款");
+    if(!Q.rep) need.push("承辦業務");
+    if(!Q.branch) need.push("承辦分公司");
+    if(!Q.bank||!Q.acname||!Q.acno) need.push("匯款帳號");
+
+    if(Q.demo) warn.push("現在是示範資料，這份報價單不能寄給同業。按右下角「清空重填」再開始。");
+    if(Q.hasRemit&&Q.tiers.some(function(x){ return x.g&&!x.r; })) warn.push("有的級距有填匯款團費、有的沒填。");
+    if(Q.tiers.some(function(x){ return x.r&&!x.g; })) warn.push("有級距只填了匯款團費，一般團費是空的。");
+    if(Q.qdate&&Q.valid&&Q.valid<Q.qdate) warn.push("報價有效截止日比報價日期還早。");
+    if(Q.dep&&Q.valid&&Q.valid>Q.dep) warn.push("報價有效截止日在出發日期之後。");
+    if(Q.qdate&&Q.dep&&Q.dep<Q.qdate) warn.push("出發日期比報價日期還早。");
+    var base=qs("#base").value, br=(base&&base!=="custom")?findRow(base):null, d1=vals("d1")[0]||"照原行程";
+    if(br&&br.days&&Q.days){
+      if(d1==="照原行程"&&Q.days!==br.days) warn.push("天數填 "+Q.days+" 天，但 C 區選的底是 "+br.days+" 天，D 區也沒有改天數。");
+      if(d1!=="照原行程"&&Q.days===br.days) warn.push("D 區勾了「"+d1+"」，報價單的天數卻跟原行程一樣是 "+br.days+" 天。");
+    }
+    if(vals("d6")[0]==="不含機票"&&Q.inc.some(function(l){ return /機票/.test(l); })) warn.push("D 區勾了「不含機票」，報價包含卻還寫著機票。");
+    if(vals("d8")[0]==="團費內含小費"&&Q.exc.some(function(l){ return /領隊|導遊|司機/.test(l); })) warn.push("D 區勾了「團費內含小費」，報價不含卻還有領隊、導遊、司機服務費。");
+    return {need:need, warn:warn};
+  }
+  function renderQuote(){
+    var Q=quoteData(), ck=quoteChecks(Q), h="";
+    qs("#q_ret").textContent=Q.ret?fmtDate(Q.ret,true):"—";
+    if(ck.warn.length) h+='<div class="alert"><b>請先確認</b>'+ck.warn.join("<br>")+"</div>";
+    if(ck.need.length) h+='<div class="alert caution"><b>還有 '+ck.need.length+' 項沒填（Word 檔裡會標黃底「待填」）</b>'+ck.need.join("、")+"</div>";
+    if(!h) h='<div class="ok">報價單的欄位都填好了。下載後、寄出前，還是要跟台北原文逐一核對數字。</div>';
+    qs("#qcheck").innerHTML=h;
+  }
+
+  /* ---- 給同業的報價單（Word），版面比照可樂旅遊團體報價單 ---- */
+  function quoteWord(Q){
+    var D=DOCX, K=D.K, R=D.R, P=D.P, C=D.C, TR=D.TR, TBL=D.TBL, LAB=D.LAB;
+    var ck=quoteChecks(Q), b=[];
+    var L=1700, W=3232, W3=W+L+W;
+    function V(text,need){ return text?R(text):(need?D.MISS():R("—",{color:K.GRAY})); }
+
+    b.push(D.banner("團體報價單",""));
+    if(Q.demo) b.push(P(R("【示範資料】內容是虛構的，課堂練習用，請勿寄給同業",{b:1,color:K.RED}),{jc:"center",before:160}));
+    b.push(P(Q.title?R(Q.title,{b:1,color:K.PUR,sz:34}):D.MISS("團名待填",34),{jc:"center",before:300,after:60}));
+    if(ck.need.length) b.push(P(R("※ 待確認："+ck.need.join("、")+"。黃底「待填」補齊後，刪掉這一行再寄出。",{color:K.MAG,sz:17}),{jc:"center",after:40}));
+
+    b.push(D.H("一、基本資料"));
+    var dates=Q.dep?R(fmtDate(Q.dep,true)+" ～\n")+(Q.ret?R(fmtDate(Q.ret,true)):D.MISS("回程待填")):D.MISS();
+    var validTxt=Q.valid?fmtDate(Q.valid)+(Q.validt?" "+Q.validt:""):"";
+    b.push(TBL([L,W,L,W],[
+      TR([LAB(L,"團名"),C(W,P(V(Q.title,1))),LAB(L,"委託公司"),C(W,P(V(Q.company,1)))],{h:400}),
+      TR([LAB(L,"出發／回程"),C(W,P(dates)),LAB(L,"委託人"),C(W,P(V(Q.contact,1)))],{h:400}),
+      TR([LAB(L,"報價日期"),C(W,P(V(Q.qdate?fmtDate(Q.qdate):"",1))),LAB(L,"電話"),C(W,P(V(Q.tel)))],{h:400}),
+      TR([LAB(L,"報價有效截止日"),C(W,P(V(validTxt,1))),LAB(L,"地址"),C(W,P(V(Q.addr)))],{h:400}),
+      TR([LAB(L,"電子郵件"),C(W3,P(V(Q.mail)),{span:3})],{h:400}),
+      TR([LAB(L,"承辦業務"),C(W,P(V(Q.rep?Q.rep+(Q.rtel?"　"+Q.rtel:""):"",1))),LAB(L,"承辦店長"),C(W,P(V(Q.mgr)))],{h:400}),
+      TR([LAB(L,"承辦分公司"),C(W3,P(V(Q.branch,1)),{span:3})],{h:400})
+    ]));
+
+    b.push(D.SUBH("現金報價（以每人計）","新台幣"));
+    var two=!Q.hasRemit, G=two?[3288,6576]:[3288,3288,3288];
+    function PRICE(x){ return x?R(money(x),{b:1,color:K.MAG,sz:24}):D.MISS(); }
+    var rows=[TR(two?[D.DARK(3288,"人數級距"),D.DARK(6576,"每人團費")]:[D.DARK(3288,"人數級距"),D.DARK(3288,"一般團費"),D.DARK(3288,"匯款團費")],{h:440,head:1})];
+    (Q.tiers.length?Q.tiers:[{t:"",g:"",r:""}]).forEach(function(x){
+      var cells=[C(3288,P(x.t?R(x.t):D.MISS(),{jc:"center"}))];
+      if(two) cells.push(C(6576,P(PRICE(x.g),{jc:"center"})));
+      else cells.push(C(3288,P(PRICE(x.g),{jc:"center"})),C(3288,P(PRICE(x.r),{jc:"center"})));
+      rows.push(TR(cells,{h:460}));
+    });
+    [["小孩佔床／加床",Q.child],["小孩不佔床",Q.nobed],["嬰兒",Q.infant],["成行條件",Q.cond],["單人房差",Q.single]].forEach(function(x){
+      rows.push(TR([LAB(3288,x[0],{jc:"center"}),C(6576,P(V(x[1],1)),{span:two?1:2})],{h:420}));
+    });
+    b.push(TBL(G,rows));
+
+    if(Q.notes.length){
+      b.push(P(R("備註",{b:1,color:K.PUR,sz:22}),{before:220,after:60,keep:1}));
+      Q.notes.forEach(function(l){ b.push(D.BUL(l,{sz:19})); });
+    }
+
+    b.push(D.H("二、費用項目"));
+    function LIST(arr){ return arr.length?arr.map(function(l){ return D.BUL(l); }).join(""):P(D.MISS()); }
+    b.push(TBL([1700,8164],[
+      TR([D.DARK(1700,"報價包含"),C(8164,LIST(Q.inc))],{h:420}),
+      TR([D.DARK(1700,"報價不含"),C(8164,LIST(Q.exc))],{h:420}),
+      TR([D.DARK(1700,"保　　險"),C(8164,LIST(Q.ins))],{h:420})
+    ]));
+
+    b.push(D.H("三、付款方式"));
+    b.push(TBL([1700,8164],[
+      TR([D.DARK(1700,"訂　　金"),C(8164,P(V(Q.deposit,1)))],{h:420}),
+      TR([D.DARK(1700,"尾　　款"),C(8164,P(V(Q.balance,1)))],{h:420}),
+      TR([D.DARK(1700,"匯款帳號"),C(8164,P(R("銀行：")+V(Q.bank,1))+P(R("戶名：")+V(Q.acname,1))+P(R("帳號：")+V(Q.acno,1)))])
+    ]));
+
+    b.push(P(R(Q.branch||"可樂旅遊旅行社股份有限公司",{b:1,color:K.PUR,sz:22})+R("　－　承辦業務：",{b:1,color:K.PUR,sz:20})+
+      (Q.rep?R(Q.rep+(Q.rtel?"　"+Q.rtel:""),{b:1,color:K.PUR,sz:20}):D.MISS("待填",20)),{jc:"center",before:360}));
+    return D.build(b.join(""),[],Q.title||"團體報價單");
+  }
+  qs("#dlQuote").addEventListener("click",function(){
+    tiersSync();
+    var Q=quoteData();
+    saveFile(quoteWord(Q),fileName(["團體報價單",Q.title||noParen(Q.company),ymd(Q.qdate||new Date()).replace(/-/g,"")]));
+    flash(this,"已下載，到「下載」資料夾找","下載給同業的報價單（Word 檔）");
+  });
+
+  /* ---- 選用：請 AI 核對台北原文 ---- */
+  function quoteText(Q){
+    var t=[], dash=function(x){ return x||"（空白）"; };
+    t.push("團名："+dash(Q.title));
+    t.push("出發／回程："+(Q.dep?fmtDate(Q.dep,true):"（空白）")+" ～ "+(Q.ret?fmtDate(Q.ret,true):"（空白）")+(Q.days?"（"+Q.days+" 天）":""));
+    t.push("報價日期："+(Q.qdate?fmtDate(Q.qdate):"（空白）")+"　報價有效截止："+(Q.valid?fmtDate(Q.valid)+(Q.validt?" "+Q.validt:""):"（空白）"));
+    t.push("現金報價（每人）：");
+    (Q.tiers.length?Q.tiers:[{}]).forEach(function(x){
+      t.push("・"+dash(x.t)+"："+(Q.hasRemit?"一般團費 "+dash(money(x.g))+"／匯款團費 "+dash(money(x.r)):"每人團費 "+dash(money(x.g))));
+    });
+    t.push("小孩佔床／加床："+dash(Q.child));
+    t.push("小孩不佔床："+dash(Q.nobed));
+    t.push("嬰兒："+dash(Q.infant));
+    t.push("單人房差："+dash(Q.single));
+    t.push("成行條件："+dash(Q.cond));
+    if(Q.notes.length){ t.push("備註："); Q.notes.forEach(function(l){ t.push("・"+l); }); }
+    t.push("報價包含："); (Q.inc.length?Q.inc:["（空白）"]).forEach(function(l){ t.push("・"+l); });
+    t.push("報價不含："); (Q.exc.length?Q.exc:["（空白）"]).forEach(function(l){ t.push("・"+l); });
+    t.push("保險："); (Q.ins.length?Q.ins:["（空白）"]).forEach(function(l){ t.push("・"+l); });
+    t.push("訂金："+dash(Q.deposit));
+    t.push("尾款："+dash(Q.balance));
+    return t.join("\n");
+  }
+  qs("#makeCheck").addEventListener("click",function(){
+    tiersSync();
+    var reply=qs("#reply").value.trim(), t=[];
+    t.push("你是可樂旅遊中壢分公司團體部的報價核對助理。你只負責核對，不要改寫報價單，也不要產出新的報價。");
+    t.push("");
+    t.push("【台北回覆原文】");
     t.push("────────────────");
-    t.push(doc);
+    t.push(reply||"〔還沒貼上台北的回覆。沒有原文就無法核對，請直接告訴我缺什麼。〕");
     t.push("────────────────");
     t.push("");
-    t.push("以下是台北回覆的報價（原封不動貼上）：");
+    t.push("【我準備寄給同業的報價單】");
     t.push("────────────────");
-    t.push(reply || "〔還沒貼上台北的回覆。沒有台北的價格之前，你不可以產出任何報價數字，只能告訴我缺什麼。〕");
+    t.push(quoteText(quoteData()));
     t.push("────────────────");
     t.push("");
-    t.push("請產出一份給委託旅行社的報價，格式比照「可樂旅遊團體報價單」：");
-    t.push("一、基本資料：團名、委託公司、委託人、出發日期、報價日期、報價有效期");
-    t.push("二、現金報價（以人計）：依人數級距列表，分「一般團費」「匯款團費」兩欄；");
-    t.push("　　另列 小孩佔床／小孩不佔床／嬰兒／單人房差／成行條件");
-    t.push("三、備註");
-    t.push("四、費用項目：報價包含／報價不含");
-    t.push("五、付款方式：訂金、尾款");
+    t.push("請逐項比對，做成一張表，欄位是：項目｜台北原文怎麼寫｜報價單怎麼寫｜結果（一致／不一致／台北沒提到／報價單沒寫）");
+    t.push("要比對的項目：每一個人數級距的團費、小孩佔床／加床、小孩不佔床、嬰兒、單人房差、成行條件、報價有效截止日、報價包含、報價不含、保險、訂金、尾款。");
     t.push("");
     t.push("紅線，一條都不能違反：");
-    t.push("1. 所有價格、日期、人數級距、包含與不含項目，一律照抄台北的回覆。");
-    t.push("   不准改寫、不准四捨五入、不准自己算折扣或總價。");
-    t.push("2. 台北回覆裡沒有的項目，寫【待台北確認】，不准自己補，也不准沿用官網起價。");
-    t.push("3. 不准自己加任何優惠、贈品、保證、「最低價」「限時」之類的字眼。");
-    t.push("4. 需求單第四段有提出、但台北回覆沒回應的配菜，不要放進給同業的報價，另外列給我。");
+    t.push("1. 只能引用上面兩段文字裡真的有的內容，不准推測，不准補數字。");
+    t.push("2. 數字一個字一個字比，差一個 0、少一個逗號、日期差一天，都算不一致。");
+    t.push("3. 報價單有寫、台北原文沒有的句子，一律標「台北沒提到」。");
     t.push("");
-    t.push("輸出三段：");
-    t.push("① 給同業的 LINE 開頭訊息（100 字內）：告訴對方報價好了、附件是報價單、請他留意報價有效期。");
-    t.push("② 給同業的報價單全文（可以直接貼進 Word）。");
-    t.push("③ 給我自己的核對清單：");
-    t.push("   - 台北沒有回應的配菜項目");
-    t.push("   - 需求單與台北回覆之間對不上的地方（人數級距、日期、天數、包含項目）");
-    t.push("   - 這份報價掛我的名字送出去，最可能出事的是哪一句");
-    t.push("     （這一題不准回答「沒有問題」，一定要指出一句最脆弱的）");
+    t.push("表格後面再寫兩段：");
+    t.push("① 寄出前一定要改的地方（沒有就寫「無」）");
+    t.push("② 這份報價單最容易讓同業誤會的一句話，以及為什麼（這一題不准回答沒有）");
     t.push("");
-    t.push("用繁體中文、台灣用語。語氣專業、簡潔，不要浮誇，不要用驚嘆號。");
+    t.push("用繁體中文、台灣用語，語氣簡潔。");
     qs("#gen").textContent=t.join("\n");
     qs("#output").hidden=false;
     qs("#output").scrollIntoView({behavior:"smooth",block:"start"});
@@ -1241,20 +1907,26 @@ pre.docbody{margin:0; padding:16px 18px; font-family:"Noto Sans TC","Microsoft J
   qs("#copy").addEventListener("click",function(){ copyText(qs("#gen").textContent,this,"複製全部"); });
 
   qs("#clear").addEventListener("click",function(){
-    qsa("input[type=radio],input[type=checkbox]").forEach(function(i){i.checked=false});
-    qsa("input[type=text],input[type=number],input[type=hidden],textarea").forEach(function(i){i.value=""});
-    qs("#docWrap").hidden=true; qs("#output").hidden=true; lastDoc="";
+    qsa("input[type=radio],input[type=checkbox]").forEach(function(i){ i.checked=false; });
+    qsa(TEXTS).forEach(function(i){ if(!i.classList.contains("keep")) i.value=""; });
+    qs("#docWrap").hidden=true; qs("#output").hidden=true;
     try{ localStorage.removeItem(KEY); }catch(e){}
+    tiersSet([]);
+    applyDefaults(true);
+    fillFromAbove(false);
     ensureDishDefaults();
     refresh();
     window.scrollTo({top:0,behavior:"smooth"});
   });
 
-
   document.addEventListener("input",function(e){ if(e.target && e.target.id!=="reply") refresh(); });
   document.addEventListener("change",function(e){ if(e.target && e.target.type!=="file") refresh(); });
 
+  loadKeep();
   if(!load()) demo();
+  tiersSet(parseTiers(qs("#q_tiers").value));
+  applyDefaults(false);
+  fillFromAbove(false);
   ensureDishDefaults();
   refresh();
 })();
