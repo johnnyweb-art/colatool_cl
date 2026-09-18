@@ -17,6 +17,10 @@
   --on-accent:#FFFFFF; --masthead-bg:#0B3C49; --accent-strong:#0B3C49; --amber-ink:#8A5A08;
   --shadow:0 1px 2px rgba(11,60,73,.06),0 4px 14px rgba(11,60,73,.05);
   --r:10px;
+  /* 可樂旅遊企業識別色 */
+  --brand:#84329B; --brand-deep:#6E2682; --brand-ink:#3A1146;
+  --b-yellow:#FFC600; --b-blue:#00A3E0; --b-magenta:#E4007F;
+  --dept:#00A3E0; --dept-ink:#06344A;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
@@ -28,6 +32,7 @@
     --ok:#5DBF92; --ok-soft:#142C22;
     --line:#2A3B41; --line-2:#3A4E55;
     --on-accent:#06181E; --masthead-bg:#0B2830; --accent-strong:#57A8C8; --amber-ink:#F0B75A;
+    --brand:#6E2682; --brand-deep:#5A1F6C;
     --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
   }
 }
@@ -40,6 +45,7 @@
   --ok:#5DBF92; --ok-soft:#142C22;
   --line:#2A3B41; --line-2:#3A4E55;
   --on-accent:#06181E; --masthead-bg:#0B2830; --accent-strong:#57A8C8; --amber-ink:#F0B75A;
+  --brand:#6E2682; --brand-deep:#5A1F6C;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
 }
 *{box-sizing:border-box}
@@ -51,11 +57,16 @@ body{
 .wrap{max-width:760px; margin:0 auto; padding-inline:16px; padding-block:0 120px}
 
 /* ---------- 頁首 ---------- */
-.masthead{background:var(--masthead-bg); color:#fff; padding-block:22px 20px; padding-inline:16px; margin-bottom:0}
+.masthead{background:var(--brand); color:#fff; padding-block:18px 18px; padding-inline:16px; margin-bottom:0}
 .masthead-in{max-width:760px; margin:0 auto}
+.brandrow{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:0 0 10px}
+.logo{height:34px; width:auto; display:block}
+.dept-pill{font-size:12px; font-weight:700; letter-spacing:.08em; border-radius:999px; padding:4px 12px;
+  background:var(--dept); color:var(--dept-ink)}
+.deptbar{height:6px; background:var(--dept)}
 .eyebrow{font-size:11px; letter-spacing:.16em; font-weight:500; color:#8FBACB; margin:0 0 6px}
 .masthead h1{font-size:26px; line-height:1.25; font-weight:700; margin:0 0 6px; text-wrap:balance; color:#fff}
-.masthead p{margin:0; font-size:13px; color:#B9D2DC; line-height:1.55}
+.masthead p{margin:0; font-size:13px; color:#EBD9F2; line-height:1.55}
 
 /* ---------- 進度列 ---------- */
 .tracker{
@@ -234,11 +245,15 @@ footer{margin-top:28px; padding-top:16px; border-top:1px solid var(--line); font
 
 <header class="masthead">
   <div class="masthead-in">
-    <p class="eyebrow">可樂旅遊中壢分公司　直售部</p>
+    <div class="brandrow">
+      <img class="logo" src="logo.png" alt="可樂旅遊">
+      <span class="dept-pill">中壢分公司　直售部</span>
+    </div>
     <h1>客戶需求蒐集表</h1>
     <p>接到電話就打開，邊問邊勾。問完直接看下面的行程，不必自己去官網翻。</p>
   </div>
 </header>
+<div class="deptbar"></div>
 
 <div class="tracker">
   <div class="tracker-in">

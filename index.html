@@ -10,99 +10,137 @@
 <style>
 :root{
   --paper:#F4F7F8; --card:#FFFFFF; --ink:#12262E; --ink-2:#4A6470; --ink-3:#7C949E;
-  --line:#D6E1E6; --direct:#0B3C49; --group:#27425E; --ticket:#4C3B63; --tool:#1C7293;
-  --amber:#E8A33D; --amber-ink:#8A5A08;
+  --line:#D6E1E6;
+  --brand:#84329B; --brand-deep:#6E2682; --brand-ink:#3A1146;
+  --b-yellow:#FFC600; --b-blue:#00A3E0; --b-magenta:#E4007F;
+  --direct:#00A3E0; --group:#E4007F; --corp:#FFC600; --ticket:#84329B; --tool:#1C7293;
+  --amber:#E8A33D;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     --paper:#0D1618; --card:#162328; --ink:#E2ECEF; --ink-2:#9BB2BA; --ink-3:#71898F;
-    --line:#2A3B41; --direct:#57A8C8; --group:#8FA9D6; --ticket:#B79BD6; --tool:#57A8C8;
-    --amber:#F0B75A; --amber-ink:#F0B75A;
+    --line:#2A3B41; --brand:#6E2682; --brand-deep:#5A1F6C;
+    --direct:#57C4EC; --group:#F468B4; --corp:#FFC600; --ticket:#C79BDC; --tool:#57A8C8;
   }
 }
 :root[data-theme="dark"]{
   --paper:#0D1618; --card:#162328; --ink:#E2ECEF; --ink-2:#9BB2BA; --ink-3:#71898F;
-  --line:#2A3B41; --direct:#57A8C8; --group:#8FA9D6; --ticket:#B79BD6; --tool:#57A8C8;
-  --amber:#F0B75A; --amber-ink:#F0B75A;
+  --line:#2A3B41; --brand:#6E2682; --brand-deep:#5A1F6C;
+  --direct:#57C4EC; --group:#F468B4; --corp:#FFC600; --ticket:#C79BDC; --tool:#57A8C8;
 }
 *{box-sizing:border-box}
 body{margin:0; background:var(--paper); color:var(--ink);
   font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif; line-height:1.65}
-.wrap{max-width:760px; margin:0 auto; padding-inline:16px; padding-block:40px 48px}
-.eyebrow{margin:0 0 6px; font-size:12px; letter-spacing:.16em; color:var(--ink-3); font-weight:500}
-h1{margin:0 0 8px; font-size:28px; line-height:1.3; text-wrap:balance}
-.lead{margin:0 0 28px; color:var(--ink-2); font-size:15px}
-.group-t{margin:0 0 10px; font-size:13px; font-weight:700; letter-spacing:.1em; color:var(--ink-3)}
-.tools{display:grid; gap:14px; margin-bottom:28px}
-.note a{color:var(--direct); font-weight:500}
-a.tool{display:block; text-decoration:none; color:inherit; background:var(--card);
-  border:1px solid var(--line); border-top:4px solid var(--c); border-radius:12px; padding:20px 22px;
+
+.masthead{background:var(--brand); color:#fff; padding-block:18px; padding-inline:16px}
+.masthead-in{max-width:1100px; margin:0 auto}
+.brandrow{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:0 0 10px}
+.logo{height:34px; width:auto; display:block}
+.dept-pill{font-size:12px; font-weight:700; letter-spacing:.08em; border-radius:999px; padding:4px 12px;
+  background:var(--b-yellow); color:var(--brand-ink)}
+.masthead h1{font-size:26px; line-height:1.25; font-weight:700; margin:0 0 6px; color:#fff}
+.masthead p{margin:0; font-size:13.5px; color:#EBD9F2; line-height:1.55}
+.deptbar{height:6px; background:linear-gradient(90deg,var(--b-blue) 0%,var(--b-blue) 25%,var(--b-magenta) 25%,var(--b-magenta) 50%,var(--b-yellow) 50%,var(--b-yellow) 75%,#C79BDC 75%,#C79BDC 100%)}
+
+.wrap{max-width:1100px; margin:0 auto; padding-inline:16px; padding-block:30px 48px}
+.group-t{margin:0 0 10px; font-size:12.5px; font-weight:700; letter-spacing:.1em; color:var(--ink-3)}
+.axes{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin-bottom:30px}
+.tools2{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-bottom:26px}
+@media (max-width:900px){ .axes{grid-template-columns:repeat(2,minmax(0,1fr))} .tools2{grid-template-columns:1fr} }
+@media (max-width:560px){ .axes{grid-template-columns:1fr} }
+
+a.tool{display:flex; flex-direction:column; text-decoration:none; color:inherit; background:var(--card);
+  border:1px solid var(--line); border-top:5px solid var(--c); border-radius:12px; padding:18px 18px 16px;
   transition:transform .15s, box-shadow .15s}
 a.tool:hover{transform:translateY(-2px); box-shadow:0 8px 24px rgba(11,60,73,.10)}
 a.tool:focus-visible{outline:3px solid var(--amber); outline-offset:3px}
-.dept{font-size:12.5px; font-weight:700; letter-spacing:.08em; color:var(--c)}
-.tool h2{margin:4px 0 6px; font-size:20px}
-.tool p{margin:0 0 12px; font-size:14px; color:var(--ink-2)}
-.flow{display:flex; flex-wrap:wrap; gap:6px; align-items:center; font-size:12.5px; color:var(--ink-2)}
-.flow span{background:var(--paper); border-radius:5px; padding:2px 9px}
+.dept{font-size:12px; font-weight:700; letter-spacing:.08em; color:var(--c)}
+.tool h2{margin:4px 0 8px; font-size:19px; line-height:1.35}
+.tool p{margin:0 0 12px; font-size:13.5px; color:var(--ink-2); flex:1}
+.flow{display:flex; flex-wrap:wrap; gap:5px; align-items:center; font-size:12px; color:var(--ink-2)}
+.flow span{background:var(--paper); border-radius:5px; padding:2px 8px}
 .flow i{font-style:normal; color:var(--ink-3)}
-.note{margin-top:4px; padding:14px 16px; border-radius:10px; border:1px dashed var(--line);
+.tool.small h2{font-size:17px}
+.tool.small p{font-size:13px}
+
+.note{padding:14px 16px; border-radius:10px; border:1px dashed var(--line);
   font-size:13px; color:var(--ink-2); line-height:1.75}
 .note b{color:var(--ink)}
-footer{margin-top:22px; font-size:12px; color:var(--ink-3)}
+.note a{color:var(--brand); font-weight:500}
+footer{margin-top:20px; font-size:12px; color:var(--ink-3)}
 @media (prefers-reduced-motion:reduce){a.tool{transition:none}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <p class="eyebrow">可樂旅遊中壢分公司</p>
-  <h1>業務工具</h1>
-  <p class="lead">接到詢問就打開你部門的那一個。官網行程資料各頁共用，每週一自動更新。</p>
+<header class="masthead">
+  <div class="masthead-in">
+    <div class="brandrow">
+      <img class="logo" src="logo.png" alt="可樂旅遊">
+      <span class="dept-pill">中壢分公司</span>
+    </div>
+    <h1>業務工具</h1>
+    <p>接到詢問就打開你部門的那一個。官網行程資料各頁共用，每週一自動更新。</p>
+  </div>
+</header>
+<div class="deptbar"></div>
 
-  <p class="group-t">面對客戶</p>
-  <div class="tools">
+<div class="wrap">
+  <p class="group-t">四個部門，四條線</p>
+  <div class="axes">
     <a class="tool" href="direct.html" style="--c:var(--direct)">
       <div class="dept">直售部</div>
       <h2>客戶需求蒐集表</h2>
-      <p>客人來電邊問邊勾，漏問的當場看得到。問完直接給三條官網行程，點得過去看即時價格。</p>
-      <div class="flow"><span>問需求</span><i>→</i><span>收斂三條行程</span><i>→</i><span>產生客戶說明話術</span></div>
+      <p>客人來電邊問邊勾，漏問的當場看得到。問完直接給三條官網行程。</p>
+      <div class="flow"><span>問需求</span><i>→</i><span>三條行程</span><i>→</i><span>說明話術</span></div>
     </a>
     <a class="tool" href="group.html" style="--c:var(--group)">
       <div class="dept">團體部</div>
       <h2>同業報價需求單</h2>
-      <p>同業來詢價時用。問清條件、從官網行程挑一條當底、勾出要配的菜，下載給台北的需求單；台北回價後再下載給同業的報價單。</p>
-      <div class="flow"><span>同業條件</span><i>→</i><span>挑底配菜</span><i>→</i><span>需求單 Word</span><i>→</i><span>報價單 Word</span></div>
+      <p>同業來詢價時用。挑一條官網行程當底、勾要配的菜，出需求單給台北。</p>
+      <div class="flow"><span>同業條件</span><i>→</i><span>需求單 Word</span><i>→</i><span>報價單 Word</span></div>
     </a>
-  </div>
-
-  <p class="group-t">內部支援</p>
-  <div class="tools">
+    <a class="tool" href="corp.html" style="--c:var(--corp)">
+      <div class="dept">商務部</div>
+      <h2>企業差旅提案</h2>
+      <p>企業客戶的機票、飯店、內部交通一次問清楚，產出帶得出去的提案。</p>
+      <div class="flow"><span>企業需求</span><i>→</i><span>票務查航班</span><i>→</i><span>提案簡報</span></div>
+    </a>
     <a class="tool" href="ticket.html" style="--c:var(--ticket)">
       <div class="dept">票務部</div>
       <h2>航班方案回覆表</h2>
-      <p>商務部把企業差旅需求丟過來時用。填你查到的航班方案，一鍵複製給商務，或下載 Word 存檔。票價與票規照系統原文，網頁不會自己算。</p>
-      <div class="flow"><span>需求摘要</span><i>→</i><span>填航班方案</span><i>→</i><span>給商務／Word</span></div>
+      <p>商務丟來企業差旅需求時用。填查到的航班方案，一鍵回給商務。</p>
+      <div class="flow"><span>需求摘要</span><i>→</i><span>填方案</span><i>→</i><span>給商務</span></div>
     </a>
-    <a class="tool" href="deid.html" style="--c:var(--tool)">
+  </div>
+
+  <p class="group-t">共用小工具</p>
+  <div class="tools2">
+    <a class="tool small" href="deid.html" style="--c:var(--tool)">
       <div class="dept">全部門</div>
       <h2>去識別化小工具</h2>
-      <p>要把東西貼給 AI 之前先過這一關：姓名換成代號，身分證、電話、Email、卡號直接刪掉。對照表留在你的電腦，AI 回覆後再換回真名。</p>
-      <div class="flow"><span>貼上掃描</span><i>→</i><span>換成代號</span><i>→</i><span>換回真名</span></div>
+      <p>貼給 AI 之前先過這一關：姓名換代號，身分證、電話、Email、卡號直接刪掉。對照表留在你的電腦。</p>
+      <div class="flow"><span>貼上掃描</span><i>→</i><span>換代號</span><i>→</i><span>換回真名</span></div>
     </a>
-    <a class="tool" href="passport.html" style="--c:var(--tool)">
+    <a class="tool small" href="passport.html" style="--c:var(--tool)">
       <div class="dept">票務部／全部門</div>
       <h2>證件效期與英文姓名檢核器</h2>
-      <p>從 Excel 貼上名單，檢查護照效期距出發日夠不夠、英文姓名格式、證件號碼有沒有重複。也可以用護照 MRZ 逐筆讀入。</p>
-      <div class="flow"><span>貼上名單</span><i>→</i><span>逐筆檢核</span><i>→</i><span>匯出待處理清單</span></div>
+      <p>從 Excel 貼上名單，檢查護照效期距出發日夠不夠、英文姓名格式、證件號碼有沒有重複。</p>
+      <div class="flow"><span>貼名單</span><i>→</i><span>逐筆檢核</span><i>→</i><span>匯出清單</span></div>
+    </a>
+    <a class="tool small" href="update.html" style="--c:var(--tool)">
+      <div class="dept">管理者</div>
+      <h2>行程資料更新說明</h2>
+      <p>行程資料每週一早上自動更新。這一頁說明怎麼確認有更新、想馬上更新要按哪裡。</p>
+      <div class="flow"><span>自動更新</span><i>→</i><span>確認更新日</span><i>→</i><span>手動重跑</span></div>
     </a>
   </div>
 
   <div class="note">
     <b>資料不會離開你的電腦。</b>這些頁面都在瀏覽器裡跑，沒有任何資料被送出去。不要在頁面上填旅客姓名、電話或護照號碼。<br>
-    <b>行程資料每週一早上自動更新。</b>業務同仁不用做任何事，打開網頁就是最新的資料。管理者請看 <a href="update.html">行程資料更新說明</a>。
+    <b>要貼給 AI 的東西，先過「去識別化小工具」。</b>護照與企業客戶資料是公司規定一定要去識別化的。
   </div>
 
-  <footer>AI 助理應用訓練　2026-09-19　元智大學管理學院　顧問團隊</footer>
+  <footer>可樂旅遊中壢分公司　AI 助理應用訓練　2026-09-19　元智大學管理學院　顧問團隊</footer>
 </div>
 </body>
 </html>
