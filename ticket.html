@@ -1,0 +1,1112 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>航班方案回覆表</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+
+:root{
+  --paper:#F4F7F8; --card:#FFFFFF; --card-2:#EDF3F5;
+  --ink:#12262E; --ink-2:#4A6470; --ink-3:#7C949E;
+  --deep:#0B3C49; --teal:#1C7293; --teal-soft:#E4EEF3;
+  --amber:#E8A33D; --amber-soft:#FBF2E0;
+  --warn:#B8451E; --warn-soft:#FBEAE3;
+  --ok:#2E7D5B; --ok-soft:#E3F1EA;
+  --line:#D6E1E6; --line-2:#BDCDD5;
+  --on-accent:#FFFFFF; --masthead-bg:#0B3C49; --accent-strong:#0B3C49; --amber-ink:#8A5A08;
+  --shadow:0 1px 2px rgba(11,60,73,.06),0 4px 14px rgba(11,60,73,.05);
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0D1618; --card:#162328; --card-2:#1D2C31;
+    --ink:#E2ECEF; --ink-2:#9BB2BA; --ink-3:#71898F;
+    --deep:#8FBACB; --teal:#57A8C8; --teal-soft:#19313B;
+    --amber:#F0B75A; --amber-soft:#2E2617;
+    --warn:#EC8158; --warn-soft:#331B14;
+    --ok:#5DBF92; --ok-soft:#142C22;
+    --line:#2A3B41; --line-2:#3A4E55;
+    --on-accent:#06181E; --masthead-bg:#0B2830; --accent-strong:#57A8C8; --amber-ink:#F0B75A;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0D1618; --card:#162328; --card-2:#1D2C31;
+  --ink:#E2ECEF; --ink-2:#9BB2BA; --ink-3:#71898F;
+  --deep:#8FBACB; --teal:#57A8C8; --teal-soft:#19313B;
+  --amber:#F0B75A; --amber-soft:#2E2617;
+  --warn:#EC8158; --warn-soft:#331B14;
+  --ok:#5DBF92; --ok-soft:#142C22;
+  --line:#2A3B41; --line-2:#3A4E55;
+  --on-accent:#06181E; --masthead-bg:#0B2830; --accent-strong:#57A8C8; --amber-ink:#F0B75A;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+  font-size:15px; line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:760px; margin:0 auto; padding-inline:16px; padding-block:0 120px}
+
+/* ---------- 頁首 ---------- */
+.masthead{background:var(--masthead-bg); color:#fff; padding-block:22px 20px; padding-inline:16px; margin-bottom:0}
+.masthead-in{max-width:760px; margin:0 auto}
+.eyebrow{font-size:11px; letter-spacing:.16em; font-weight:500; color:#8FBACB; margin:0 0 6px}
+.masthead h1{font-size:26px; line-height:1.25; font-weight:700; margin:0 0 6px; text-wrap:balance; color:#fff}
+.masthead p{margin:0; font-size:13px; color:#B9D2DC; line-height:1.55}
+
+/* ---------- 進度列 ---------- */
+.tracker{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:20;
+  background:var(--card); border-bottom:1px solid var(--line);
+  padding-inline:16px; box-shadow:var(--shadow);
+}
+.tracker-in{max-width:760px; margin:0 auto; display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding-block:10px}
+.count{font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums; font-size:20px; font-weight:500; color:var(--accent-strong); line-height:1}
+.count small{font-size:13px; color:var(--ink-3); font-weight:400}
+.bar{flex:1 1 120px; min-width:100px; height:6px; border-radius:3px; background:var(--line); overflow:hidden}
+.bar span{display:block; height:100%; background:var(--teal); width:0%; transition:width .25s ease}
+.bar.done span{background:var(--ok)}
+.jump{
+  font:inherit; font-size:12.5px; font-weight:500; cursor:pointer;
+  border:1px solid var(--line-2); background:var(--card-2); color:var(--ink-2);
+  border-radius:99px; padding:5px 12px;
+}
+.jump:hover{border-color:var(--teal); color:var(--teal)}
+.jump[hidden]{display:none!important}
+
+/* ---------- 區塊 ---------- */
+.sect{margin-top:28px}
+.sect-head{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:4px}
+.sect-head h2{font-size:17px; font-weight:700; margin:0; color:var(--ink)}
+.sect-tag{font-size:11px; letter-spacing:.1em; font-weight:500; color:#fff; background:var(--teal); border-radius:4px; padding:2px 7px}
+.sect-tag.b{background:var(--warn)}
+.sect-tag.c{background:var(--ink-2)}
+.sect-note{font-size:13px; color:var(--ink-2); margin:0 0 14px; line-height:1.6}
+
+/* ---------- 題目 ---------- */
+.q{
+  border:1px solid var(--line); border-left:3px solid var(--line-2);
+  background:var(--card); border-radius:var(--r); margin:0 0 10px; padding:13px 15px;
+  scroll-margin-top:90px;
+}
+.q.answered{border-left-color:var(--ok)}
+.q.flag{border-left-color:var(--amber); background:var(--amber-soft)}
+.q legend, .q .qh{
+  display:flex; gap:8px; align-items:baseline; font-weight:700; font-size:14.5px;
+  padding:0; margin:0 0 9px; color:var(--ink); width:100%;
+}
+.qn{font-family:"IBM Plex Mono",monospace; font-size:12px; font-weight:500; color:var(--ink-3); flex:none}
+.qhint{display:block; font-weight:400; font-size:12.5px; color:var(--ink-2); margin:-4px 0 9px; line-height:1.55}
+fieldset.q{min-width:0}
+
+.opts{display:flex; flex-wrap:wrap; gap:7px}
+.opts.col{flex-direction:column; gap:5px}
+.opt{
+  display:inline-flex; align-items:center; gap:7px; cursor:pointer;
+  border:1px solid var(--line-2); border-radius:99px; padding:6px 13px 6px 10px;
+  font-size:13.5px; background:var(--card); transition:.12s; line-height:1.4;
+}
+.opts.col .opt{border-radius:8px; width:100%}
+.opt:hover{border-color:var(--teal)}
+.opt input{margin:0; accent-color:var(--teal); flex:none}
+.opt:has(input:checked){background:var(--teal-soft); border-color:var(--teal); font-weight:500}
+.opt.danger:has(input:checked){background:var(--warn-soft); border-color:var(--warn); color:var(--warn)}
+.opt input:focus-visible{outline:2px solid var(--teal); outline-offset:3px}
+
+input[type=text],input[type=number],textarea{
+  font:inherit; font-size:14px; color:var(--ink); background:var(--card);
+  border:1px solid var(--line-2); border-radius:8px; padding:8px 11px; width:100%;
+}
+input:focus,textarea:focus{outline:2px solid var(--teal); outline-offset:1px; border-color:var(--teal)}
+textarea{min-height:64px; resize:vertical; line-height:1.6}
+.inline-txt{margin-top:8px}
+
+.nums{display:flex; flex-wrap:wrap; gap:9px}
+.numf{flex:1 1 92px; min-width:82px}
+.numf label{display:block; font-size:12px; color:var(--ink-2); margin-bottom:3px}
+.numf input{text-align:center; font-variant-numeric:tabular-nums; padding-inline:6px}
+
+/* ---------- 警示 ---------- */
+.alerts{display:flex; flex-direction:column; gap:8px; margin-top:11px}
+.alert{
+  border-radius:8px; padding:10px 13px; font-size:13px; line-height:1.6;
+  border-left:3px solid; background:var(--warn-soft); border-color:var(--warn); color:var(--ink);
+}
+.alert.caution{background:var(--amber-soft); border-color:var(--amber)}
+.alert b{display:block; color:var(--warn); font-size:13px; margin-bottom:1px}
+.alert.caution b{color:var(--amber-ink)}
+
+/* ---------- 產出 ---------- */
+.actionbar{
+  position:fixed; left:0; right:0; bottom:0; z-index:30;
+  background:var(--card); border-top:1px solid var(--line);
+  padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));
+  box-shadow:0 -4px 16px rgba(11,60,73,.07);
+}
+.actionbar-in{max-width:760px; margin:0 auto; display:flex; gap:10px; align-items:center}
+.btn{
+  font:inherit; font-weight:700; font-size:15px; cursor:pointer; border:0; border-radius:9px;
+  padding:12px 18px; background:var(--teal); color:var(--on-accent); flex:1; transition:.15s;
+}
+.btn:hover{background:var(--deep); color:var(--on-accent)}
+.btn.ghost{flex:none; background:transparent; color:var(--ink-2); border:1px solid var(--line-2); font-weight:500; font-size:13.5px; padding:12px 14px}
+.btn.ghost:hover{background:var(--card-2); color:var(--ink)}
+.btn:focus-visible,.jump:focus-visible{outline:2px solid var(--amber); outline-offset:2px}
+
+.output{margin-top:26px; border:1px solid var(--teal); border-radius:var(--r); overflow:hidden; box-shadow:var(--shadow)}
+.output-head{background:var(--teal-soft); padding:11px 15px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap}
+.output-head strong{font-size:14px; color:var(--accent-strong)}
+.copy{font:inherit; font-size:13px; font-weight:500; cursor:pointer; border:1px solid var(--teal); background:var(--card); color:var(--teal); border-radius:7px; padding:6px 14px}
+.copy:hover{background:var(--teal); color:var(--on-accent)}
+.sect-tag.go{background:var(--ok)}
+#picks{display:flex; flex-direction:column; gap:11px}
+.pick{
+  border:1px solid var(--line); border-left:3px solid var(--ok); background:var(--card);
+  border-radius:var(--r); padding:14px 16px; box-shadow:var(--shadow);
+}
+.pick.alt{border-left-color:var(--teal)}
+.pick.lite{border-left-color:var(--amber)}
+.rank{
+  display:inline-block; font-size:11.5px; font-weight:700; letter-spacing:.06em;
+  color:var(--on-accent); background:var(--ok); border-radius:4px; padding:2px 9px; margin-bottom:8px;
+}
+.pick.alt .rank{background:var(--teal)}
+.pick.lite .rank{background:var(--amber); color:#3A2A08}
+.rank small{font-weight:400; opacity:.85}
+a.pick-name{
+  display:block; font-size:15.5px; font-weight:700; line-height:1.5; color:var(--accent-strong);
+  text-decoration:none; margin-bottom:8px;
+}
+a.pick-name:hover{text-decoration:underline}
+a.pick-name::after{content:" ↗"; font-size:12px; opacity:.6}
+.pick-meta{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:9px}
+.pick-meta span{
+  font-size:12.5px; color:var(--ink-2); background:var(--card-2);
+  border-radius:5px; padding:3px 9px; font-variant-numeric:tabular-nums;
+}
+.pick-meta span.hi{background:var(--ok-soft); color:var(--ok); font-weight:500}
+.pick-why{font-size:13.5px; line-height:1.65; color:var(--ink)}
+.pick-why b{color:var(--ok)}
+.pick.alt .pick-why b{color:var(--teal)}
+.pick.lite .pick-why b{color:var(--amber-ink)}
+.empty{
+  border:1px dashed var(--line-2); border-radius:var(--r); background:var(--card-2);
+  padding:16px; font-size:13.5px; line-height:1.7; color:var(--ink-2);
+}
+.empty b{color:var(--ink); display:block; margin-bottom:5px}
+.idxfoot a{color:var(--teal); font-weight:500}
+.idxfoot .stale{display:block; margin:0 0 8px; padding:8px 11px; border-radius:7px; background:var(--amber-soft); color:var(--amber-ink); font-size:12.5px; font-weight:500; line-height:1.6}
+.idxfoot{margin:12px 0 0; font-size:11.5px; color:var(--ink-3); line-height:1.65}
+.whereto{padding:14px 15px; background:var(--card-2); border-bottom:1px solid var(--line)}
+.whereto-t{margin:0 0 8px; font-size:13.5px; font-weight:700; color:var(--ink)}
+.whereto-steps{margin:0 0 11px; padding-left:20px; font-size:13px; line-height:1.85; color:var(--ink-2)}
+.whereto-steps b{color:var(--ink)}
+.whereto-warn{
+  margin:0 0 9px; font-size:12.5px; line-height:1.65; color:var(--ink);
+  background:var(--warn-soft); border-left:3px solid var(--warn); border-radius:6px; padding:9px 12px;
+}
+.whereto-warn b{color:var(--warn)}
+.whereto-sub{margin:0; font-size:12px; line-height:1.6; color:var(--ink-3)}
+.whereto-sub b{color:var(--ink-2)}
+pre.gen{
+  margin:0; padding:15px; background:var(--card); overflow-x:auto;
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12.5px; line-height:1.72;
+  white-space:pre-wrap; word-break:break-word; color:var(--ink); max-height:430px; overflow-y:auto;
+}
+
+/* ---------- 說明 ---------- */
+.privacy{
+  margin-top:22px; border:1px dashed var(--line-2); border-radius:var(--r);
+  background:var(--card-2); padding:13px 15px; font-size:12.5px; color:var(--ink-2); line-height:1.7;
+}
+.privacy b{color:var(--ink)}
+.demo-note{
+  display:flex; gap:9px; align-items:flex-start; margin-top:16px; padding:10px 14px;
+  background:var(--amber-soft); border-radius:8px; font-size:12.5px; color:var(--ink-2); line-height:1.6;
+}
+.demo-note b{color:var(--amber-ink)}
+footer{margin-top:28px; padding-top:16px; border-top:1px solid var(--line); font-size:11.5px; color:var(--ink-3); line-height:1.7}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; scroll-behavior:auto!important}}
+
+/* 團體部主色 */
+:root{--grp-bg:#27425E}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--grp-bg:#1B2E44}}
+:root[data-theme="dark"]{--grp-bg:#1B2E44}
+
+/* 票務部主色 */
+:root{--tkt-bg:#4C3B63}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--tkt-bg:#382C49}}
+:root[data-theme="dark"]{--tkt-bg:#382C49}
+
+
+/* ===== 票務部專用 ===== */
+.masthead{background:var(--tkt-bg)}
+.f{display:block; min-width:0}
+.f>span{display:block; font-size:12px; color:var(--ink-2); margin-bottom:3px}
+.f>span i{font-style:normal; color:var(--ink-3)}
+.f.wide{grid-column:1/-1}
+select{
+  font:inherit; font-size:14px; color:var(--ink); background:var(--card);
+  border:1px solid var(--line-2); border-radius:8px; padding:8px 10px; width:100%; min-height:40px
+}
+input[type=date],input[type=time]{
+  font:inherit; font-size:14px; color:var(--ink); background:var(--card); color-scheme:light dark;
+  border:1px solid var(--line-2); border-radius:8px; padding:7px 10px; width:100%; min-height:40px
+}
+.grid2{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px 12px}
+.grid3{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px 12px}
+@media (max-width:560px){ .grid2,.grid3{grid-template-columns:1fr} }
+
+.opt-card{border:1px solid var(--line); border-left:3px solid var(--teal); background:var(--card);
+  border-radius:var(--r); padding:14px 16px; margin:0 0 12px; box-shadow:var(--shadow)}
+.opt-head{display:flex; gap:10px; align-items:center; margin-bottom:12px}
+.opt-head .opt-code{width:110px; flex:none; font-weight:700; text-align:center}
+.opt-head .del{font:inherit; font-size:13px; cursor:pointer; border:1px solid var(--line-2); background:var(--card);
+  color:var(--ink-3); border-radius:7px; width:38px; height:40px; flex:none}
+.opt-head .del:hover{border-color:var(--warn); color:var(--warn)}
+.leg{display:grid; grid-template-columns:4.5em 1fr; gap:10px; align-items:start; margin-bottom:10px}
+.leg-t{font-size:13.5px; font-weight:700; color:var(--ink); padding-top:22px}
+.leg-g{display:grid; grid-template-columns:1fr 1.3fr 1fr 1fr 1.4fr; gap:8px}
+@media (max-width:640px){ .leg{grid-template-columns:1fr} .leg-t{padding-top:0} .leg-g{grid-template-columns:repeat(2,1fr)} }
+.opt-more{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px 12px; margin-top:4px}
+@media (max-width:760px){ .opt-more{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.mini{font:inherit; font-size:12.5px; font-weight:500; cursor:pointer; border:1px solid var(--teal);
+  background:var(--card); color:var(--teal); border-radius:7px; padding:6px 14px}
+.mini:hover{background:var(--teal-soft)}
+.qcheck{margin:18px 0 10px; display:flex; flex-direction:column; gap:8px}
+.qcheck .ok{padding:10px 13px; border-radius:8px; background:var(--ok-soft); color:var(--ok); font-size:13px; font-weight:500; line-height:1.6}
+
+.doc{margin-top:26px; border:1px solid var(--line-2); border-radius:var(--r); background:var(--card); box-shadow:var(--shadow); overflow:hidden}
+.doc-head{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+  padding:12px 16px; background:var(--tkt-bg); color:#fff}
+.doc-head strong{font-size:15px}
+.doc-head .sub{font-size:12px; opacity:.8; display:block; font-weight:400}
+.doc-actions{display:flex; gap:8px}
+.doc-actions button{font:inherit; font-size:13px; font-weight:500; cursor:pointer; border-radius:7px; padding:6px 14px;
+  border:1px solid rgba(255,255,255,.55); background:transparent; color:#fff}
+.doc-actions button:hover{background:rgba(255,255,255,.14)}
+.doc-actions button.primary{background:#fff; color:#3A2D4C; border-color:#fff}
+pre.docbody{margin:0; padding:16px 18px; font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif; font-size:13.5px;
+  line-height:1.85; white-space:pre-wrap; word-break:break-word; color:var(--ink); max-height:520px; overflow:auto}
+.doc-foot{padding:10px 16px; border-top:1px solid var(--line); font-size:12px; color:var(--ink-3); background:var(--card-2)}
+details.aichk{margin-top:12px; border:1px solid var(--line); border-radius:var(--r); background:var(--card)}
+details.aichk summary{cursor:pointer; padding:12px 15px; font-weight:700; font-size:14px; color:var(--ink-2)}
+.aichk-b{padding:0 15px 15px}
+.aichk-b p{margin:0 0 10px; font-size:13px; color:var(--ink-2); line-height:1.6}
+.aichk-b textarea{min-height:120px}
+.aichk-b .btn{margin-top:10px; width:100%}
+details.aichk .output{margin:0 15px 15px}
+</style>
+
+<header class="masthead">
+  <div class="masthead-in">
+    <p class="eyebrow">可樂旅遊中壢分公司　票務部</p>
+    <h1>航班方案回覆表</h1>
+    <p>商務部把企業差旅需求丟過來，在這裡填你查到的航班方案。填完下載 Word，或一鍵複製給商務。價格與票規一律照系統原文，網頁不會自己算。</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="demo-note">
+    <span aria-hidden="true">▸</span>
+    <span><b>頁面開啟時是示範資料</b>（虛構的企業差旅案，課堂用）。按右下角「清空重填」就是空白表單。</span>
+  </div>
+
+  <!-- ===== A 案件資訊 ===== -->
+  <section class="sect">
+    <div class="sect-head"><span class="sect-tag">A 區</span><h2>案件資訊</h2></div>
+    <p class="sect-note">誰問的、什麼時候要。<b>企業客戶請用代號或簡稱，不要寫公司全名，也不要寫出差人員姓名。</b></p>
+
+    <div class="q" data-q="a1">
+      <div class="qh"><span class="qn">A1</span>需求單編號</div>
+      <span class="qhint">商務部的需求單上會有。沒有就留白，這張表會自己編一個。</span>
+      <input type="text" id="a1" placeholder="例：C-20260918-1030">
+    </div>
+
+    <div class="q" data-q="a2">
+      <div class="qh"><span class="qn">A2</span>企業客戶代號</div>
+      <input type="text" id="a2" placeholder="例：A 公司">
+    </div>
+
+    <div class="q" data-q="a3">
+      <div class="qh"><span class="qn">A3</span>承辦商務與回覆期限</div>
+      <div class="grid2">
+        <label class="f"><span>承辦商務</span><input type="text" id="a3" placeholder="例：王小姐"></label>
+        <label class="f"><span>請於何時前回覆</span><input type="text" id="a4" placeholder="例：9/19（五）12:00 前"></label>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== B 需求摘要 ===== -->
+  <section class="sect">
+    <div class="sect-head"><span class="sect-tag c">B 區</span><h2>需求摘要</h2></div>
+    <p class="sect-note">商務部提供的條件，票務核對一次。跟你查到的不一樣，就在下面「其他限制」寫清楚。</p>
+
+    <div class="q" data-q="b1">
+      <div class="qh"><span class="qn">B1</span>出發地與目的地</div>
+      <div class="grid2">
+        <label class="f"><span>出發地</span><input type="text" id="b1" placeholder="例：桃園 TPE"></label>
+        <label class="f"><span>目的地</span><input type="text" id="b2" placeholder="例：曼谷 BKK；多城市就照順序寫"></label>
+      </div>
+    </div>
+
+    <div class="q" data-q="b3">
+      <div class="qh"><span class="qn">B3</span>去回日期與彈性</div>
+      <div class="grid3">
+        <label class="f"><span>去程日期</span><input type="date" id="b3"></label>
+        <label class="f"><span>回程日期</span><input type="date" id="b4"></label>
+        <label class="f"><span>日期彈性</span>
+          <select id="b5">
+            <option value="">請選</option>
+            <option value="不能動">不能動</option>
+            <option value="前後 1 天">前後 1 天</option>
+            <option value="前後 2 天">前後 2 天</option>
+            <option value="前後 3 天以上">前後 3 天以上</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div class="q" data-q="b6">
+      <div class="qh"><span class="qn">B6</span>艙等上限與人數</div>
+      <div class="grid3">
+        <label class="f"><span>艙等上限</span>
+          <select id="b6">
+            <option value="">請選</option>
+            <option value="經濟艙">經濟艙</option>
+            <option value="豪華經濟艙">豪華經濟艙</option>
+            <option value="商務艙">商務艙</option>
+            <option value="依職級不同">依職級不同</option>
+          </select>
+        </label>
+        <label class="f"><span>出差人數</span><input type="number" id="b7" min="1" max="99" placeholder="例：4"></label>
+        <label class="f"><span>每人預算上限 <i>選填</i></span><input type="text" id="b8" placeholder="例：20,000"></label>
+      </div>
+    </div>
+
+    <div class="q" data-q="b9">
+      <div class="qh"><span class="qn">B9</span>指定航空與其他限制<span style="font-weight:400;color:var(--ink-3);font-size:12px">（選填）</span></div>
+      <label class="f" style="margin-bottom:10px"><span>指定航空或聯盟</span><input type="text" id="b9" placeholder="例：長榮或星宇；星空聯盟"></label>
+      <label class="f"><span>其他限制</span><textarea id="b10" placeholder="例：一定要直飛、要可改期、要累積哩程、開票前要企業用印"></textarea></label>
+    </div>
+  </section>
+
+  <!-- ===== C 航班方案 ===== -->
+  <section class="sect">
+    <div class="sect-head"><span class="sect-tag go">C 區</span><h2>航班方案</h2></div>
+    <p class="sect-note">從系統查到什麼就填什麼，<b>票價與票規照抄，不要自己換算</b>。一般給企業看 2～3 個方案：最快、最省、最有彈性。</p>
+    <div id="opts"></div>
+    <input type="hidden" id="optsJSON">
+    <button type="button" class="mini" id="addOpt">＋ 加一個方案</button>
+  </section>
+
+  <!-- ===== D 票規白話 ===== -->
+  <section class="sect">
+    <div class="sect-head"><span class="sect-tag b">D 區</span><h2>票規白話（選用）</h2></div>
+    <p class="sect-note">要跟客人解釋規則時用。AI 只做整理，<b>金額一律照抄原文，不換算、不加總</b>，而且會附上原文出處。</p>
+    <details class="aichk">
+      <summary>把票規原文整理成中文重點</summary>
+      <div class="aichk-b">
+        <p>從系統把票規原文貼進來（英文也可以），按下去會產生一段給 AI 的指令。</p>
+        <textarea id="rule" placeholder="貼上票規原文"></textarea>
+        <button class="btn" type="button" id="makeRule">產生整理指令</button>
+      </div>
+      <div class="output" id="output" hidden>
+        <div class="output-head">
+          <strong>給 AI 的指令（票規原文已帶入）</strong>
+          <button class="copy" id="copy" type="button">複製全部</button>
+        </div>
+        <div class="whereto">
+          <p class="whereto-t">複製之後貼到哪裡？</p>
+          <ol class="whereto-steps">
+            <li>打開 Claude 或 ChatGPT，開一個新對話</li>
+            <li>貼上、送出</li>
+          </ol>
+          <p class="whereto-warn"><b>整理完還是要回原文看一次。</b>給客人的說法可以用 AI 的版本，但金額、天數要跟原文逐字對過。</p>
+        </div>
+        <pre class="gen" id="gen"></pre>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===== 承辦資訊 ===== -->
+  <section class="sect">
+    <div class="sect-head"><span class="sect-tag c">E 區</span><h2>票務承辦人</h2></div>
+    <p class="sect-note">只要填一次，這台電腦會記住；按「清空重填」也不會清掉。</p>
+    <div class="q" data-q="staff">
+      <div class="grid2">
+        <label class="f"><span>承辦人</span><input type="text" id="s_name" class="keep" placeholder="例：陳小姐"></label>
+        <label class="f"><span>分機或電話</span><input type="text" id="s_tel" class="keep" placeholder="例：分機 123"></label>
+      </div>
+    </div>
+  </section>
+
+  <div class="qcheck" id="check" aria-live="polite"></div>
+
+  <!-- ===== 產出 ===== -->
+  <div id="docWrap" hidden>
+    <div class="doc">
+      <div class="doc-head">
+        <strong>航班方案回覆表<span class="sub" id="docSub"></span></strong>
+        <div class="doc-actions">
+          <button type="button" id="docCopy">複製給商務</button>
+          <button type="button" class="primary" id="docWord">下載 Word 檔</button>
+        </div>
+      </div>
+      <pre class="docbody" id="docBody"></pre>
+      <div class="doc-foot"><b>Word 檔給商務做企業提案用。</b>複製的文字可以直接貼 LINE 或 Email。這份完全由網頁產生，沒有經過 AI。</div>
+    </div>
+  </div>
+
+  <div class="privacy">
+    <b>資料不會離開這台電腦。</b>所有處理都在你的瀏覽器裡跑，沒有任何資料被送出去；Word 檔也是在你的電腦上產生。草稿存在你自己的瀏覽器裡。<br>
+    <b>不要填客戶公司全名與出差人員姓名。</b>這張表只需要代號、人數、艙等與航班資訊。
+  </div>
+
+  <footer>
+    可樂旅遊中壢分公司　AI 助理應用訓練　9/19 課堂示範品<br>
+    票價、艙位與票規一律以系統原文與實際開票時為準；這張表只是把查到的結果整理給商務部。
+  </footer>
+</div>
+
+<div class="actionbar">
+  <div class="actionbar-in">
+    <button class="btn" id="make" type="button">產出方案表</button>
+    <button class="btn ghost" id="clear" type="button">清空重填</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var qs=function(s,r){return (r||document).querySelector(s)};
+  var qsa=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var KEY="cola-ticket-draft-v1", KEY_STAFF="cola-ticket-staff-v1";
+  var TEXTS="input[type=text],input[type=number],input[type=hidden],input[type=date],input[type=time],textarea,select";
+
+  /* ---- 共用小工具 ---- */
+  function pad(n){ return (n<10?"0":"")+n; }
+  function stamp(){
+    var d=new Date();
+    return {
+      id:"G-"+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+"-"+pad(d.getHours())+pad(d.getMinutes()),
+      text:d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate()+" "+pad(d.getHours())+":"+pad(d.getMinutes())
+    };
+  }
+  function orNone(v){ return (v&&String(v).trim())?String(v).trim():"（未提供）"; }
+  function noParen(s){ return String(s||"").replace(/[（(][^）)]*[）)]/g,"").trim(); }
+  function ymd(d){ return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+  function parseYMD(v){ var m=String(v||"").match(/^(\d{4})-(\d{2})-(\d{2})$/); return m?new Date(+m[1],+m[2]-1,+m[3]):null; }
+  function addDays(d,n){ return new Date(d.getFullYear(),d.getMonth(),d.getDate()+n); }
+  function nextDate(from,m,day){ var x=new Date(from.getFullYear(),m-1,day); return x<from?new Date(from.getFullYear()+1,m-1,day):x; }
+  var WEEK="日一二三四五六";
+  function fmtDate(d,wk){ return d.getFullYear()+"/"+pad(d.getMonth()+1)+"/"+pad(d.getDate())+(wk?"（"+WEEK.charAt(d.getDay())+"）":""); }
+  function cnNum(n){
+    var c=["零","一","二","三","四","五","六","七","八","九","十"];
+    if(n<=10) return c[n];
+    if(n<20) return "十"+c[n-10];
+    return c[Math.floor(n/10)]+"十"+(n%10?c[n%10]:"");
+  }
+  function money(v){
+    var s=String(v||"").trim();
+    if(/^(NT\$|\$)?\s*[\d,，]+\s*元?$/i.test(s)){
+      var n=parseInt(s.replace(/[^\d]/g,""),10);
+      if(!isNaN(n)) return "NT$ "+n.toLocaleString("en-US");
+    }
+    return s;
+  }
+  function val(id){ return qs("#"+id).value.trim(); }
+  function lines(id){
+    return qs("#"+id).value.split(/\n+/).map(function(l){
+      return l.replace(/^\s*([・•●◆\-－*]|\d{1,2}[.、．)）])\s*/,"").trim();
+    }).filter(Boolean);
+  }
+  var CITYNAME={TPE:"台北",TXG:"台中",KHH:"高雄"};
+  var DISHLABEL={d1:"天數",d2:"飯店等級",d3:"餐食",d4:"景點",d5:"交通",d6:"機票",d7:"領隊",d8:"小費與保險",d9:"團體活動"};
+  function fileName(parts){
+    return parts.filter(Boolean).join("_").replace(/[\\\/:*?"<>|]+/g,"").replace(/\s+/g,"").slice(0,90)+".docx";
+  }
+  function saveFile(blob,name){
+    var url=URL.createObjectURL(blob), a=document.createElement("a");
+    a.href=url; a.download=name; a.style.display="none";
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); },4000);
+  }
+  function flash(btn,msg,label){ btn.textContent=msg; setTimeout(function(){ btn.textContent=label; },2600); }
+  function copyText(txt, btn, label){
+    var ok=function(){ btn.textContent="已複製"; setTimeout(function(){btn.textContent=label},1800); };
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(ok,fb); } else fb();
+    function fb(){
+      var ta=document.createElement("textarea"); ta.value=txt; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand("copy"); ok(); }catch(e){ btn.textContent="請手動選取複製"; }
+      document.body.removeChild(ta);
+    }
+  }
+
+  /* ================= Word 檔產生器 =================
+     不靠外部套件：網頁自己組 Word 的 XML，再打包成 .docx（不壓縮的 zip）。
+     標籤順序照 Office Open XML 規格排，Word 才打得開，改的時候要小心。 */
+  var DOCX=(function(){
+    var K={PUR:"7E3094", LAV:"F3EAF7", MAG:"D0157A", YEL:"FFD23F", GRAY:"7F7F7F", RED:"C00000", LINE:"D3C9DB",
+           STRIPE:["1E9BD7","F26A21","5DB031","FFC20E","E4007F"]};
+    // 中文字型要用中文名稱，再在字型表註明英文別名；只寫英文名，Word 有時會把中文換成新細明體
+    var FONT="Microsoft JhengHei", FONT_TW="微軟正黑體", FULL=9864;
+    function esc(s){
+      return String(s==null?"":s).replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g,"")
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+    function R(text,o){
+      o=o||{};
+      var pr=(o.b?"<w:b/><w:bCs/>":"")+(o.color?'<w:color w:val="'+o.color+'"/>':"")+
+        (o.sz?'<w:sz w:val="'+o.sz+'"/><w:szCs w:val="'+o.sz+'"/>':"")+
+        (o.hl?'<w:highlight w:val="yellow"/>':"")+(o.u?'<w:u w:val="single"/>':"");
+      return String(text==null?"":text).split("\n").map(function(line,i){
+        return "<w:r>"+(pr?"<w:rPr>"+pr+"</w:rPr>":"")+(i?"<w:br/>":"")+'<w:t xml:space="preserve">'+esc(line)+"</w:t></w:r>";
+      }).join("");
+    }
+    function MISS(word,sz){ return R(word||"待填",{b:1,color:K.RED,sz:sz,hl:1}); }
+    function P(runs,o){
+      o=o||{};
+      var pr=(o.keep?"<w:keepNext/>":"")+
+        (o.rule?'<w:pBdr><w:bottom w:val="single" w:sz="12" w:space="3" w:color="'+o.rule+'"/></w:pBdr>':"")+
+        (o.tabR?'<w:tabs><w:tab w:val="right" w:pos="'+o.tabR+'"/></w:tabs>':"")+
+        '<w:spacing w:before="'+(o.before||0)+'" w:after="'+(o.after||0)+'"/>'+
+        (o.hang?'<w:ind w:left="'+o.hang+'" w:hanging="'+o.hang+'"/>':"")+
+        (o.jc?'<w:jc w:val="'+o.jc+'"/>':"")+
+        (o.markSz?'<w:rPr><w:sz w:val="'+o.markSz+'"/><w:szCs w:val="'+o.markSz+'"/></w:rPr>':"");
+      return "<w:p><w:pPr>"+pr+"</w:pPr>"+(runs||"")+"</w:p>";
+    }
+    function C(w,body,o){
+      o=o||{};
+      var m=o.mar;
+      var pr='<w:tcW w:w="'+w+'" w:type="dxa"/>'+(o.span>1?'<w:gridSpan w:val="'+o.span+'"/>':"")+
+        (o.fill?'<w:shd w:val="clear" w:color="auto" w:fill="'+o.fill+'"/>':"")+
+        (m?'<w:tcMar><w:top w:w="'+m[0]+'" w:type="dxa"/><w:left w:w="'+m[1]+'" w:type="dxa"/><w:bottom w:w="'+m[2]+'" w:type="dxa"/><w:right w:w="'+m[3]+'" w:type="dxa"/></w:tcMar>':"")+
+        '<w:vAlign w:val="'+(o.v||"center")+'"/>';
+      return "<w:tc><w:tcPr>"+pr+"</w:tcPr>"+(body||P(""))+"</w:tc>";
+    }
+    function TR(cells,o){
+      o=o||{};
+      return "<w:tr><w:trPr><w:cantSplit/>"+
+        (o.h?'<w:trHeight w:val="'+o.h+'" w:hRule="'+(o.exact?"exact":"atLeast")+'"/>':"")+
+        (o.head?"<w:tblHeader/>":"")+"</w:trPr>"+cells.join("")+"</w:tr>";
+    }
+    function TBL(grid,rows,o){
+      o=o||{};
+      var m=o.mar||[50,110,50,110];
+      var bd=["top","left","bottom","right","insideH","insideV"].map(function(s){
+        return o.noBorder?'<w:'+s+' w:val="nil"/>':'<w:'+s+' w:val="single" w:sz="4" w:space="0" w:color="'+K.LINE+'"/>';
+      }).join("");
+      return "<w:tbl><w:tblPr>"+
+        '<w:tblW w:w="'+grid.reduce(function(a,b){return a+b;},0)+'" w:type="dxa"/><w:jc w:val="center"/>'+
+        "<w:tblBorders>"+bd+"</w:tblBorders>"+'<w:tblLayout w:type="fixed"/>'+
+        '<w:tblCellMar><w:top w:w="'+m[0]+'" w:type="dxa"/><w:left w:w="'+m[1]+'" w:type="dxa"/><w:bottom w:w="'+m[2]+'" w:type="dxa"/><w:right w:w="'+m[3]+'" w:type="dxa"/></w:tblCellMar>'+
+        "</w:tblPr><w:tblGrid>"+grid.map(function(g){ return '<w:gridCol w:w="'+g+'"/>'; }).join("")+"</w:tblGrid>"+
+        rows.join("")+"</w:tbl>";
+    }
+    function LAB(w,t,o){ o=o||{}; return C(w,P(R(t,{b:1}),{jc:o.jc}),{fill:K.LAV}); }
+    function DARK(w,t){ return C(w,P(R(t,{b:1,color:"FFFFFF"}),{jc:"center"}),{fill:K.PUR}); }
+    function H(t){ return P(R(t,{b:1,color:K.PUR,sz:26}),{rule:K.PUR,before:320,after:140,keep:1}); }
+    function SUBH(t,note){ return P(R(t,{b:1,color:K.PUR,sz:23})+(note?R("　"+note,{color:K.GRAY,sz:17}):""),{before:260,after:90,keep:1}); }
+    function BUL(t,o){ return P(R("・"+t,o),{hang:200,after:30}); }
+    function banner(title,right){
+      var w=[1973,1973,1973,1973,1972];
+      // 標題列只用一格（分兩格，Word 轉 PDF 時中間會出現細線），右邊的字用靠右定位點排
+      var top=TR([
+        C(FULL,P(R("可樂旅遊",{b:1,color:K.YEL,sz:40})+R("  "+title,{b:1,color:"FFFFFF",sz:40})+
+          (right?"<w:r><w:tab/></w:r>"+R(right,{color:"FFFFFF",sz:18}):""),{tabR:FULL-600}),{span:5,fill:K.PUR,mar:[130,300,130,300]})
+      ],{h:860});
+      var stripe=TR(K.STRIPE.map(function(c,i){ return C(w[i],P("",{markSz:2}),{fill:c,mar:[0,0,0,0]}); }),{h:90,exact:1});
+      return TBL(w,[top,stripe],{noBorder:1,mar:[0,0,0,0]});
+    }
+    function link(rid,url){ return '<w:hyperlink r:id="'+rid+'" w:history="1">'+R(url,{color:"0563C1",sz:18,u:1})+"</w:hyperlink>"; }
+
+    var CRC=null;
+    function crc32(bytes){
+      if(!CRC){
+        CRC=[];
+        for(var n=0;n<256;n++){ var c=n; for(var k=0;k<8;k++) c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1); CRC[n]=c>>>0; }
+      }
+      var x=0xFFFFFFFF;
+      for(var i=0;i<bytes.length;i++) x=CRC[(x^bytes[i])&255]^(x>>>8);
+      return (x^0xFFFFFFFF)>>>0;
+    }
+    function zip(files){
+      var enc=new TextEncoder(), parts=[], dir=[], off=0, now=new Date();
+      var dd=((now.getFullYear()-1980)<<9)|((now.getMonth()+1)<<5)|now.getDate();
+      var tt=(now.getHours()<<11)|(now.getMinutes()<<5)|Math.floor(now.getSeconds()/2);
+      files.forEach(function(f){
+        var name=enc.encode(f[0]), data=enc.encode(f[1]), crc=crc32(data);
+        var h=new DataView(new ArrayBuffer(30));
+        h.setUint32(0,0x04034b50,true); h.setUint16(4,20,true); h.setUint16(6,0,true); h.setUint16(8,0,true);
+        h.setUint16(10,tt,true); h.setUint16(12,dd,true); h.setUint32(14,crc,true);
+        h.setUint32(18,data.length,true); h.setUint32(22,data.length,true);
+        h.setUint16(26,name.length,true); h.setUint16(28,0,true);
+        parts.push(h.buffer,name,data);
+        var c=new DataView(new ArrayBuffer(46));
+        c.setUint32(0,0x02014b50,true); c.setUint16(4,20,true); c.setUint16(6,20,true); c.setUint16(8,0,true); c.setUint16(10,0,true);
+        c.setUint16(12,tt,true); c.setUint16(14,dd,true); c.setUint32(16,crc,true);
+        c.setUint32(20,data.length,true); c.setUint32(24,data.length,true);
+        c.setUint16(28,name.length,true); c.setUint16(30,0,true); c.setUint16(32,0,true); c.setUint16(34,0,true); c.setUint16(36,0,true);
+        c.setUint32(38,0,true); c.setUint32(42,off,true);
+        dir.push(c.buffer,name);
+        off+=30+name.length+data.length;
+      });
+      var size=dir.reduce(function(a,x){ return a+x.byteLength; },0);
+      var e=new DataView(new ArrayBuffer(22));
+      e.setUint32(0,0x06054b50,true); e.setUint16(4,0,true); e.setUint16(6,0,true);
+      e.setUint16(8,files.length,true); e.setUint16(10,files.length,true);
+      e.setUint32(12,size,true); e.setUint32(16,off,true); e.setUint16(20,0,true);
+      return new Blob(parts.concat(dir,[e.buffer]),{type:"application/vnd.openxmlformats-officedocument.wordprocessingml.document"});
+    }
+    var XH='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+    var NS_W="http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+    var REL="http://schemas.openxmlformats.org/officeDocument/2006/relationships";
+    var PKG="http://schemas.openxmlformats.org/package/2006/relationships";
+    function build(body,links,title){
+      var rels='<Relationship Id="rIdSt" Type="'+REL+'/styles" Target="styles.xml"/>'+
+        '<Relationship Id="rIdSe" Type="'+REL+'/settings" Target="settings.xml"/>'+
+        '<Relationship Id="rIdFt" Type="'+REL+'/fontTable" Target="fontTable.xml"/>'+
+        links.map(function(u,i){ return '<Relationship Id="rIdL'+(i+1)+'" Type="'+REL+'/hyperlink" Target="'+esc(u)+'" TargetMode="External"/>'; }).join("");
+      return zip([
+        ["[Content_Types].xml", XH+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'+
+          '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'+
+          '<Default Extension="xml" ContentType="application/xml"/>'+
+          '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'+
+          '<Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>'+
+          '<Override PartName="/word/settings.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"/>'+
+          '<Override PartName="/word/fontTable.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.fontTable+xml"/>'+
+          '<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>'+
+          "</Types>"],
+        ["_rels/.rels", XH+'<Relationships xmlns="'+PKG+'">'+
+          '<Relationship Id="rId1" Type="'+REL+'/officeDocument" Target="word/document.xml"/>'+
+          '<Relationship Id="rId2" Type="'+PKG+'/metadata/core-properties" Target="docProps/core.xml"/>'+
+          "</Relationships>"],
+        ["docProps/core.xml", XH+'<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'+
+          "<dc:title>"+esc(title)+"</dc:title><dc:creator>"+esc("可樂旅遊中壢分公司")+"</dc:creator>"+
+          '<dcterms:created xsi:type="dcterms:W3CDTF">'+new Date().toISOString().replace(/\.\d{3}Z$/,"Z")+"</dcterms:created>"+
+          "</cp:coreProperties>"],
+        ["word/_rels/document.xml.rels", XH+'<Relationships xmlns="'+PKG+'">'+rels+"</Relationships>"],
+        ["word/document.xml", XH+'<w:document xmlns:w="'+NS_W+'" xmlns:r="'+REL+'"><w:body>'+body+
+          '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="794" w:right="1021" w:bottom="794" w:left="1021" w:header="425" w:footer="425" w:gutter="0"/></w:sectPr>'+
+          "</w:body></w:document>"],
+        ["word/styles.xml", XH+'<w:styles xmlns:w="'+NS_W+'"><w:docDefaults>'+
+          '<w:rPrDefault><w:rPr><w:rFonts w:ascii="'+FONT+'" w:eastAsia="'+FONT_TW+'" w:hAnsi="'+FONT+'" w:cs="'+FONT+'"/><w:color w:val="262626"/><w:sz w:val="20"/><w:szCs w:val="20"/><w:lang w:val="en-US" w:eastAsia="zh-TW" w:bidi="ar-SA"/></w:rPr></w:rPrDefault>'+
+          '<w:pPrDefault><w:pPr><w:spacing w:after="0" w:line="276" w:lineRule="auto"/></w:pPr></w:pPrDefault>'+
+          "</w:docDefaults>"+
+          '<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style>'+
+          '<w:style w:type="table" w:default="1" w:styleId="TableNormal"><w:name w:val="Normal Table"/><w:uiPriority w:val="99"/><w:semiHidden/><w:unhideWhenUsed/>'+
+          '<w:tblPr><w:tblInd w:w="0" w:type="dxa"/><w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:left w:w="108" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:right w:w="108" w:type="dxa"/></w:tblCellMar></w:tblPr></w:style>'+
+          "</w:styles>"],
+        ["word/settings.xml", XH+'<w:settings xmlns:w="'+NS_W+'"><w:defaultTabStop w:val="480"/><w:characterSpacingControl w:val="compressPunctuation"/>'+
+          '<w:compat><w:compatSetting w:name="compatibilityMode" w:uri="http://schemas.microsoft.com/office/word" w:val="15"/></w:compat>'+
+          '<w:themeFontLang w:val="en-US" w:eastAsia="zh-TW"/></w:settings>'],
+        ["word/fontTable.xml", XH+'<w:fonts xmlns:w="'+NS_W+'">'+
+          ['<w:font w:name="'+FONT_TW+'"><w:altName w:val="'+FONT+'"/>','<w:font w:name="'+FONT+'"><w:altName w:val="'+FONT_TW+'"/>'].map(function(head){
+            return head+'<w:panose1 w:val="020B0604030504040204"/><w:charset w:val="88"/><w:family w:val="swiss"/><w:pitch w:val="variable"/></w:font>';
+          }).join("")+
+          "</w:fonts>"]
+      ]);
+    }
+    return {K:K,FULL:FULL,R:R,P:P,C:C,TR:TR,TBL:TBL,MISS:MISS,LAB:LAB,DARK:DARK,H:H,SUBH:SUBH,BUL:BUL,banner:banner,link:link,build:build};
+  })();
+
+
+  /* ---- 方案卡 ---- */
+  var LEGS=[["o","去程"],["r","回程"]];
+  var LETTER="ABCDEFGH";
+  function optCard(o){
+    o=o||{};
+    var d=document.createElement("div"); d.className="opt-card";
+    var h='<div class="opt-head">'+
+      '<input type="text" data-k="code" class="opt-code" aria-label="方案代號" placeholder="方案 A">'+
+      '<input type="text" data-k="air" aria-label="航空公司" placeholder="航空公司（例：長榮航空 BR）">'+
+      '<button type="button" class="del" aria-label="刪除這個方案">✕</button></div>';
+    LEGS.forEach(function(L){
+      var p=L[0];
+      h+='<div class="leg"><div class="leg-t">'+L[1]+'</div><div class="leg-g">'+
+        '<label class="f"><span>航班</span><input type="text" data-k="'+p+'_no" placeholder="BR205"></label>'+
+        '<label class="f"><span>日期</span><input type="date" data-k="'+p+'_date"></label>'+
+        '<label class="f"><span>起飛</span><input type="time" data-k="'+p+'_dep"></label>'+
+        '<label class="f"><span>抵達</span><input type="time" data-k="'+p+'_arr"></label>'+
+        '<label class="f"><span>轉機 <i>直飛留白</i></span><input type="text" data-k="'+p+'_via" placeholder="例：香港 1 小時 20 分"></label>'+
+        '</div></div>';
+    });
+    h+='<div class="opt-more">'+
+      '<label class="f"><span>艙等</span><input type="text" data-k="cabin" placeholder="例：經濟艙 Y"></label>'+
+      '<label class="f"><span>每人票價</span><input type="text" data-k="fare" inputmode="numeric" placeholder="例：18500"></label>'+
+      '<label class="f"><span>含稅別</span><select data-k="tax">'+
+        '<option value="">請選</option><option value="含稅">含稅</option><option value="未含稅">未含稅</option><option value="待確認">待確認</option></select></label>'+
+      '<label class="f"><span>行李</span><input type="text" data-k="bag" placeholder="例：23kg × 2 件"></label>'+
+      '<label class="f"><span>開票期限</span><input type="date" data-k="ttl"></label>'+
+      '<label class="f"><span>期限時間 <i>選填</i></span><input type="time" data-k="ttlt"></label>'+
+      '<label class="f"><span>可售狀況</span><input type="text" data-k="avail" placeholder="例：Y 艙 5 位"></label>'+
+      '<label class="f"><span>備註 <i>選填</i></span><input type="text" data-k="note" placeholder="例：可累積哩程"></label>'+
+      '<label class="f wide"><span>改退票規定（貼系統原文，不用翻譯）</span><textarea data-k="rule" placeholder="貼上票規原文"></textarea></label>'+
+      '</div>';
+    d.innerHTML=h;
+    qsa("[data-k]",d).forEach(function(e){ var k=e.getAttribute("data-k"); if(o[k]) e.value=o[k]; });
+    qs(".del",d).addEventListener("click",function(){
+      d.remove();
+      if(!qsa(".opt-card",qs("#opts")).length) qs("#opts").appendChild(optCard());
+      renumber(); refresh();
+    });
+    return d;
+  }
+  function optsGet(){
+    return qsa(".opt-card",qs("#opts")).map(function(d){
+      var o={};
+      qsa("[data-k]",d).forEach(function(e){ o[e.getAttribute("data-k")]=e.value.trim(); });
+      return o;
+    });
+  }
+  function optsSync(){ qs("#optsJSON").value=JSON.stringify(optsGet()); }
+  function optsSet(list){
+    var box=qs("#opts"); box.innerHTML="";
+    (list&&list.length?list:[{}]).forEach(function(o){ box.appendChild(optCard(o)); });
+    renumber(); optsSync();
+  }
+  function renumber(){
+    qsa(".opt-card",qs("#opts")).forEach(function(d,i){
+      var e=qs('[data-k="code"]',d);
+      if(!e.value.trim()) e.value="方案 "+LETTER.charAt(i);
+      e.placeholder="方案 "+LETTER.charAt(i);
+    });
+  }
+  function parseOpts(s){ try{ var a=JSON.parse(s||"[]"); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+  qs("#addOpt").addEventListener("click",function(){
+    var c=optCard(); qs("#opts").appendChild(c); renumber(); refresh();
+    var first=qs("input",c); if(first) first.focus();
+  });
+
+  /* ---- 收資料 ---- */
+  function collect(){
+    var st=stamp();
+    var T={
+      id:val("a1")||("T-"+st.id.slice(2)), time:st.text,
+      code:val("a2"), rep:val("a3"), due:val("a4"),
+      from:val("b1"), to:val("b2"),
+      dep:parseYMD(val("b3")), ret:parseYMD(val("b4")), flex:val("b5"),
+      cabin:val("b6"), pax:val("b7"), budget:val("b8"), airline:val("b9"), limits:val("b10"),
+      name:val("s_name"), tel:val("s_tel"),
+      opts:optsGet().filter(function(o){ return o.air||o.o_no||o.fare; })
+    };
+    T.demo=/示範|虛構/.test(T.code+T.rep);
+    return T;
+  }
+  function legText(o,p){
+    var no=o[p+"_no"], d=parseYMD(o[p+"_date"]), dep=o[p+"_dep"], arr=o[p+"_arr"], via=o[p+"_via"];
+    if(!no&&!d&&!dep) return "";
+    var s=(no||"航班待填");
+    if(d) s+="　"+fmtDate(d,true);
+    if(dep||arr) s+="　"+(dep||"--:--")+" 起飛／"+(arr||"--:--")+" 抵達";
+    s+="　"+(via?("轉機 "+via):"直飛");
+    return s;
+  }
+  function fareText(o){
+    if(!o.fare) return "";
+    return money(o.fare)+(o.tax?("（"+o.tax+"）"):"（含稅別待填）");
+  }
+  function ttlText(o){
+    var d=parseYMD(o.ttl); if(!d) return "";
+    return fmtDate(d)+(o.ttlt?(" "+o.ttlt):"");
+  }
+
+  /* ---- 檢查 ---- */
+  function checks(T){
+    var need=[], warn=[];
+    if(!val("a2")) need.push("企業客戶代號");
+    if(!T.rep) need.push("承辦商務");
+    if(!T.due) need.push("回覆期限");
+    if(!T.from) need.push("出發地");
+    if(!T.to) need.push("目的地");
+    if(!T.dep) need.push("去程日期");
+    if(!T.ret) need.push("回程日期");
+    if(!T.pax) need.push("出差人數");
+    if(!T.name) need.push("票務承辦人");
+    if(!T.opts.length){ need.push("至少一個航班方案"); }
+    T.opts.forEach(function(o,i){
+      var tag=(o.code||("方案 "+LETTER.charAt(i)))+"：";
+      if(!o.air) need.push(tag+"航空公司");
+      if(!o.fare) need.push(tag+"每人票價");
+      else if(!o.tax) need.push(tag+"含稅別");
+      if(!legText(o,"o")) need.push(tag+"去程航班");
+      if(!legText(o,"r")) need.push(tag+"回程航班");
+      if(!o.bag) need.push(tag+"行李");
+      if(!o.ttl) need.push(tag+"開票期限");
+      if(!o.rule) need.push(tag+"改退票規定");
+    });
+    if(T.demo) warn.push("現在是示範資料，這張表不能交出去。按右下角「清空重填」再開始。");
+    if(/股份有限公司|有限公司|集團/.test(val("a2"))) warn.push("A2 看起來寫了公司全名，建議改成代號或簡稱。");
+    if(T.dep&&T.ret&&T.ret<T.dep) warn.push("回程日期比去程還早。");
+    var today=new Date(); today=new Date(today.getFullYear(),today.getMonth(),today.getDate());
+    T.opts.forEach(function(o,i){
+      var tag=(o.code||("方案 "+LETTER.charAt(i)))+"：";
+      var t=parseYMD(o.ttl);
+      if(t&&t<today) warn.push(tag+"開票期限已經過了（"+fmtDate(t)+"）。");
+      if(T.dep&&o.o_date){
+        var od=parseYMD(o.o_date);
+        if(od&&od.getTime()!==T.dep.getTime()) warn.push(tag+"去程日期跟 B 區需求的日期不一樣，確認是不是用了彈性日期。");
+      }
+      if(T.cabin&&o.cabin&&T.cabin==="經濟艙"&&/商務/.test(o.cabin)) warn.push(tag+"艙等是商務艙，但企業的艙等上限是經濟艙。");
+      if(T.budget&&o.fare){
+        var b=parseInt(String(T.budget).replace(/[^\d]/g,""),10), f=parseInt(String(o.fare).replace(/[^\d]/g,""),10);
+        if(b&&f&&f>b) warn.push(tag+"每人票價超過企業的預算上限。");
+      }
+    });
+    return {need:need, warn:warn};
+  }
+  function renderCheck(){
+    var T=collect(), ck=checks(T), h="";
+    if(ck.warn.length) h+='<div class="alert"><b>請先確認</b>'+ck.warn.join("<br>")+"</div>";
+    if(ck.need.length) h+='<div class="alert caution"><b>還有 '+ck.need.length+' 項沒填（Word 檔裡會標黃底「待填」）</b>'+ck.need.join("、")+"</div>";
+    if(!h) h='<div class="ok">方案表的欄位都填好了。交出去之前，票價與票規再跟系統原文對一次。</div>';
+    qs("#check").innerHTML=h;
+  }
+
+  /* ---- 文字版 ---- */
+  function docText(T){
+    var t=[];
+    t.push("【航班方案回覆表】");
+    t.push("需求單編號："+T.id+"　　回覆時間："+T.time);
+    t.push("企業客戶："+orNone(T.code)+"　　承辦商務："+orNone(T.rep));
+    t.push("票務承辦："+orNone(T.name)+(T.tel?("　"+T.tel):"")+"　　回覆期限："+orNone(T.due));
+    t.push("");
+    t.push("━━ 需求摘要 ━━");
+    t.push("出發地："+orNone(T.from)+"　目的地："+orNone(T.to));
+    t.push("去回日期："+(T.dep?fmtDate(T.dep,true):"（未提供）")+" ～ "+(T.ret?fmtDate(T.ret,true):"（未提供）")+(T.flex?("　彈性："+T.flex):""));
+    t.push("艙等上限："+orNone(T.cabin)+"　出差人數："+orNone(T.pax)+" 人"+(T.budget?("　每人預算上限："+T.budget):""));
+    if(T.airline) t.push("指定航空："+T.airline);
+    if(T.limits) t.push("其他限制："+T.limits);
+    t.push("");
+    if(!T.opts.length){
+      t.push("（還沒填任何航班方案）");
+    } else {
+      T.opts.forEach(function(o,i){
+        t.push("━━ "+(o.code||("方案 "+LETTER.charAt(i)))+"｜"+(o.air||"航空公司待填")+" ━━");
+        t.push("去程："+(legText(o,"o")||"（待填）"));
+        t.push("回程："+(legText(o,"r")||"（待填）"));
+        t.push("艙等："+(o.cabin||"（待填）")+"　每人票價："+(fareText(o)||"（待填）"));
+        t.push("行李："+(o.bag||"（待填）")+"　開票期限："+(ttlText(o)||"（待填）")+(o.avail?("　可售："+o.avail):""));
+        if(o.note) t.push("備註："+o.note);
+        t.push("改退票規定（原文）：");
+        t.push(o.rule?o.rule:"（待填）");
+        t.push("");
+      });
+    }
+    t.push("※ 票價與艙位以實際開票時為準；開票期限前未開票，票價可能變動。");
+    t.push("※ 改退票規定以航空公司原文為準。");
+    t.push("※ 本表不含飯店、內部交通與服務費。");
+    return t.join("\n");
+  }
+
+  /* ---- Word 版 ---- */
+  function docWord(T){
+    var D=DOCX, K=D.K, R=D.R, P=D.P, C=D.C, TR=D.TR, TBL=D.TBL, LAB=D.LAB;
+    var L=1700, W=3232, W3=W+L+W, b=[];
+    function V(text,need){ return text?R(text):(need?D.MISS():R("—",{color:K.GRAY})); }
+
+    b.push(D.banner("航班方案回覆表","票務部 → 商務部"));
+    if(T.demo) b.push(P(R("【示範資料】內容是虛構的，課堂練習用，請勿交出去",{b:1,color:K.RED}),{jc:"center",before:160}));
+    b.push(P(R((T.code||"企業客戶")+"｜"+(T.to||"目的地未填")+"　航班方案",{b:1,color:K.PUR,sz:32}),{jc:"center",before:300,after:60}));
+    b.push(P("",{after:60,markSz:8}));
+    b.push(TBL([L,W,L,W],[
+      TR([LAB(L,"需求單編號"),C(W,P(R(T.id))),LAB(L,"回覆時間"),C(W,P(R(T.time)))],{h:400}),
+      TR([LAB(L,"票務承辦"),C(W,P(V(T.name?T.name+(T.tel?"　"+T.tel:""):"",1))),LAB(L,"承辦商務"),C(W,P(V(T.rep,1)))],{h:400}),
+      TR([LAB(L,"回覆期限"),C(W3,P(V(T.due,1)),{span:3})],{h:400})
+    ]));
+
+    b.push(D.H("一、需求摘要"));
+    b.push(TBL([L,W,L,W],[
+      TR([LAB(L,"出發地"),C(W,P(V(T.from,1))),LAB(L,"目的地"),C(W,P(V(T.to,1)))],{h:400}),
+      TR([LAB(L,"去回日期"),C(W3,P(T.dep?R(fmtDate(T.dep,true)+"　～　"+(T.ret?fmtDate(T.ret,true):"回程待填")+(T.flex?("　（彈性："+T.flex+"）"):"")):D.MISS()),{span:3})],{h:400}),
+      TR([LAB(L,"艙等上限"),C(W,P(V(T.cabin,1))),LAB(L,"出差人數"),C(W,P(T.pax?R(T.pax+" 人"):D.MISS()))],{h:400}),
+      TR([LAB(L,"指定航空"),C(W,P(V(T.airline))),LAB(L,"每人預算上限"),C(W,P(V(T.budget)))],{h:400}),
+      TR([LAB(L,"其他限制"),C(W3,P(V(T.limits)),{span:3})],{h:400})
+    ]));
+
+    b.push(D.H("二、航班方案"));
+    if(!T.opts.length){
+      b.push(P(D.MISS("還沒填任何航班方案"),{before:40}));
+    } else {
+      var n=T.opts.length, cw=Math.floor((D.FULL-L)/n), grid=[L];
+      for(var i=0;i<n;i++) grid.push(i===n-1?(D.FULL-L-cw*(n-1)):cw);
+      function row(label,fn,o2){
+        var cells=[LAB(L,label)];
+        T.opts.forEach(function(o,i){ cells.push(C(grid[i+1],P(fn(o,i)))); });
+        return TR(cells,o2||{h:400});
+      }
+      var head=[D.DARK(L,"項目")];
+      T.opts.forEach(function(o,i){ head.push(D.DARK(grid[i+1],(o.code||("方案 "+LETTER.charAt(i)))+"　"+(o.air||""))); });
+      b.push(TBL(grid,[
+        TR(head,{h:420,head:1}),
+        row("去程",function(o){ var s=legText(o,"o"); return s?R(s.replace(/　/g,"\n")):D.MISS(); },{h:520}),
+        row("回程",function(o){ var s=legText(o,"r"); return s?R(s.replace(/　/g,"\n")):D.MISS(); },{h:520}),
+        row("艙等",function(o){ return o.cabin?R(o.cabin):D.MISS(); }),
+        row("每人票價",function(o){ return o.fare?R(money(o.fare),{b:1,color:K.MAG,sz:24})+R(o.tax?("\n"+o.tax):"\n含稅別待填",{sz:18,color:o.tax?K.GRAY:K.RED}):D.MISS(); },{h:460}),
+        row("行李",function(o){ return o.bag?R(o.bag):D.MISS(); }),
+        row("開票期限",function(o){ var s=ttlText(o); return s?R(s):D.MISS(); }),
+        row("可售狀況",function(o){ return o.avail?R(o.avail):R("—",{color:K.GRAY}); }),
+        row("備註",function(o){ return o.note?R(o.note):R("—",{color:K.GRAY}); })
+      ]));
+
+      b.push(D.H("三、改退票規定（航空公司原文）"));
+      T.opts.forEach(function(o,i){
+        b.push(D.SUBH((o.code||("方案 "+LETTER.charAt(i)))+"　"+(o.air||""),""));
+        b.push(P(o.rule?R(o.rule,{sz:19}):D.MISS(),{after:60}));
+      });
+    }
+
+    b.push(D.H("四、注意事項"));
+    b.push(D.BUL("票價與艙位以實際開票時為準；開票期限前未開票，票價可能變動。"));
+    b.push(D.BUL("改退票規定以航空公司原文為準，中文整理僅供說明。"));
+    b.push(D.BUL("本表不含飯店、內部交通與服務費。"));
+    b.push(P(R("可樂旅遊中壢分公司票務部"+(T.name?("　承辦："+T.name):"")+(T.tel?("　"+T.tel):""),{b:1,color:K.PUR,sz:20}),{jc:"center",before:360}));
+    return D.build(b.join(""),[],"航班方案回覆表 "+T.id);
+  }
+
+  /* ---- 產出 ---- */
+  function showDoc(){
+    var T=collect();
+    qs("#docBody").textContent=docText(T);
+    qs("#docSub").textContent=T.id;
+    return T;
+  }
+  qs("#make").addEventListener("click",function(){
+    showDoc();
+    qs("#docWrap").hidden=false;
+    refresh();
+    qs("#docWrap").scrollIntoView({behavior:"smooth",block:"start"});
+  });
+  qs("#docWord").addEventListener("click",function(){
+    var T=showDoc();
+    saveFile(docWord(T),fileName(["航班方案回覆表",noParen(T.code),T.to,T.id.slice(2)]));
+    flash(this,"已下載，到「下載」資料夾找","下載 Word 檔");
+  });
+  qs("#docCopy").addEventListener("click",function(){ showDoc(); copyText(qs("#docBody").textContent,this,"複製給商務"); });
+
+  /* ---- 票規整理指令 ---- */
+  qs("#makeRule").addEventListener("click",function(){
+    var raw=qs("#rule").value.trim(), t=[];
+    t.push("你是可樂旅遊中壢分公司票務部的票規整理助理。你只做整理，不做計算。");
+    t.push("");
+    t.push("【票規原文】");
+    t.push("────────────────");
+    t.push(raw||"〔還沒貼上票規原文。沒有原文就不要整理，直接告訴我缺什麼。〕");
+    t.push("────────────────");
+    t.push("");
+    t.push("請整理成一張中文重點表，欄位是：項目｜規定｜原文出處（第幾段或關鍵字）");
+    t.push("要整理的項目：可否改期、改期費用、可否退票、退票費用、No-show、姓名更改、行李、票期效期、其他限制。");
+    t.push("");
+    t.push("紅線，一條都不能違反：");
+    t.push("1. 金額、天數、時間一律照抄原文，不准換算幣別、不准相加、不准估算價差。");
+    t.push("2. 原文沒寫的，寫「原文未提及」，不准用一般常識補。");
+    t.push("3. 原文互相矛盾或看不懂的地方，另外列出來，標【要人再確認】。");
+    t.push("");
+    t.push("最後再寫一段「給客人的說法」：三句話以內、不用航空術語，金額照抄原文。");
+    t.push("用繁體中文、台灣用語，語氣簡潔。");
+    qs("#gen").textContent=t.join("\n");
+    qs("#output").hidden=false;
+    qs("#output").scrollIntoView({behavior:"smooth",block:"start"});
+  });
+  qs("#copy").addEventListener("click",function(){ copyText(qs("#gen").textContent,this,"複製全部"); });
+
+  /* ---- 草稿 ---- */
+  function save(){
+    try{
+      var d={t:{}};
+      qsa(TEXTS).forEach(function(i){ if(i.value && i.id && !i.classList.contains("keep")) d.t[i.id]=i.value; });
+      localStorage.setItem(KEY,JSON.stringify(d));
+    }catch(e){}
+    try{
+      var k={}; qsa(".keep").forEach(function(i){ if(i.value.trim()) k[i.id]=i.value; });
+      localStorage.setItem(KEY_STAFF,JSON.stringify(k));
+    }catch(e){}
+  }
+  function load(){
+    try{
+      var raw=localStorage.getItem(KEY); if(!raw) return false;
+      var d=JSON.parse(raw);
+      Object.keys(d.t||{}).forEach(function(k){ var e=document.getElementById(k); if(e) e.value=d.t[k]; });
+      return true;
+    }catch(e){ return false; }
+  }
+  function loadKeep(){
+    var d={};
+    try{ d=JSON.parse(localStorage.getItem(KEY_STAFF)||"{}")||{}; }catch(e){ d={}; }
+    qsa(".keep").forEach(function(i){ if(d[i.id]) i.value=d[i.id]; });
+  }
+
+  /* ---- 示範資料（虛構）---- */
+  function demo(){
+    qs("#a1").value="C-"+stamp().id.slice(2);
+    qs("#a2").value="示範企業（虛構）";
+    qs("#a3").value="王小姐";
+    qs("#a4").value="9/19（六）12:00 前";
+    qs("#b1").value="桃園 TPE";
+    qs("#b2").value="曼谷 BKK";
+    var d1=nextDate(new Date(),11,10);
+    qs("#b3").value=ymd(d1);
+    qs("#b4").value=ymd(addDays(d1,4));
+    qs("#b5").value="前後 1 天";
+    qs("#b6").value="經濟艙";
+    qs("#b7").value="4";
+    qs("#b8").value="20,000";
+    qs("#b9").value="長榮或星宇";
+    qs("#b10").value="要直飛、要可改期；開票前要企業窗口回覆確認";
+    var ttl=ymd(addDays(new Date(),14));
+    optsSet([
+      {code:"方案 A", air:"長榮航空 BR",
+       o_no:"BR205", o_date:ymd(d1), o_dep:"08:45", o_arr:"12:30", o_via:"",
+       r_no:"BR206", r_date:ymd(addDays(d1,4)), r_dep:"13:40", r_arr:"18:20", r_via:"",
+       cabin:"經濟艙 Y", fare:"18500", tax:"含稅", bag:"23kg × 2 件", ttl:ttl, ttlt:"18:00", avail:"Y 艙 5 位",
+       note:"可累積哩程",
+       rule:"CHANGES: BEFORE DEPARTURE CHARGE TWD 2500 / AFTER DEPARTURE CHARGE TWD 3500. CANCELLATIONS: CHARGE TWD 4000. NO-SHOW: CHARGE TWD 5000. TICKET VALIDITY 1 YEAR."},
+      {code:"方案 B", air:"泰國航空 TG",
+       o_no:"TG635", o_date:ymd(d1), o_dep:"11:10", o_arr:"14:05", o_via:"",
+       r_no:"TG634", r_date:ymd(addDays(d1,4)), r_dep:"08:00", r_arr:"12:35", r_via:"",
+       cabin:"經濟艙 V", fare:"16200", tax:"含稅", bag:"30kg", ttl:ymd(addDays(new Date(),7)), ttlt:"12:00", avail:"V 艙 9 位",
+       note:"最省，但回程是早班機",
+       rule:"CHANGES NOT PERMITTED. REFUND NOT PERMITTED. NO-SHOW: TICKET FORFEITED."}
+    ]);
+  }
+
+  /* ---- 重新整理 ---- */
+  var busy=false;
+  function refresh(){
+    if(busy) return; busy=true;
+    try{
+      optsSync();
+      qsa(".q").forEach(function(b){
+        var filled=qsa("input,textarea,select",b).some(function(e){ return e.value.trim()!==""; });
+        b.classList.toggle("answered", filled);
+      });
+      renderCheck();
+      if(!qs("#docWrap").hidden) showDoc();
+      save();
+    } finally { busy=false; }
+  }
+
+  qs("#clear").addEventListener("click",function(){
+    qsa(TEXTS).forEach(function(i){ if(!i.classList.contains("keep")) i.value=""; });
+    qs("#docWrap").hidden=true; qs("#output").hidden=true;
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    optsSet([]);
+    refresh();
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+
+  document.addEventListener("input",function(e){ if(e.target && e.target.id!=="rule") refresh(); });
+  document.addEventListener("change",function(e){ if(e.target && e.target.type!=="file") refresh(); });
+
+  loadKeep();
+  if(!load()) demo();
+  optsSet(parseOpts(qs("#optsJSON").value));
+  refresh();
+})();
+</script>

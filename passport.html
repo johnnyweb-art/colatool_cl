@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>證件效期與英文姓名檢核器｜可樂旅遊中壢分公司</title>
+<style>
+:root{--ink:#12262E;--mut:#5B7480;--line:#D8E2E7;--soft:#F1F5F7;--teal:#1C7293;--dark:#0B3C49;--amb:#E8A33D;--red:#C4453B;--grn:#2E7D5B;}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.65 "Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;color:var(--ink);background:#fff}
+header{background:var(--dark);color:#fff;padding:22px 28px}
+header h1{margin:0 0 4px;font-size:23px}
+header p{margin:0;color:#BBD4DD;font-size:14px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px 60px}
+.notice{background:#FDF4E6;border:1px solid #EBD3A8;border-radius:10px;padding:14px 18px;margin:20px 0;font-size:14px}
+.notice b{color:#8A5A08}
+section{margin:26px 0}
+h2{font-size:18px;margin:0 0 10px;padding-top:6px}
+.hint{color:var(--mut);font-size:13.5px;margin:0 0 10px}
+textarea{width:100%;height:150px;font:13px/1.6 "Consolas",monospace;border:1px solid var(--line);border-radius:8px;padding:11px;resize:vertical}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:12px 0}
+button{font:inherit;font-size:14px;border:1px solid var(--teal);background:var(--teal);color:#fff;border-radius:8px;padding:9px 17px;cursor:pointer}
+button.ghost{background:#fff;color:var(--teal)}
+button:disabled{opacity:.45;cursor:default}
+label.f{font-size:14px;color:var(--mut)}
+input[type=number]{width:64px;font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:6px}
+.cards{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0 6px}
+.card{border:1px solid var(--line);border-radius:10px;padding:12px 18px;min-width:132px;background:#fff}
+.card .n{font-size:27px;font-weight:700;line-height:1.2}
+.card .l{font-size:13px;color:var(--mut)}
+table{border-collapse:collapse;width:100%;background:#fff;font-size:14px}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;background:#fff}
+th{font-weight:700}
+.chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12.5px;font-weight:700;color:#fff;white-space:nowrap}
+.c-stop{background:var(--red)}.c-check{background:var(--amb);color:#3A2606}.c-pass{background:var(--grn)}
+.msg{font-size:13px;color:var(--mut);margin:2px 0 0}
+.msg.e{color:var(--red)}
+.err{background:#FBEDEC;border:1px solid #E9C4C0;color:#8C2F27;border-radius:8px;padding:11px 14px;font-size:14px;margin:10px 0}
+footer{border-top:1px solid var(--line);margin-top:36px;padding-top:16px;color:var(--mut);font-size:13px}
+.tick{color:var(--grn);font-weight:700}
+.mrzbox{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:#fff}
+.howto{margin-top:12px;border:1px solid var(--line);border-radius:10px;padding:10px 16px;background:var(--soft)}
+.howto summary{cursor:pointer;font-weight:700;font-size:14.5px}
+.howto table{margin-top:10px;font-size:13.5px}
+.kv{display:flex;flex-wrap:wrap;gap:8px 22px;margin:10px 0 4px}
+.kv div{font-size:14px}.kv b{color:var(--mut);font-weight:400;margin-right:6px}
+@media(max-width:640px){.wrap{padding:0 14px 40px}header{padding:18px 14px}}
+</style></head><body>
+<header>
+  <h1>證件效期與英文姓名檢核器</h1>
+  <p>可樂旅遊中壢分公司　AI 助理應用訓練　示範工具</p>
+</header>
+<div class="wrap">
+
+<div class="notice">
+  <b>資料不會離開這台電腦。</b> 這個頁面是一個單獨的 HTML 檔，所有比對都在你的瀏覽器裡跑，沒有任何一筆資料被送出去，也不需要連網路。關掉頁面，資料就沒了。
+</div>
+
+<section>
+  <h2>一、用護照 MRZ 逐筆加入（選用）</h2>
+  <p class="hint">MRZ ＝ 護照最底下那兩行、每行 44 個字元的機器可讀區。<b>它有檢查碼，讀錯了工具會告訴你</b>，所以不必擔心打錯或拍糊。</p>
+
+  <div class="mrzbox">
+    <div class="row" style="margin-top:0">
+      <label class="f">這一批的出發日 <input type="text" id="mdep" placeholder="2026-11-05" size="12"></label>
+      <label class="f">代號起始 <input type="text" id="mpre" value="A" size="3"></label>
+      <span style="flex:1"></span>
+      <button class="ghost" id="mdemo">載入一組範例 MRZ</button>
+    </div>
+    <textarea id="mrz" spellcheck="false" style="height:78px;font-family:Consolas,monospace;letter-spacing:.5px"
+      placeholder="P&lt;TWNCHEN&lt;&lt;HUAI&lt;CHIEH&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&#10;（第二行貼在這裡）"></textarea>
+    <div class="row">
+      <button id="mread">讀取並驗證</button>
+      <button class="ghost" id="madd" disabled>加入下方名單</button>
+      <span id="mmsg"></span>
+    </div>
+    <div id="mout"></div>
+  </div>
+
+  <details class="howto">
+    <summary>怎麼把護照上的 MRZ 弄進來（三種方法）</summary>
+    <table>
+      <thead><tr><th style="width:150px">方法</th><th>做法</th><th style="width:210px">照片會不會外流</th></tr></thead>
+      <tbody>
+      <tr><td><b>手機拍照 ＋ 手機內建文字辨識</b></td>
+        <td>用手機拍護照資料頁 → 在照片上長按選取那兩行文字 → 複製 → 貼進上面的框。iPhone 的「實況文字」、Android 的 Google 相機／相簿都有這個功能。</td>
+        <td><b>不會。</b>辨識在手機裡完成，照片不必上傳</td></tr>
+      <tr><td><b>護照掃描器（MRZ reader）</b></td>
+        <td>把護照放上去，機器直接把兩行文字輸出成鍵盤輸入，游標放在上面的框就會自動填入。</td>
+        <td><b>不會。</b>沒有影像，只有文字</td></tr>
+      <tr><td><b>手打</b></td>
+        <td>照著念打 88 個字元。慢，但檢查碼會抓出打錯的地方。</td>
+        <td><b>不會</b></td></tr>
+      </tbody>
+    </table>
+    <p class="hint" style="margin-top:10px"><b>不建議：把護照照片整張上傳給 AI 讀。</b> 那張圖上有姓名、號碼、生日、國籍，是最敏感的一張。上面三種方法都能把「要用的那兩行文字」拿出來，而讓照片留在原地。</p>
+    <p class="hint"><b>拍照要拍得好的四個重點：</b>護照平放不要翹起、光線從側面避免反光、鏡頭對正不要斜、<b>只要拍到底下兩行就夠</b>——不必拍到照片與簽名。</p>
+  </details>
+</section>
+
+<section>
+  <h2>二、貼上名單</h2>
+  <p class="hint">從 Excel 直接複製整塊貼上即可。<b>第一列必須是欄位名稱</b>，需要有：英文姓、英文名、效期、出發日（代號與證件號碼可有可無）。</p>
+  <textarea id="inp" spellcheck="false" placeholder="代號&#9;英文姓&#9;英文名&#9;證件號碼&#9;效期&#9;出發日"></textarea>
+  <div class="row">
+    <button id="run">開始檢核</button>
+    <button class="ghost" id="demo">載入教學用範例資料（20 筆）</button>
+    <button class="ghost" id="clr">清空</button>
+    <span style="flex:1"></span>
+    <label class="f">效期需距出發日 <input type="number" id="mon" value="6" min="1" max="24"> 個月</label>
+    <label class="f">餘裕 <input type="number" id="warn" value="30" min="0" max="180"> 天內提醒</label>
+  </div>
+  <div id="perr"></div>
+</section>
+
+<section id="out" style="display:none">
+  <h2>三、檢核結果</h2>
+  <div class="cards" id="stats"></div>
+  <div class="row">
+    <label class="f"><input type="checkbox" id="only" checked> 只看需要處理的（隱藏通過的）</label>
+    <span style="flex:1"></span>
+    <button class="ghost" id="csv">匯出需處理清單（CSV）</button>
+  </div>
+  <div id="tbl"></div>
+</section>
+
+<footer>
+  <p><b>這個工具做什麼、不做什麼</b><br>
+  做：效期是否距出發日足月、效期格式、英文姓名格式、證件號碼是否重複。<br>
+  <b>不做</b>：不判斷各國實際入境規定、不判斷簽證、不替你決定某一筆「應該沒問題」。被標出來的每一筆，都要由人確認。</p>
+  <p>規則依據來源：<b>【由使用單位填寫：公司內規或作業手冊名稱】</b>　｜　最後更新日：<b>2026-09-03</b><br>
+  各國證件效期要求不同（六個月僅為常見通則），實際規定請以航空公司、目的地與轉機國之公告及公司內規為準。</p>
+  <p>可樂旅遊中壢分公司 AI 助理應用訓練｜元智大學管理學院　顧問團隊</p>
+</footer>
+</div>
+<script>
+/* ===== 核心判斷邏輯（純函式，可單獨測試） ===== */
+
+// 解析日期：只接受不會誤讀的格式，其餘一律回報無法判讀
+function parseDate(raw){
+  if(raw==null) return null;
+  var s=String(raw).trim();
+  if(!s) return null;
+  s=s.replace(/[．。]/g,'.').replace(/\s+/g,'');
+  var m;
+  // YYYY-MM-DD / YYYY/MM/DD / YYYY.MM.DD（月日可 1~2 位）
+  m=s.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})$/);
+  if(m) return mk(+m[1],+m[2],+m[3]);
+  // YYYYMMDD
+  m=s.match(/^(\d{4})(\d{2})(\d{2})$/);
+  if(m) return mk(+m[1],+m[2],+m[3]);
+  return undefined; // undefined = 有值但無法判讀
+  function mk(y,mo,d){
+    if(mo<1||mo>12||d<1||d>31) return undefined;
+    var dt=new Date(Date.UTC(y,mo-1,d));
+    if(dt.getUTCFullYear()!==y||dt.getUTCMonth()!==mo-1||dt.getUTCDate()!==d) return undefined;
+    return dt;
+  }
+}
+
+// 出發日 + N 個月（月底自動收斂，例如 8/31 + 6 個月 = 2/28 或 2/29）
+function addMonths(dt,n){
+  var y=dt.getUTCFullYear(), mo=dt.getUTCMonth(), d=dt.getUTCDate();
+  var t=new Date(Date.UTC(y,mo+n,1));
+  var last=new Date(Date.UTC(t.getUTCFullYear(),t.getUTCMonth()+1,0)).getUTCDate();
+  return new Date(Date.UTC(t.getUTCFullYear(),t.getUTCMonth(),Math.min(d,last)));
+}
+function days(a,b){ return Math.round((a-b)/86400000); }
+function fmt(dt){
+  if(!dt) return '';
+  var p=function(n){return (n<10?'0':'')+n;};
+  return dt.getUTCFullYear()+'-'+p(dt.getUTCMonth()+1)+'-'+p(dt.getUTCDate());
+}
+
+// 英文姓名檢查
+function checkName(surname,given){
+  var out=[];
+  var sn=(surname==null?'':String(surname)).trim();
+  var gn=(given==null?'':String(given)).trim();
+  if(!sn) out.push('英文姓為空');
+  if(!gn) out.push('英文名為空');
+  var both=sn+' '+gn;
+  var rest=both;
+  if(/[一-鿿]/.test(both)){ out.push('含中文字，未填英文拼音'); rest=rest.replace(/[一-鿿]/g,''); }
+  if(/[！-～　]/.test(both)){ out.push('含全形字元'); rest=rest.replace(/[！-～　]/g,''); }
+  if(/\d/.test(both)){ out.push('含數字'); rest=rest.replace(/\d/g,''); }
+  var bad=rest.replace(/[A-Za-z \-']/g,'');
+  if(bad.length) out.push('含不允許字元：'+Array.from(new Set(bad.split(''))).join(''));
+  if(/  +/.test(sn)||/  +/.test(gn)) out.push('含連續空白');
+  if((sn||gn) && /[a-z]/.test(both) && !/[一-鿿]/.test(both)) out.push('非全大寫（護照慣例為全大寫）');
+  return out;
+}
+
+// 單筆檢核
+function checkRow(r,opt){
+  var months=(opt&&opt.months)||6;
+  var warnDays=(opt&&opt.warnDays)||30;
+  var errs=[], warns=[];
+
+  var dep=parseDate(r.depart), exp=parseDate(r.expiry);
+  if(r.depart==null||String(r.depart).trim()==='') errs.push('出發日未填');
+  else if(dep===undefined) errs.push('出發日格式無法判讀：'+r.depart);
+  if(r.expiry==null||String(r.expiry).trim()==='') errs.push('效期未填');
+  else if(exp===undefined) errs.push('效期格式無法判讀：'+r.expiry);
+
+  var need=null, gap=null;
+  if(dep&&exp){
+    need=addMonths(dep,months);
+    gap=days(exp,need);
+    if(exp<=dep) errs.push('效期早於或等於出發日');
+    else if(gap<0) errs.push('效期距出發日不足 '+months+' 個月（差 '+(-gap)+' 天）');
+    else if(gap===0) warns.push('剛好卡在門檻上，零餘裕');
+    else if(gap<=warnDays) warns.push('只多 '+gap+' 天，接近門檻');
+  }
+
+  checkName(r.surname,r.given).forEach(function(m){
+    if(m.indexOf('非全大寫')===0) warns.push(m); else errs.push(m);
+  });
+
+  var st = errs.length ? 'stop' : (warns.length ? 'check' : 'pass');
+  return {status:st, errors:errs, warnings:warns,
+          departISO:fmt(dep), expiryISO:fmt(exp), needISO:fmt(need), gapDays:gap};
+}
+
+// 整批檢核（含重複證件號）
+function checkAll(rows,opt){
+  var seen={}, dup={};
+  rows.forEach(function(r){
+    var d=(r.docno==null?'':String(r.docno)).trim().toUpperCase();
+    if(!d) return;
+    if(seen[d]) dup[d]=true; else seen[d]=1;
+  });
+  return rows.map(function(r){
+    var res=checkRow(r,opt);
+    var d=(r.docno==null?'':String(r.docno)).trim().toUpperCase();
+    if(d&&dup[d]){ res.errors.push('證件號碼重複：'+d); res.status='stop'; }
+    return Object.assign({},r,res);
+  });
+}
+
+// 貼上的表格文字 → 列陣列（Tab 或逗號分隔，第一列為標題）
+function parseTable(text){
+  var lines=String(text).replace(/\r/g,'').split('\n').filter(function(l){return l.trim()!=='';});
+  if(!lines.length) return {rows:[],error:'沒有資料'};
+  var sep = lines[0].indexOf('\t')>=0 ? '\t' : ',';
+  var head=lines[0].split(sep).map(function(h){return h.trim();});
+  var idx={};
+  var map={代號:'code',姓名:'code',編號:'code',
+           英文姓:'surname',姓:'surname',SURNAME:'surname',
+           英文名:'given',名:'given',GIVEN:'given',
+           證件號碼:'docno',護照號碼:'docno',證件號:'docno',
+           效期:'expiry',證件效期:'expiry',護照效期:'expiry',
+           出發日:'depart',出發日期:'depart'};
+  head.forEach(function(h,i){ var k=map[h]||map[h.toUpperCase()]; if(k&&idx[k]===undefined) idx[k]=i; });
+  var missing=['surname','given','expiry','depart'].filter(function(k){return idx[k]===undefined;});
+  if(missing.length){
+    var zh={surname:'英文姓',given:'英文名',expiry:'效期',depart:'出發日'};
+    return {rows:[],error:'找不到必要欄位：'+missing.map(function(k){return zh[k];}).join('、')+'。第一列請放欄位名稱。'};
+  }
+  var rows=[];
+  for(var i=1;i<lines.length;i++){
+    var c=lines[i].split(sep);
+    rows.push({code:pick('code',c), surname:pick('surname',c), given:pick('given',c),
+               docno:pick('docno',c), expiry:pick('expiry',c), depart:pick('depart',c)});
+  }
+  function pick(k,c){ return idx[k]===undefined?'':(c[idx[k]]||'').trim(); }
+  return {rows:rows,error:null};
+}
+/* ===== 護照 MRZ（機器可讀區．TD3）解析與檢查碼驗證 =====
+   依據 ICAO Doc 9303 之 TD3 格式：兩行、每行 44 字元。
+   檢查碼演算法：權重 7-3-1 循環，字元值 0-9=0~9、A-Z=10~35、'<'=0，總和取 mod 10。 */
+
+function mrzVal(ch){
+  if(ch>='0'&&ch<='9') return ch.charCodeAt(0)-48;
+  if(ch>='A'&&ch<='Z') return ch.charCodeAt(0)-55;   // A=10
+  if(ch==='<') return 0;
+  return -1;                                          // 不合法字元
+}
+function mrzCheck(str){
+  var w=[7,3,1], s=0;
+  for(var i=0;i<str.length;i++){
+    var v=mrzVal(str.charAt(i));
+    if(v<0) return -1;
+    s+=v*w[i%3];
+  }
+  return s%10;
+}
+// YYMMDD -> ISO。kind='expiry' 一律視為 20YY；kind='birth' 若 20YY 尚未到來則視為 19YY
+function mrzDate(yymmdd, kind, todayISO){
+  if(!/^\d{6}$/.test(yymmdd)) return null;
+  var yy=+yymmdd.substr(0,2), mm=+yymmdd.substr(2,2), dd=+yymmdd.substr(4,2);
+  if(mm<1||mm>12||dd<1||dd>31) return null;
+  var y=2000+yy;
+  if(kind==='birth'){
+    var nowY=+(todayISO||new Date().toISOString().slice(0,10)).slice(0,4);
+    if(y>nowY) y-=100;
+  }
+  var p=function(n){return (n<10?'0':'')+n;};
+  var dt=new Date(Date.UTC(y,mm-1,dd));
+  if(dt.getUTCFullYear()!==y||dt.getUTCMonth()!==mm-1||dt.getUTCDate()!==dd) return null;
+  return y+'-'+p(mm)+'-'+p(dd);
+}
+
+function parseMRZ(raw, todayISO){
+  var lines=String(raw).toUpperCase().replace(/[ \t]/g,'').split(/\r?\n/)
+            .map(function(l){return l.trim();}).filter(function(l){return l!=='';});
+  if(lines.length<2) return {ok:false, error:'需要兩行 MRZ。護照最底下那兩行，每行 44 個字元。'};
+  var l1=lines[lines.length-2], l2=lines[lines.length-1];
+  // 常見 OCR 誤判：MRZ 使用 '<' 作為填充，有時被讀成 K、＜、〈
+  l1=l1.replace(/[＜〈«]/g,'<'); l2=l2.replace(/[＜〈«]/g,'<');
+  if(l1.length!==44||l2.length!==44)
+    return {ok:false, error:'長度不對（讀到 '+l1.length+' 與 '+l2.length+' 字元，應各為 44）。請重拍或重貼。'};
+  if(l1.charAt(0)!=='P')
+    return {ok:false, error:'第一行不是以 P 開頭，這可能不是護照的 MRZ。'};
+
+  var issuing=l1.substr(2,3).replace(/</g,'');
+  var namePart=l1.substr(5).replace(/<+$/,'');
+  var sp=namePart.split('<<');
+  var surname=(sp[0]||'').replace(/</g,' ').trim();
+  var given=(sp[1]||'').replace(/</g,' ').trim();
+
+  var docno=l2.substr(0,9), dChk=l2.charAt(9);
+  var nation=l2.substr(10,3).replace(/</g,'');
+  var dob=l2.substr(13,6), bChk=l2.charAt(19);
+  var sex=l2.charAt(20);
+  var exp=l2.substr(21,6), eChk=l2.charAt(27);
+  var pers=l2.substr(28,14), pChk=l2.charAt(42);
+  var allChk=l2.charAt(43);
+
+  var checks=[];
+  function add(label,str,digit){
+    var c=mrzCheck(str);
+    checks.push({label:label, ok:(c>=0 && String(c)===digit), got:digit, want:(c<0?'?':String(c))});
+  }
+  add('護照號碼', docno, dChk);
+  add('出生日期', dob, bChk);
+  add('證件效期', exp, eChk);
+  if(pers.replace(/</g,'')!=='') add('個人號碼', pers, pChk);
+  add('整行總檢查碼', docno+dChk+dob+bChk+exp+eChk+pers+pChk, allChk);
+
+  var bad=checks.filter(function(c){return !c.ok;});
+  return {
+    ok: bad.length===0,
+    surname:surname, given:given,
+    docno:docno.replace(/</g,''),
+    nation:nation||issuing, issuing:issuing,
+    sex:(sex==='<'?'':sex),
+    birth:mrzDate(dob,'birth',todayISO),
+    expiry:mrzDate(exp,'expiry',todayISO),
+    checks:checks, failed:bad,
+    error: bad.length? ('檢查碼不符：'+bad.map(function(c){return c.label;}).join('、')+'。表示讀取有誤，請重拍或人工核對。') : null
+  };
+}
+
+/* ===== 教學用範例資料（虛構，非真實旅客） ===== */
+var DEMO = [
+ ['A01','CHEN','HUAI CHIEH','M10000001','2029-04-18','2026-11-05'],
+ ['A02','LIN','SHU FEN','M10000002','2027-04-20','2026-11-05'],
+ ['A03','WANG','TA MING','M10000003','2027-05-04','2026-11-05'],
+ ['A04','Huang','Mei Ling','M10000004','2028-02-11','2026-11-05'],
+ ['A05','CHANG','CHIH HAO','M10000005','2026-11-05','2026-11-05'],
+ ['A06','WU','PEI CHUN','M10000006','2030-01-30','2026-11-05'],
+ ['A07','LIU','CHIA HUI','M10000007','2027/5/20','2026-11-05'],
+ ['A08','TSAI','MING TE','M10000008','20270610','2026-11-05'],
+ ['A09','陳','怡君','M10000009','2028-08-08','2026-11-05'],
+ ['A10','HSU','YU TING','M10000010','2027-05-05','2026-11-05'],
+ ['A11','KUO','CHUN WEI','M10000011','05/11/2027','2026-11-05'],
+ ['A12','','SHU CHEN','M10000012','2029-09-09','2026-11-05'],
+ ['A13','YEH','HSIAO MEI2','M10000013','2028-03-03','2026-11-05'],
+ ['A14','LEE','CHIEN KUO','M10000014','','2026-11-05'],
+ ['A15','SUNG','YI CHUN','M10000015','2027-06-30','2026-11-05'],
+ ['A16','PAN','TSUNG HAN','M10000016','2031-12-01','2026-11-05'],
+ ['A17','HO','LI CHUAN','M10000001','2028-07-15','2026-11-05'],
+ ['A18','CHOU','WEN LING','M10000018','2027-02-28','2026-11-05'],
+ ['A19','LIN','HSIAO-MEI','M10000019','2029-01-01','2026-11-05'],
+ ['A20','TENG','CHIA LING','M10000020','2027-05-06','2026-11-05']
+];
+var HEAD=['代號','英文姓','英文名','證件號碼','效期','出發日'];
+
+var $=function(id){return document.getElementById(id);};
+var RESULT=[];
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+function render(){
+  var only=$('only').checked;
+  var n={stop:0,check:0,pass:0};
+  RESULT.forEach(function(r){n[r.status]++;});
+  $('stats').innerHTML=
+    card(RESULT.length,'總筆數','var(--ink)')+
+    card(n.stop,'不可放行','var(--red)')+
+    card(n.check,'需人工確認','#B87A16')+
+    card(n.pass,'通過','var(--grn)');
+  var rows=RESULT.filter(function(r){return only? r.status!=='pass' : true;});
+  if(!rows.length){
+    $('tbl').innerHTML='<p class="hint tick">這一批沒有需要處理的資料。仍請依公司程序做最終確認。</p>';
+    return;
+  }
+  var h='<table><thead><tr><th style="width:88px">狀態</th><th style="width:70px">代號</th>'+
+        '<th style="width:190px">英文姓名</th><th style="width:110px">效期</th>'+
+        '<th style="width:110px">最晚可接受</th><th>要處理什麼</th></tr></thead><tbody>';
+  rows.forEach(function(r){
+    var lbl={stop:'不可放行',check:'需確認',pass:'通過'}[r.status];
+    var msgs=r.errors.map(function(m){return '<p class="msg e">・'+esc(m)+'</p>';})
+      .concat(r.warnings.map(function(m){return '<p class="msg">・'+esc(m)+'</p>';})).join('');
+    if(!msgs) msgs='<p class="msg">—</p>';
+    h+='<tr><td><span class="chip c-'+r.status+'">'+lbl+'</span></td>'+
+       '<td>'+esc(r.code)+'</td><td>'+esc(r.surname)+' '+esc(r.given)+'</td>'+
+       '<td>'+esc(r.expiryISO||r.expiry)+'</td><td>'+esc(r.needISO||'—')+'</td>'+
+       '<td>'+msgs+'</td></tr>';
+  });
+  $('tbl').innerHTML=h+'</tbody></table>';
+  function card(v,l,c){return '<div class="card"><div class="n" style="color:'+c+'">'+v+'</div><div class="l">'+l+'</div></div>';}
+}
+
+$('run').onclick=function(){
+  $('perr').innerHTML='';
+  var p=parseTable($('inp').value);
+  if(p.error){ $('perr').innerHTML='<div class="err">'+esc(p.error)+'</div>'; $('out').style.display='none'; return; }
+  RESULT=checkAll(p.rows,{months:+$('mon').value||6, warnDays:+$('warn').value||0});
+  $('out').style.display='block';
+  render();
+};
+$('demo').onclick=function(){
+  $('inp').value=[HEAD.join('\t')].concat(DEMO.map(function(r){return r.join('\t');})).join('\n');
+  $('run').click();
+};
+$('clr').onclick=function(){ $('inp').value=''; $('out').style.display='none'; $('perr').innerHTML=''; };
+$('only').onchange=render;
+$('mon').onchange=function(){ if(RESULT.length) $('run').click(); };
+$('warn').onchange=function(){ if(RESULT.length) $('run').click(); };
+$('csv').onclick=function(){
+  var rows=RESULT.filter(function(r){return r.status!=='pass';});
+  var lines=[['狀態','代號','英文姓','英文名','證件號碼','效期','最晚可接受','要處理什麼'].join(',')];
+  rows.forEach(function(r){
+    var m=r.errors.concat(r.warnings).join('；');
+    lines.push([{stop:'不可放行',check:'需確認'}[r.status],r.code,r.surname,r.given,r.docno,
+      r.expiryISO||r.expiry,r.needISO||'',m].map(function(x){
+        return '"'+String(x==null?'':x).replace(/"/g,'""')+'"';}).join(','));
+  });
+  var blob=new Blob(['﻿'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='需處理清單.csv'; a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
+};
+
+/* ===== MRZ 輸入 ===== */
+var MPARSED=null;
+var MRZ_DEMO='P<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<<<<<<<<<\nL898902C36UTO7408122F1204159ZE184226B<<<<<10';
+
+$('mdemo').onclick=function(){ $('mrz').value=MRZ_DEMO; $('mread').click(); };
+
+$('mread').onclick=function(){
+  var r=parseMRZ($('mrz').value);
+  MPARSED=null; $('madd').disabled=true;
+  if(r.error && !r.checks){ $('mmsg').innerHTML='<span class="bad">'+esc(r.error)+'</span>'; $('mout').innerHTML=''; return; }
+  var h='<div class="kv">'+
+    kv('英文姓',r.surname)+kv('英文名',r.given)+kv('護照號碼',r.docno)+
+    kv('國籍',r.nation)+kv('性別',r.sex||'—')+kv('出生日期',r.birth||'讀取失敗')+kv('證件效期',r.expiry||'讀取失敗')+
+    '</div><table><thead><tr><th style="width:180px">檢查碼</th><th style="width:110px">讀到</th><th style="width:110px">應該是</th><th>結果</th></tr></thead><tbody>';
+  r.checks.forEach(function(c){
+    h+='<tr><td>'+esc(c.label)+'</td><td>'+esc(c.got)+'</td><td>'+esc(c.want)+'</td><td>'+
+       (c.ok?'<span class="ok">通過</span>':'<span class="bad">不符</span>')+'</td></tr>';
+  });
+  $('mout').innerHTML=h+'</tbody></table>';
+  if(r.ok){
+    MPARSED=r; $('madd').disabled=false;
+    $('mmsg').innerHTML='<span class="ok">全部檢查碼通過，讀取正確。</span>';
+  } else {
+    $('mmsg').innerHTML='<span class="bad">'+esc(r.error)+'</span>';
+  }
+};
+
+function kv(k,v){ return '<div><b>'+k+'</b>'+esc(v||'')+'</div>'; }
+
+$('madd').onclick=function(){
+  if(!MPARSED) return;
+  var dep=$('mdep').value.trim();
+  if(!dep){ alert('請先填「這一批的出發日」，檢核器要拿它來算效期。'); $('mdep').focus(); return; }
+  var pre=($('mpre').value.trim()||'A').toUpperCase().charAt(0);
+  var cur=$('inp').value.replace(/\s+$/,'');
+  var head=['代號','英文姓','英文名','證件號碼','效期','出發日'].join('\t');
+  if(!cur){ cur=head; }
+  var n=cur.split('\n').length;                       // 已有列數（含標題）＝下一個序號
+  var code=pre+(n<10?'0':'')+n;
+  var row=[code,MPARSED.surname,MPARSED.given,MPARSED.docno,MPARSED.expiry,dep].join('\t');
+  $('inp').value=cur+'\n'+row;
+  $('mrz').value=''; $('mout').innerHTML=''; MPARSED=null; $('madd').disabled=true;
+  $('mmsg').innerHTML='<span class="ok">已加入為 '+code+'。可以接著讀下一本。</span>';
+  $('run').click();
+};
+</script></body></html>

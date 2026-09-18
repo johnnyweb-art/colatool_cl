@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>去識別化小工具｜可樂旅遊中壢分公司</title>
+<style>
+:root{--ink:#12262E;--mut:#5B7480;--line:#D8E2E7;--soft:#F1F5F7;--teal:#1C7293;--dark:#0B3C49;--amb:#E8A33D;--red:#C4453B;--grn:#2E7D5B}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.65 "Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;color:var(--ink);background:#fff}
+header{background:var(--dark);color:#fff;padding:22px 28px}
+header h1{margin:0 0 4px;font-size:23px}
+header p{margin:0;color:#BBD4DD;font-size:14px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 28px 60px}
+.notice{background:#FDF4E6;border:1px solid #EBD3A8;border-radius:10px;padding:14px 18px;margin:20px 0;font-size:14px}
+.notice b{color:#8A5A08}
+.danger{background:#FBEDEC;border:1px solid #E9C4C0;border-radius:10px;padding:13px 17px;font-size:14px;color:#8C2F27;margin:14px 0}
+.tabs{display:flex;gap:8px;border-bottom:2px solid var(--line);margin:22px 0 0}
+.tabs button{border:none;background:none;font:inherit;font-size:15px;font-weight:700;color:var(--mut);
+  padding:11px 18px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;border-radius:0}
+.tabs button.on{color:var(--teal);border-bottom-color:var(--teal)}
+.pane{display:none;padding-top:20px}.pane.on{display:block}
+h2{font-size:17px;margin:22px 0 8px}
+h2:first-child{margin-top:0}
+.hint{color:var(--mut);font-size:13.5px;margin:0 0 10px}
+textarea{width:100%;height:160px;font:14px/1.7 "Microsoft JhengHei",system-ui,sans-serif;
+  border:1px solid var(--line);border-radius:8px;padding:11px;resize:vertical;background:#fff;color:var(--ink)}
+textarea.out{background:var(--soft)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:12px 0}
+button{font:inherit;font-size:14px;border:1px solid var(--teal);background:var(--teal);color:#fff;border-radius:8px;padding:9px 17px;cursor:pointer}
+button.ghost{background:#fff;color:var(--teal)}
+button.warn{border-color:var(--red);background:#fff;color:var(--red)}
+input[type=text]{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:6px;min-width:190px}
+select{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:6px}
+.grp{border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:10px 0;background:#fff}
+.grp h3{margin:0 0 8px;font-size:14.5px}
+.item{display:flex;align-items:center;gap:9px;padding:4px 0;font-size:14px;flex-wrap:wrap}
+.item code{background:var(--soft);padding:2px 8px;border-radius:5px;font-family:Consolas,monospace}
+.item .c{color:var(--mut);font-size:12.5px}
+table{border-collapse:collapse;width:100%;background:#fff;font-size:14px}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;background:#fff}
+th{font-weight:700}
+.ok{color:var(--grn);font-weight:700}
+.bad{color:var(--red);font-weight:700}
+.steps{counter-reset:s;padding:0;list-style:none;margin:0}
+.steps li{counter-increment:s;position:relative;padding:6px 0 6px 34px;font-size:14.5px}
+.steps li:before{content:counter(s);position:absolute;left:0;top:7px;width:23px;height:23px;border-radius:50%;
+  background:var(--teal);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+footer{border-top:1px solid var(--line);margin-top:34px;padding-top:16px;color:var(--mut);font-size:13px}
+@media(max-width:640px){.wrap{padding:0 14px 40px}header{padding:18px 14px}}
+</style></head><body>
+<header>
+  <h1>去識別化小工具</h1>
+  <p>可樂旅遊中壢分公司　AI 助理應用訓練　示範工具</p>
+</header>
+<div class="wrap">
+
+<div class="notice">
+  <b>資料不會離開這台電腦。</b> 這個頁面是一個單獨的 HTML 檔，所有處理都在你的瀏覽器裡跑，沒有任何一筆資料被送出去，也不需要連網路。<b>關掉頁面，對照表就沒了</b>——要留著就先匯出。
+</div>
+
+<div class="tabs">
+  <button class="on" data-t="1">① 去識別化</button>
+  <button data-t="2">② 對照表</button>
+  <button data-t="3">③ 換回真名</button>
+  <button data-t="4">怎麼用</button>
+</div>
+
+<div class="pane on" id="p1">
+  <h2>把要給 AI 的東西貼進來</h2>
+  <p class="hint">客訴內容、客戶訊息、名單都可以。從 Excel 複製整塊貼上也行。</p>
+  <textarea id="src" spellcheck="false" placeholder="例：客戶王小明先生反映 3/15 大阪團飯店等級與說明不符，電話 0912-345-678……"></textarea>
+  <div class="row">
+    <button id="scan">掃描</button>
+    <button class="ghost" id="demo">載入範例</button>
+    <button class="ghost" id="clr">清空</button>
+  </div>
+
+  <div id="list"></div>
+
+  <div class="grp" id="manualBox" style="display:none">
+    <h3>自己再加一項（工具沒抓到的）</h3>
+    <div class="row" style="margin:4px 0">
+      <input type="text" id="mval" placeholder="要換掉的字，例如 大大旅行社">
+      <select id="mtype">
+        <option value="name">人名 → A 開頭代號</option>
+        <option value="org">公司／同業 → B 開頭代號</option>
+        <option value="other">其他 → C 開頭代號</option>
+        <option value="del">直接刪除</option>
+      </select>
+      <button class="ghost" id="madd">加入</button>
+    </div>
+  </div>
+
+  <div class="row" id="applyRow" style="display:none">
+    <button id="apply">套用並產生去識別化版本</button>
+  </div>
+
+  <div id="outBox" style="display:none">
+    <h2>去識別化版本（這一份才可以給 AI）</h2>
+    <textarea id="out" class="out" spellcheck="false" readonly></textarea>
+    <div class="row">
+      <button id="copy">複製</button>
+      <span id="res"></span>
+    </div>
+  </div>
+</div>
+
+<div class="pane" id="p2">
+  <h2>對照表</h2>
+  <div class="danger"><b>這張表不能貼給 AI，也不要寄出去。</b> 它是唯一能把代號變回真名的東西。存在你自己的資料夾，跟去識別化版本分開放。</div>
+  <div id="maptbl"></div>
+  <div class="row">
+    <button id="expmap">匯出對照表（CSV）</button>
+    <button class="ghost" id="impbtn">匯入對照表</button>
+    <input type="file" id="impmap" accept=".csv,text/csv" style="display:none">
+    <span style="flex:1"></span>
+    <button class="warn" id="clrmap">清空對照表</button>
+  </div>
+</div>
+
+<div class="pane" id="p3">
+  <h2>把 AI 給你的結果，換回真名</h2>
+  <p class="hint">貼上 AI 回覆的內容（裡面是 A01、A02 這種代號），按一下就換回真名。這一步也是在你的電腦裡做。</p>
+  <textarea id="rin" spellcheck="false" placeholder="例：A01 的護照效期不足六個月，建議提前通知。"></textarea>
+  <div class="row"><button id="rgo">換回真名</button></div>
+  <div id="rout" style="display:none">
+    <h2>還原後</h2>
+    <textarea id="rres" class="out" spellcheck="false" readonly></textarea>
+    <div class="row"><button id="rcopy">複製</button><span id="rmsg" class="hint" style="margin:0"></span></div>
+  </div>
+</div>
+
+<div class="pane" id="p4">
+  <h2>四個步驟</h2>
+  <ol class="steps">
+    <li><b>貼進來，按「掃描」。</b> 工具會列出它抓到的可能個資，但<b>不會自己動手</b>——勾選哪些要換掉，由你決定。</li>
+    <li><b>檢查勾選，需要就自己加。</b> 中文姓名工具只敢標成「疑似」，預設不勾（避免把「陳述」「王牌」這種詞誤換掉）。公司名、同業名稱這類，用下方「自己再加一項」補上。</li>
+    <li><b>按「套用並產生」，複製去識別化版本。</b> 只有這一份可以給 AI。系統會再掃一次，告訴你有沒有殘留。</li>
+    <li><b>AI 回覆之後，到第 ③ 頁換回真名。</b> 對照表全程留在這台電腦，沒有離開過。</li>
+  </ol>
+
+  <h2>兩件要記住的事</h2>
+  <div class="grp">
+    <h3>一、刪掉的東西換不回來，那是故意的</h3>
+    <p class="hint" style="margin:0">身分證、電話、Email、卡號一律直接刪除，不給代號。因為這些東西 AI 根本不需要，留著只是風險。人名才給代號，因為後面要對得回去。</p>
+  </div>
+  <div class="grp">
+    <h3>二、工具只負責抓，判斷還是你的</h3>
+    <p class="hint" style="margin:0">它會漏、也會誤判。所以每一項都要你勾。這不是設計上的偷懶——是因為你才知道哪一個字是客戶的名字，哪一個字只是普通的詞。</p>
+  </div>
+
+  <h2>接下來怎麼用在工作上</h2>
+  <p class="hint">處理少量文字（客訴、客戶訊息）用這個工具最快。整批檔案（幾百筆名單）請走另一條路：讓 AI 助理在你的電腦上寫腳本去洗，一樣是「先寫腳本、不先看檔案」。兩條路的原則完全一樣——<b>資料離開電腦之前，先處理過。</b></p>
+</div>
+
+<footer>
+  <p><b>這個工具做什麼、不做什麼</b><br>
+  做：偵測常見格式的個資、依你的勾選替換成代號或刪除、保管對照表、把代號換回真名。<br>
+  <b>不做</b>：不保證抓得完（中文姓名尤其）、不替你決定哪一個要換、不判斷這份資料是否符合公司規定。</p>
+  <p>規則依據來源：<b>【由使用單位填寫：公司個資處理內規名稱】</b>　｜　最後更新日：<b>2026-09-04</b><br>
+  本工具為教學示範用途。實際可輸入 AI 的資料範圍，以公司規範與法務認定為準。</p>
+  <p>可樂旅遊中壢分公司 AI 助理應用訓練｜元智大學管理學院　顧問團隊</p>
+</footer>
+</div>
+<script>
+/* ===== 去識別化核心邏輯（純函式，可單獨測試） ===== */
+
+var SURNAMES = ('陳林黃張李王吳劉蔡楊許鄭謝郭洪邱曾廖賴徐周葉蘇莊呂江何蕭羅高潘簡朱鍾游詹胡施沈余趙'
+ +'盧梁顏柯孫魏翁戴范宋方鄧杜傅侯曹薛丁卓阮馬董温唐藍石田倪嚴牛溫紀邵柳錢尤金魯歐姚連馮陸古湯汪'
+ +'白毛涂谷龔崔康巫鄒尹韓袁孔常武辛程雷史闕粘官萬凌左向邢巴').split('');
+
+var PATTERNS = [
+  {key:'id',    label:'身分證字號', code:'［身分證已刪除］', on:true,
+   re:/[A-Z][12]\d{8}/g},
+  {key:'card',  label:'信用卡號',   code:'［卡號已刪除］',   on:true,
+   re:/\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g},
+  {key:'mobile',label:'手機號碼',   code:'［電話已刪除］',   on:true,
+   re:/\b09\d{2}[- ]?\d{3}[- ]?\d{3}\b/g},
+  {key:'tel',   label:'市話號碼',   code:'［電話已刪除］',   on:true,
+   re:/\b0[2-8][- ]?\d{3,4}[- ]?\d{4}\b/g},
+  {key:'email', label:'電子郵件',   code:'［Email已刪除］',  on:true,
+   re:/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g},
+  {key:'passport',label:'疑似護照號碼', code:'［護照號碼已刪除］', on:true,
+   re:/\b[0-9]{9}\b/g},
+  {key:'birth', label:'疑似生日（西元年月日）', code:'［生日已刪除］', on:false,
+   re:/\b(19|20)\d{2}[-\/.](0?[1-9]|1[0-2])[-\/.](0?[1-9]|[12]\d|3[01])\b/g}
+];
+
+// 掃描：回傳偵測項目清單（不做替換，替換與否由人決定）
+function scan(text){
+  var found=[], seen={};
+  PATTERNS.forEach(function(p){
+    var re=new RegExp(p.re.source,'g'), m;
+    while((m=re.exec(text))!==null){
+      var v=m[0], k=p.key+'|'+v;
+      if(seen[k]) continue; seen[k]=1;
+      found.push({type:p.key, label:p.label, value:v, mode:'delete',
+                  replaceWith:p.code, checked:p.on, count:countOf(text,v)});
+    }
+  });
+  // 中文姓名（含稱謂與純姓名兩種）
+  var nameSeen={};
+  var titled=/([一-鿿])([一-鿿]{1,2})(先生|小姐|女士|太太|老師|經理|總經理|主任|課長|組長)/g, t;
+  while((t=titled.exec(text))!==null){
+    var full=t[1]+t[2];
+    if(SURNAMES.indexOf(t[1])<0) continue;
+    if(nameSeen[full]) continue; nameSeen[full]=1;
+    found.push({type:'name', label:'人名（有稱謂）', value:full, mode:'code',
+                replaceWith:'', checked:true, count:countOf(text,full)});
+  }
+  // 常見詞誤判過濾：這些詞的第一個字剛好是姓氏，但不是人名
+  var STOP=('方式,方面,方案,方向,高雄,高鐵,高額,白天,白色,石門,金額,金融,王牌,陳述,江南,馬上,馬來,'
+   +'連絡,連續,連結,紀錄,常見,官網,萬元,左右,向上,程度,溫度,嚴重,施工,簡單,簡訊,藍色,羅馬,范圍,'
+   +'宋代,董事,湯品,古蹟,毛利,康復,唐朝,余額,沈默,牛肉,雷同,史上,金錢,金牌,田野,黃金,黃色,'
+   +'常態,常用,尤其,武漢,孔子,袁枚,韓國,程序,巫術,鄒族,尹').split(',');
+  var FUNC=/[的了是在和與或及等把被將從對於為就都也很更再又已仍才只]/;
+  // 逐字掃描，不用 regex 連續前進——否則姓氏落在錯的位置就會漏掉
+  var isCJK=function(c){ return c!==''&&/[一-鿿]/.test(c); };
+  var cand=[];
+  for(var i=0;i<text.length;i++){
+    if(SURNAMES.indexOf(text.charAt(i))<0) continue;
+    var c1=text.charAt(i+1), c2=text.charAt(i+2), f=null;
+    if(isCJK(c1)&&isCJK(c2)) f=text.substr(i,3);        // 姓＋雙名（最常見）
+    else if(isCJK(c1)) f=text.substr(i,2);              // 姓＋單名
+    if(!f||nameSeen[f]) continue;
+    if(FUNC.test(f)) continue;
+    var skip=false;
+    for(var q=0;q<STOP.length;q++){ if(f.indexOf(STOP[q])===0){skip=true;break;} }
+    if(skip) continue;
+    nameSeen[f]=1;
+    cand.push({type:'name', label:'疑似人名（請自行確認）', value:f, mode:'code',
+               replaceWith:'', checked:false, count:countOf(text,f)});
+  }
+  cand.sort(function(a,b){return b.count-a.count;});
+  found=found.concat(cand.slice(0,60));
+  // 長的優先替換，避免「王小明」先被「王小」吃掉
+  found.sort(function(a,b){return b.value.length-a.value.length;});
+  return found;
+}
+
+function countOf(text,v){
+  var n=0,i=0;
+  while((i=text.indexOf(v,i))>=0){n++;i+=v.length;}
+  return n;
+}
+
+// 產生代號：A=人名 B=公司機構 C=其他
+function nextCode(map,prefix){
+  var n=1;
+  for(var k in map){ if(map[k].code.charAt(0)===prefix) n++; }
+  return prefix+(n<10?'0':'')+n;
+}
+
+// 套用替換。map 為既有對照表（原文 -> {code,type}），會就地擴充
+function apply(text, items, map){
+  var out=text;
+  items.filter(function(i){return i.checked;})
+       .sort(function(a,b){return b.value.length-a.value.length;})
+       .forEach(function(i){
+    var to;
+    if(i.mode==='delete'){ to=i.replaceWith; }
+    else {
+      if(!map[i.value]){
+        var pre = i.type==='org' ? 'B' : (i.type==='name' ? 'A' : 'C');
+        map[i.value]={code:nextCode(map,pre), type:i.type};
+      }
+      to=map[i.value].code;
+    }
+    out=out.split(i.value).join(to);
+  });
+  return out;
+}
+
+// 還原：把代號換回原文（只有代號類可還原；刪除類是故意不可逆）
+function restore(text,map){
+  var pairs=[];
+  for(var k in map) pairs.push([map[k].code,k]);
+  pairs.sort(function(a,b){return b[0].length-a[0].length;});
+  var out=text;
+  pairs.forEach(function(p){ out=out.split(p[0]).join(p[1]); });
+  return out;
+}
+
+// 檢查產出是否還有殘留（回傳仍偵測得到的高風險項目）
+function residual(text){
+  return scan(text).filter(function(i){
+    return i.type!=='name' || i.label.indexOf('有稱謂')>=0;
+  }).filter(function(i){
+    return ['id','card','mobile','tel','email'].indexOf(i.type)>=0 || i.type==='name';
+  });
+}
+
+var $=function(i){return document.getElementById(i);};
+var ITEMS=[], MAP={};
+
+var DEMO_TXT='客戶王小明先生（A123456789）反映 3/15 大阪團的飯店等級與說明不符，要求退費。\n'+
+'聯絡電話 0912-345-678，email ming@example.com.tw，護照號碼 123456789。\n'+
+'同行者林淑芬、張美玲兩位也有相同反映。承辦業務為本公司陳怡君。\n'+
+'付款方式為信用卡 4111 1111 1111 1111，已於 3/1 入帳。';
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+/* ---- 分頁 ---- */
+Array.prototype.forEach.call(document.querySelectorAll('.tabs button'),function(b){
+  b.onclick=function(){
+    Array.prototype.forEach.call(document.querySelectorAll('.tabs button'),function(x){x.classList.remove('on');});
+    Array.prototype.forEach.call(document.querySelectorAll('.pane'),function(x){x.classList.remove('on');});
+    b.classList.add('on'); $('p'+b.dataset.t).classList.add('on');
+    if(b.dataset.t==='2') drawMap();
+  };
+});
+
+/* ---- 掃描 ---- */
+function drawList(){
+  if(!ITEMS.length){ $('list').innerHTML='<p class="hint">沒有偵測到常見格式的個資。仍請自己看一遍——工具會漏。</p>'; }
+  else{
+    var groups={};
+    ITEMS.forEach(function(it,i){ (groups[it.label]=groups[it.label]||[]).push(i); });
+    var h='';
+    for(var lab in groups){
+      h+='<div class="grp"><h3>'+esc(lab)+'　<span class="c" style="font-weight:400;color:#5B7480">'+groups[lab].length+' 項</span></h3>';
+      groups[lab].forEach(function(i){
+        var it=ITEMS[i];
+        var to = it.mode==='delete' ? it.replaceWith : '代號';
+        h+='<label class="item"><input type="checkbox" data-i="'+i+'"'+(it.checked?' checked':'')+'>'+
+           '<code>'+esc(it.value)+'</code><span class="c">出現 '+it.count+' 次　→　'+esc(to)+'</span></label>';
+      });
+      h+='</div>';
+    }
+    $('list').innerHTML=h;
+    Array.prototype.forEach.call($('list').querySelectorAll('input[type=checkbox]'),function(cb){
+      cb.onchange=function(){ ITEMS[+cb.dataset.i].checked=cb.checked; };
+    });
+  }
+  $('manualBox').style.display='block';
+  $('applyRow').style.display='flex';
+}
+
+$('scan').onclick=function(){
+  var t=$('src').value;
+  if(!t.trim()){ $('list').innerHTML='<p class="hint">請先貼上內容。</p>'; return; }
+  ITEMS=scan(t); $('outBox').style.display='none'; drawList();
+};
+$('demo').onclick=function(){ $('src').value=DEMO_TXT; $('scan').click(); };
+$('clr').onclick=function(){ $('src').value=''; $('list').innerHTML=''; ITEMS=[];
+  $('outBox').style.display='none'; $('manualBox').style.display='none'; $('applyRow').style.display='none'; };
+
+$('madd').onclick=function(){
+  var v=$('mval').value.trim(); if(!v) return;
+  var ty=$('mtype').value;
+  ITEMS.unshift(ty==='del'
+    ? {type:'manual',label:'自己加的（直接刪除）',value:v,mode:'delete',replaceWith:'［已刪除］',checked:true,count:countOf($('src').value,v)}
+    : {type:ty,label:'自己加的（換代號）',value:v,mode:'code',replaceWith:'',checked:true,count:countOf($('src').value,v)});
+  $('mval').value=''; drawList();
+};
+$('mval').onkeydown=function(e){ if(e.key==='Enter') $('madd').click(); };
+
+/* ---- 套用 ---- */
+$('apply').onclick=function(){
+  var t=$('src').value;
+  var o=apply(t,ITEMS,MAP);
+  $('out').value=o; $('outBox').style.display='block';
+  var r=residual(o).filter(function(i){return i.label.indexOf('疑似人名')<0;});
+  $('res').innerHTML = r.length
+    ? '<span class="bad">殘留檢查：還找得到 '+r.length+' 項（'+esc(r.slice(0,3).map(function(x){return x.value;}).join('、'))+'…）請回上面補勾。</span>'
+    : '<span class="ok">殘留檢查：常見格式的個資都已處理。中文姓名仍請自己看過一遍。</span>';
+  $('out').scrollIntoView({behavior:'smooth',block:'nearest'});
+};
+$('copy').onclick=function(){ copyText($('out').value,$('copy')); };
+$('rcopy').onclick=function(){ copyText($('rres').value,$('rcopy')); };
+function copyText(t,btn){
+  var ta=document.createElement('textarea'); ta.value=t;
+  ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta);
+  ta.select();
+  try{ document.execCommand('copy'); var o=btn.textContent; btn.textContent='已複製';
+       setTimeout(function(){btn.textContent=o;},1400);}catch(e){ alert('請手動選取複製'); }
+  document.body.removeChild(ta);
+}
+
+/* ---- 對照表 ---- */
+function drawMap(){
+  var ks=Object.keys(MAP);
+  if(!ks.length){ $('maptbl').innerHTML='<p class="hint">目前沒有任何對照。做過一次去識別化之後才會有。</p>'; return; }
+  ks.sort(function(a,b){return MAP[a].code<MAP[b].code?-1:1;});
+  var h='<table><thead><tr><th style="width:110px">代號</th><th>原文</th><th style="width:130px">類型</th></tr></thead><tbody>';
+  var zh={name:'人名',org:'公司／同業',other:'其他',manual:'自己加的'};
+  ks.forEach(function(k){ h+='<tr><td><b>'+esc(MAP[k].code)+'</b></td><td>'+esc(k)+'</td><td>'+(zh[MAP[k].type]||MAP[k].type)+'</td></tr>'; });
+  $('maptbl').innerHTML=h+'</tbody></table>';
+}
+$('expmap').onclick=function(){
+  var ks=Object.keys(MAP);
+  if(!ks.length){ alert('對照表是空的。'); return; }
+  var lines=['代號,原文,類型'];
+  ks.sort(function(a,b){return MAP[a].code<MAP[b].code?-1:1;});
+  ks.forEach(function(k){ lines.push([MAP[k].code,k,MAP[k].type].map(function(x){
+    return '"'+String(x).replace(/"/g,'""')+'"';}).join(',')); });
+  var blob=new Blob(['﻿'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='對照表_請勿外流.csv'; a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
+};
+$('impbtn').onclick=function(){ $('impmap').click(); };
+$('impmap').onchange=function(e){
+  var f=e.target.files[0]; if(!f) return;
+  var r=new FileReader();
+  r.onload=function(){
+    var txt=String(r.result).replace(/^﻿/,'');
+    var lines=txt.split(/\r?\n/).filter(function(l){return l.trim();});
+    var n=0;
+    lines.slice(1).forEach(function(l){
+      var c=l.match(/("([^"]|"")*"|[^,]*)/g).filter(function(x,i){return i%2===0;}).slice(0,3)
+             .map(function(x){return x.replace(/^"|"$/g,'').replace(/""/g,'"');});
+      if(c.length>=2&&c[0]&&c[1]){ MAP[c[1]]={code:c[0],type:c[2]||'name'}; n++; }
+    });
+    drawMap(); alert('已匯入 '+n+' 筆對照。');
+  };
+  r.readAsText(f,'utf-8'); e.target.value='';
+};
+$('clrmap').onclick=function(){
+  if(!confirm('清空之後，已經產出的代號就換不回真名了。確定要清空嗎？')) return;
+  MAP={}; drawMap();
+};
+
+/* ---- 還原 ---- */
+$('rgo').onclick=function(){
+  var t=$('rin').value;
+  if(!t.trim()) return;
+  if(!Object.keys(MAP).length){ alert('對照表是空的。請先在第 ② 頁匯入對照表。'); return; }
+  var o=restore(t,MAP);
+  $('rres').value=o; $('rout').style.display='block';
+  var hit=Object.keys(MAP).filter(function(k){return t.indexOf(MAP[k].code)>=0;}).length;
+  $('rmsg').textContent = hit ? ('換回 '+hit+' 個代號。') : '文字裡找不到對照表中的任何代號。';
+};
+
+</script></body></html>
